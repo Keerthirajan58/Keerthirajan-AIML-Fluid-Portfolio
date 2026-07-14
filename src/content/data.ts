@@ -101,7 +101,8 @@ export interface SkillGroup {
   skills: string[];
 }
 
-export type ProjectKind = "case-study" | "grid" | "certification" | "publication";
+export type ProjectKind =
+  "case-study" | "grid" | "certification" | "publication";
 
 export interface ProjectGallery {
   cover: string;
@@ -659,7 +660,8 @@ export const projects: ProjectEntry[] = [
         "VGGFace2",
         "SSIM optimization",
       ],
-      githubUrl: "https://github.com/Keerthirajan58/Computer-Vision-Final-Project",
+      githubUrl:
+        "https://github.com/Keerthirajan58/Computer-Vision-Final-Project",
       blogUrl:
         "https://medium.com/@anaswara.raghuthaman/can-frequency-domain-cloaking-prevent-face-recognition-what-we-learned-from-building-one-35ed2492f83e",
       overview:
@@ -939,7 +941,8 @@ export const projects: ProjectEntry[] = [
       // Points at the general LinkedIn certifications list rather than a
       // specific credential URL — confirmed intentional by site owner (the
       // LinkedIn page links through to the certificate photo).
-      credential: "https://www.linkedin.com/in/keerthirajans58/details/certifications/",
+      credential:
+        "https://www.linkedin.com/in/keerthirajans58/details/certifications/",
     },
   },
   {
@@ -953,7 +956,8 @@ export const projects: ProjectEntry[] = [
     filters: ["certification", "aiml"],
     primaryImage: "assets/img/portfolio/branding-6.jpg",
     links: {
-      credential: "https://www.guvi.in/verify-certificate?id=1O17U19P26900xipwo",
+      credential:
+        "https://www.guvi.in/verify-certificate?id=1O17U19P26900xipwo",
     },
   },
   {
@@ -984,7 +988,8 @@ export const projects: ProjectEntry[] = [
     primaryImage: "assets/img/portfolio/branding-9.jpg",
     links: {
       // Same generic LinkedIn certifications list URL as "API Designer" above.
-      credential: "https://www.linkedin.com/in/keerthirajans58/details/certifications/",
+      credential:
+        "https://www.linkedin.com/in/keerthirajans58/details/certifications/",
     },
   },
 ];
