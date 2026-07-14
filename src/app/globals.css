@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — "Latent Space" direction (red/white, locked Phase 2).
+ * src/lib/theme.ts mirrors these hex values for JS/canvas consumers
+ * (the Phase 4 node-scatter signature element) — keep both in sync.
+ */
+/* Fixed light theme (no dark-mode toggle), so tokens are defined directly
+   in @theme rather than indirected through swappable :root variables. */
+@theme {
+  --color-paper: #fdfcfc;
+  --color-surface: #f6eeee;
+  --color-ink: #171313;
+  --color-ink-muted: #6e6467;
+  --color-crimson: #e23744;
+  --color-wine: #7a1f2b;
+  --font-display: var(--font-unbounded);
+  --font-body: var(--font-inter);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-crimson);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
