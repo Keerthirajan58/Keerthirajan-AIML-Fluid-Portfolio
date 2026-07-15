@@ -37,27 +37,48 @@ export function NodeCluster({ className = "" }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pointer = useRef<PointerState>({ x: 0, y: 0, inside: false });
 
-  // Upgrade decision — runs once, after idle.
+  // Upgrade decision. Waits for the full `load` event (not just mount/idle)
+  // before even scheduling the idle callback: a Lighthouse mobile run (4x CPU
+  // throttling) showed requestIdleCallback alone firing while hydration was
+  // still mid-flight, and the three.js chunk's parse+init competing for the
+  // same throttled main thread cost a real 27-point performance regression
+  // (770ms of blocking time, LCP pushed from 3.8s to 5.2s). Deferring past
+  // `load` gives hydration and initial paint a clear runway first.
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if ((navigator as SaveDataNavigator).connection?.saveData) return;
 
     const probe = document.createElement("canvas");
-    const gl =
-      probe.getContext("webgl2") ?? probe.getContext("webgl");
+    const gl = probe.getContext("webgl2") ?? probe.getContext("webgl");
     if (!gl) return;
+
+    let idleHandle: number | undefined;
+    let timeoutHandle: number | undefined;
 
     const upgrade = () => {
       setIsMobile(window.matchMedia("(pointer: coarse)").matches);
       setMode("webgl");
     };
-    // requestIdleCallback is missing from older Safari — fall back to a timer.
-    if (typeof window.requestIdleCallback === "function") {
-      const handle = window.requestIdleCallback(upgrade);
-      return () => window.cancelIdleCallback(handle);
+    const scheduleUpgrade = () => {
+      // requestIdleCallback is missing from older Safari — fall back to a timer.
+      if (typeof window.requestIdleCallback === "function") {
+        idleHandle = window.requestIdleCallback(upgrade, { timeout: 2000 });
+      } else {
+        timeoutHandle = window.setTimeout(upgrade, 1500);
+      }
+    };
+
+    if (document.readyState === "complete") {
+      scheduleUpgrade();
+    } else {
+      window.addEventListener("load", scheduleUpgrade, { once: true });
     }
-    const handle = window.setTimeout(upgrade, 1500);
-    return () => window.clearTimeout(handle);
+
+    return () => {
+      window.removeEventListener("load", scheduleUpgrade);
+      if (idleHandle !== undefined) window.cancelIdleCallback(idleHandle);
+      if (timeoutHandle !== undefined) window.clearTimeout(timeoutHandle);
+    };
   }, []);
 
   // Live reduced-motion toggle: unlike ScrollFX (gsap.matchMedia, which

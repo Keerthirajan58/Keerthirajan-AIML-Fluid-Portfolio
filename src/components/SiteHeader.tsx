@@ -76,7 +76,10 @@ export function SiteHeader() {
             <Link
               href="/"
               className="font-display text-lg font-bold tracking-tight text-ink"
-              aria-label="Home — Keerthirajan Senthilkumar"
+              // Accessible name must contain the visible "KS." text (WCAG
+              // 2.5.3 Label in Name) — voice-control users saying "click KS"
+              // need it to match.
+              aria-label="KS. — Home, Keerthirajan Senthilkumar"
             >
               KS<span className="text-crimson">.</span>
             </Link>

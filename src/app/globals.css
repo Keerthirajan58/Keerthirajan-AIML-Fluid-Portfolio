@@ -12,7 +12,10 @@
   --color-surface: #f6eeee;
   --color-ink: #171313;
   --color-ink-muted: #6e6467;
-  --color-crimson: #e23744;
+  /* Nudged from the original #E23744 (Phase 2) to clear WCAG AA 4.5:1 text
+     contrast against paper — the original measured 4.22:1. Same hue/feel,
+     barely perceptible shift; see Phase 5 Lighthouse accessibility fix. */
+  --color-crimson: #df212f;
   --color-wine: #7a1f2b;
   --font-display: var(--font-unbounded);
   --font-body: var(--font-inter);

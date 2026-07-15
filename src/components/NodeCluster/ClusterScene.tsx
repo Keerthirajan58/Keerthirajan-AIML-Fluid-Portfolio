@@ -7,7 +7,13 @@
    the actual bug (GC churn at 60fps). */
 
 import { useMemo, useRef, type RefObject } from "react";
-import * as THREE from "three";
+// Named + type-only imports (not `import * as THREE`) so bundlers can
+// tree-shake the rest of three.js — we only ever construct Color at runtime;
+// Group/BufferGeometry are used purely as ref types, which are erased at
+// compile time. This was the single largest driver of a real Lighthouse
+// mobile-performance regression (see git history): the R3F/three chunk was
+// competing with hydration on the main thread, and most of it was unused.
+import { Color, type Group, type BufferGeometry } from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { colors } from "@/lib/theme";
 import { NODES, toWorld, mulberry32 } from "./data";
@@ -94,8 +100,8 @@ function buildSim(isMobile: boolean): Sim {
   const baseSize = new Float32Array(count);
   const colorArr = new Float32Array(count * 3);
 
-  const crimson = new THREE.Color(colors.crimson);
-  const wine = new THREE.Color(colors.wine);
+  const crimson = new Color(colors.crimson);
+  const wine = new Color(colors.wine);
 
   NODES.forEach((n, i) => {
     const [wx, wy] = toWorld(n.x, n.y);
@@ -154,12 +160,12 @@ function Cluster({
   pointer: RefObject<PointerState>;
 }) {
   const sim = useMemo(() => buildSim(isMobile), [isMobile]);
-  const group = useRef<THREE.Group>(null);
-  const pointsGeo = useRef<THREE.BufferGeometry>(null);
-  const linesGeo = useRef<THREE.BufferGeometry>(null);
+  const group = useRef<Group>(null);
+  const pointsGeo = useRef<BufferGeometry>(null);
+  const linesGeo = useRef<BufferGeometry>(null);
 
   const lineColor = useMemo(
-    () => new THREE.Color(colors.crimson),
+    () => new Color(colors.crimson),
     [],
   );
 

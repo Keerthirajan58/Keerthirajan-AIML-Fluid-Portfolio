@@ -16,7 +16,7 @@ export const colors = {
   surface: "#F6EEEE",
   ink: "#171313",
   inkMuted: "#6E6467",
-  crimson: "#E23744",
+  crimson: "#DF212F",
   wine: "#7A1F2B",
 } as const;
 
