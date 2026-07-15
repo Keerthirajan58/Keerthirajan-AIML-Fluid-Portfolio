@@ -1,4 +1,8 @@
-import { experience, education } from "@/content/data";
+import {
+  experience,
+  education,
+  personalProjectsLeadership,
+} from "@/content/data";
 import { Section } from "@/components/ui/Section";
 
 export function Experience() {
@@ -59,6 +63,32 @@ export function Experience() {
             <p className="text-sm text-ink-muted">{e.institution}</p>
             <ul className="mt-3 space-y-2">
               {e.bullets.map((b, i) => (
+                <li key={i} className="text-sm leading-6 text-ink-muted">
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <h3 className="mb-6 mt-14 text-xs font-semibold uppercase tracking-[0.22em] text-crimson">
+        Leadership
+      </h3>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {personalProjectsLeadership.map((p) => (
+          <div
+            key={p.title}
+            data-reveal
+            className="rounded-2xl border border-ink/10 bg-surface p-5"
+          >
+            <p className="text-sm font-medium text-ink-muted">{p.dates}</p>
+            <h4 className="mt-1 font-display text-base font-semibold text-ink">
+              {p.title}
+            </h4>
+            <p className="text-sm text-crimson">{p.role}</p>
+            <ul className="mt-3 space-y-2">
+              {p.bullets.map((b, i) => (
                 <li key={i} className="text-sm leading-6 text-ink-muted">
                   {b}
                 </li>
