@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { profile, experience } from "@/content/data";
+import { experience } from "@/content/data";
 import { getProjectBySlug, caseStudySlugs } from "@/lib/projects";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { Badge } from "@/components/ui/Badge";
@@ -26,9 +26,18 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProjectBySlug(slug);
   if (!project) return {};
+  // Real project screenshot as the share preview — the root layout's title
+  // template appends "| <name>" automatically.
+  const cover = project.gallery?.cover;
   return {
-    title: `${project.title} | ${profile.name}`,
+    title: project.title,
     description: project.description,
+    openGraph: cover
+      ? { title: project.title, description: project.description, images: [cover] }
+      : { title: project.title, description: project.description },
+    twitter: cover
+      ? { card: "summary_large_image", images: [cover] }
+      : { card: "summary_large_image" },
   };
 }
 

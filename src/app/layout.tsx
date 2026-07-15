@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Unbounded, Inter } from "next/font/google";
-import { profile } from "@/content/data";
+import { profile, contact } from "@/content/data";
+import { getSiteUrl } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
@@ -18,8 +19,30 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: profile.pageTitle,
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: profile.pageTitle,
+    template: `%s | ${profile.name}`,
+  },
   description: profile.tagline,
+  keywords: [profile.name, ...profile.roles, "Portfolio"],
+  authors: [{ name: profile.name, url: contact.social.linkedin }],
+  openGraph: {
+    title: profile.pageTitle,
+    description: profile.tagline,
+    siteName: profile.name,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: profile.pageTitle,
+    description: profile.tagline,
+  },
+};
+
+export const viewport: Viewport = {
+  colorScheme: "light",
+  themeColor: "#E23744",
 };
 
 export default function RootLayout({
