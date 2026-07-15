@@ -21,6 +21,13 @@
  * collapsing (the legacy HTML hard-wraps long <li> text across source lines).
  * No words, numbers, dates, titles, or names were changed, reordered, or
  * corrected beyond the owner's explicit corrections above.
+ *
+ * Phase 3 update (2026-07-14): image/resume paths were repointed from the
+ * legacy `assets/...` locations to the real files now under `/public`
+ * (`/images/...`, `/Keerthirajan-Senthilkumar-Resume.pdf`). Project galleries
+ * were updated to the actual screenshots the owner supplied (real counts,
+ * imageStatus "real"), and BarterBrAIn's gallery/impact now include the GW
+ * New Venture Competition recognition. These are real assets, not fabrications.
  */
 
 // ---------------------------------------------------------------------------
@@ -34,6 +41,8 @@ export interface HeroHighlight {
 
 export interface Profile {
   name: string;
+  /** Profile photo in /public (owner-confirmed current photo). */
+  photo: string;
   /** Exact <title> text from index.html */
   pageTitle: string;
   /** hero-eyebrow line above the name on index.html */
@@ -184,6 +193,7 @@ export interface Testimonial {
 
 export const profile: Profile = {
   name: "Keerthirajan Senthilkumar",
+  photo: "/images/profile.jpg",
   pageTitle: "Keerthirajan Senthilkumar | AIML & Software Engineer",
   heroEyebrow: "AIML & Software Engineering Graduate",
   tagline:
@@ -231,7 +241,7 @@ export const contact: ContactInfo = {
     github: "https://github.com/Keerthirajan58/",
     leetcode: "https://leetcode.com/u/keerthirajan58/",
   },
-  resumeUrl: "assets/Resume - Keerthirajan Senthilkumar.pdf",
+  resumeUrl: "/Keerthirajan-Senthilkumar-Resume.pdf",
 };
 
 // ---------------------------------------------------------------------------
@@ -435,19 +445,15 @@ export const projects: ProjectEntry[] = [
     // Actual source in portfolio.html — shares this file with the unrelated
     // "Twitter Sentiment Analysis" grid card below, and has no onerror
     // fallback wiring (unlike the 5 project-*.html-backed cards).
-    primaryImage: "assets/img/portfolio/app-1.jpg",
+    primaryImage: "/images/projects/siri-core-modeling/cover.jpg",
     gallery: {
-      // No assets/img/projects/siri-core-modeling/ folder exists at all —
-      // this is the intended path per the site's naming convention, not a
-      // path that currently resolves to anything.
-      cover: "assets/img/projects/siri-core-modeling/cover.jpg",
+      cover: "/images/projects/siri-core-modeling/cover.jpg",
       slides: [
-        "assets/img/projects/siri-core-modeling/slide-1.jpg",
-        "assets/img/projects/siri-core-modeling/slide-2.jpg",
-        "assets/img/projects/siri-core-modeling/slide-3.jpg",
-        "assets/img/projects/siri-core-modeling/slide-4.jpg",
+        "/images/projects/siri-core-modeling/slide-1.jpg",
+        "/images/projects/siri-core-modeling/slide-2.jpg",
+        "/images/projects/siri-core-modeling/slide-3.jpg",
       ],
-      imageStatus: "none",
+      imageStatus: "real",
     },
     links: {
       detailsPage: "resume.html",
@@ -463,16 +469,24 @@ export const projects: ProjectEntry[] = [
       "AI sports science assistant for player readiness, injury risk, rPPG vitals, movement analysis, and tactical XI recommendations.",
     tags: ["Flutter", "FastAPI", "Gemini", "rPPG"],
     filters: ["aiml", "genai", "hackathon", "mobile", "cv"],
-    primaryImage: "assets/img/projects/pitchpulse/cover.jpg",
+    primaryImage: "/images/projects/pitchpulse/cover.jpg",
     gallery: {
-      cover: "assets/img/projects/pitchpulse/cover.jpg",
+      cover: "/images/projects/pitchpulse/cover.jpg",
       slides: [
-        "assets/img/projects/pitchpulse/slide-1.jpg",
-        "assets/img/projects/pitchpulse/slide-2.jpg",
-        "assets/img/projects/pitchpulse/slide-3.jpg",
-        "assets/img/projects/pitchpulse/slide-4.jpg",
+        "/images/projects/pitchpulse/slide-0.jpg",
+        "/images/projects/pitchpulse/slide-1.jpg",
+        "/images/projects/pitchpulse/slide-2.jpg",
+        "/images/projects/pitchpulse/slide-3.jpg",
+        "/images/projects/pitchpulse/slide-4.jpg",
+        "/images/projects/pitchpulse/slide-5.jpg",
+        "/images/projects/pitchpulse/slide-6.jpg",
+        "/images/projects/pitchpulse/slide-7.jpg",
+        "/images/projects/pitchpulse/slide-8.jpg",
+        "/images/projects/pitchpulse/slide-9.jpg",
+        "/images/projects/pitchpulse/slide-10.jpg",
+        "/images/projects/pitchpulse/slide-11.jpg",
       ],
-      imageStatus: "fallback-only",
+      imageStatus: "real",
     },
     links: {
       detailsPage: "project-pitchpulse.html",
@@ -520,16 +534,24 @@ export const projects: ProjectEntry[] = [
       "Technica-winning AI campus barter app with valuation, negotiation, sustainability, and fairness intelligence.",
     tags: ["Flutter", "Firebase", "Gemini", "Cloud Functions"],
     filters: ["aiml", "genai", "hackathon", "mobile"],
-    primaryImage: "assets/img/projects/barterbrain/cover.jpg",
+    primaryImage: "/images/projects/barterbrain/cover.jpg",
     gallery: {
-      cover: "assets/img/projects/barterbrain/cover.jpg",
+      cover: "/images/projects/barterbrain/cover.jpg",
       slides: [
-        "assets/img/projects/barterbrain/slide-1.jpg",
-        "assets/img/projects/barterbrain/slide-2.jpg",
-        "assets/img/projects/barterbrain/slide-3.jpg",
-        "assets/img/projects/barterbrain/slide-4.jpg",
+        "/images/projects/barterbrain/slide-0.jpg",
+        "/images/projects/barterbrain/slide-1.jpg",
+        "/images/projects/barterbrain/slide-2.jpg",
+        "/images/projects/barterbrain/slide-3.jpg",
+        "/images/projects/barterbrain/slide-4.jpg",
+        "/images/projects/barterbrain/slide-5.jpg",
+        "/images/projects/barterbrain/slide-6.jpg",
+        // GW New Venture Competition (startup competition) photo set — same
+        // project, second recognition. Owner-provided, merged per their call.
+        "/images/projects/barterbrain-nvc/cover.jpg",
+        "/images/projects/barterbrain-nvc/slide-1.jpg",
+        "/images/projects/barterbrain-nvc/slide-2.jpg",
+        "/images/projects/barterbrain-nvc/slide-3.jpg",
       ],
-      // Only project folder with real screenshots today.
       imageStatus: "real",
     },
     links: {
@@ -562,7 +584,7 @@ export const projects: ProjectEntry[] = [
         "Added sustainability calculations to estimate CO2 savings after successful trades.",
       ],
       impact:
-        "Won Best Hack for Social Good (Sustainability) at Technica 2025 among 80+ teams and 450+ participants, and later reached the top 5 in a startup competition with 200+ teams.",
+        "Won Best Hack for Social Good (Sustainability) at Technica 2025 among 80+ teams and 450+ participants, and later reached the Top 5 in the Social Innovation track at the GW New Venture Competition, advancing through 3 rounds among 200+ teams.",
     },
   },
   {
@@ -575,16 +597,17 @@ export const projects: ProjectEntry[] = [
       "LoRA fine-tuned Mistral-7B system for creative alternate-history generation and LLM-as-judge evaluation.",
     tags: ["Mistral-7B", "LoRA / PEFT", "Streamlit", "Gemini"],
     filters: ["aiml", "genai", "web"],
-    primaryImage: "assets/img/projects/historical-event-narrator/cover.jpg",
+    primaryImage: "/images/projects/historical-event-narrator/cover.jpg",
     gallery: {
-      cover: "assets/img/projects/historical-event-narrator/cover.jpg",
+      cover: "/images/projects/historical-event-narrator/cover.jpg",
       slides: [
-        "assets/img/projects/historical-event-narrator/slide-1.jpg",
-        "assets/img/projects/historical-event-narrator/slide-2.jpg",
-        "assets/img/projects/historical-event-narrator/slide-3.jpg",
-        "assets/img/projects/historical-event-narrator/slide-4.jpg",
+        "/images/projects/historical-event-narrator/slide-1.jpg",
+        "/images/projects/historical-event-narrator/slide-2.jpg",
+        "/images/projects/historical-event-narrator/slide-3.jpg",
+        "/images/projects/historical-event-narrator/slide-4.jpg",
+        "/images/projects/historical-event-narrator/slide-5.jpg",
       ],
-      imageStatus: "fallback-only",
+      imageStatus: "real",
     },
     links: {
       detailsPage: "project-historical-event-narrator.html",
@@ -632,16 +655,11 @@ export const projects: ProjectEntry[] = [
       "DCT-based adversarial cloaking pipeline that disrupts FaceNet recognition while preserving visual fidelity.",
     tags: ["PyTorch", "DCT", "FaceNet", "SSIM"],
     filters: ["aiml", "cv"],
-    primaryImage: "assets/img/projects/face-cloaking/cover.jpg",
+    primaryImage: "/images/projects/face-cloaking/cover.jpg",
     gallery: {
-      cover: "assets/img/projects/face-cloaking/cover.jpg",
-      slides: [
-        "assets/img/projects/face-cloaking/slide-1.jpg",
-        "assets/img/projects/face-cloaking/slide-2.jpg",
-        "assets/img/projects/face-cloaking/slide-3.jpg",
-        "assets/img/projects/face-cloaking/slide-4.jpg",
-      ],
-      imageStatus: "fallback-only",
+      cover: "/images/projects/face-cloaking/cover.jpg",
+      slides: ["/images/projects/face-cloaking/slide-1.jpg"],
+      imageStatus: "real",
     },
     links: {
       detailsPage: "project-face-cloaking.html",
@@ -688,16 +706,15 @@ export const projects: ProjectEntry[] = [
       "Semantic search system mapping job descriptions to LeetCode problems using embeddings and clustering.",
     tags: ["Sentence Transformers", "FastAPI", "Streamlit", "Azure ML"],
     filters: ["aiml", "genai", "web"],
-    primaryImage: "assets/img/projects/coding-problem-recommender/cover.jpg",
+    primaryImage: "/images/projects/coding-problem-recommender/cover.jpg",
     gallery: {
-      cover: "assets/img/projects/coding-problem-recommender/cover.jpg",
+      cover: "/images/projects/coding-problem-recommender/cover.jpg",
       slides: [
-        "assets/img/projects/coding-problem-recommender/slide-1.jpg",
-        "assets/img/projects/coding-problem-recommender/slide-2.jpg",
-        "assets/img/projects/coding-problem-recommender/slide-3.jpg",
-        "assets/img/projects/coding-problem-recommender/slide-4.jpg",
+        "/images/projects/coding-problem-recommender/slide-1.jpg",
+        "/images/projects/coding-problem-recommender/slide-2.jpg",
+        "/images/projects/coding-problem-recommender/slide-3.jpg",
       ],
-      imageStatus: "fallback-only",
+      imageStatus: "real",
     },
     links: {
       detailsPage: "project-coding-problem-recommender.html",
