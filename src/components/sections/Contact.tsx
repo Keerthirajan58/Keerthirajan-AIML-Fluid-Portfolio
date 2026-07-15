@@ -12,7 +12,7 @@ export function Contact() {
   return (
     <Section id="contact" eyebrow="Contact" title="Let's build something">
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-14">
-        <div>
+        <div data-reveal>
           <p className="max-w-md text-base leading-7 text-ink-muted sm:text-lg">
             I&apos;m actively looking for AIML / software engineering roles
             {profile.openToRelocation ? " and open to relocation" : ""}. The
@@ -30,7 +30,7 @@ export function Contact() {
           </div>
         </div>
 
-        <ul className="space-y-5">
+        <ul data-reveal className="space-y-5">
           <li className="flex items-start gap-3">
             <MailIcon className="mt-0.5 shrink-0 text-crimson" />
             <div>

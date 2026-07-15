@@ -6,7 +6,7 @@ export function About() {
   return (
     <Section id="about" eyebrow="About" title={profile.aboutHeadline}>
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-14">
-        <div className="order-2 md:order-1">
+        <div data-reveal className="order-2 md:order-1">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-xs overflow-hidden rounded-2xl border border-ink/10 bg-surface">
             <Image
               src={profile.photo}
@@ -18,7 +18,7 @@ export function About() {
           </div>
         </div>
 
-        <div className="order-1 md:order-2">
+        <div data-reveal className="order-1 md:order-2">
           {profile.bio.map((para, i) => (
             <p
               key={i}

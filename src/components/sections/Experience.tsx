@@ -4,10 +4,21 @@ import { Section } from "@/components/ui/Section";
 export function Experience() {
   return (
     <Section id="experience" eyebrow="Experience" title="Where I've worked">
-      <ol className="relative border-l border-ink/10 pl-6 sm:pl-8">
+      <ol data-timeline className="relative border-l border-ink/10 pl-6 sm:pl-8">
+        {/* Crimson line that ScrollFX draws down over the faint track above. */}
+        <span
+          data-timeline-line
+          aria-hidden="true"
+          className="absolute -left-px top-0 h-full w-px origin-top bg-crimson"
+        />
         {experience.map((job) => (
-          <li key={`${job.company}-${job.dates}`} className="mb-10 last:mb-0">
+          <li
+            key={`${job.company}-${job.dates}`}
+            data-reveal
+            className="mb-10 last:mb-0"
+          >
             <span
+              data-timeline-dot
               className="absolute -left-[7px] mt-1.5 h-3 w-3 rounded-full border-2 border-paper bg-crimson"
               aria-hidden="true"
             />
@@ -38,6 +49,7 @@ export function Experience() {
         {education.map((e) => (
           <div
             key={e.degree}
+            data-reveal
             className="rounded-2xl border border-ink/10 bg-surface p-5"
           >
             <p className="text-sm font-medium text-ink-muted">{e.dates}</p>

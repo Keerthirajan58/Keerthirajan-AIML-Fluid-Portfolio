@@ -20,6 +20,7 @@ export function ProjectGallery({
         return (
           <div
             key={src}
+            data-reveal
             className="overflow-hidden rounded-xl border border-ink/10 bg-surface"
           >
             <Image

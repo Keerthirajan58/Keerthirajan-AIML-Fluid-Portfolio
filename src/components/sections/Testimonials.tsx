@@ -8,6 +8,7 @@ export function Testimonials() {
         {testimonials.map((t) => (
           <figure
             key={t.name}
+            data-reveal
             className="flex flex-col rounded-2xl border border-ink/10 bg-surface p-6"
           >
             <blockquote className="flex-1 text-sm leading-7 text-ink-muted sm:text-base">

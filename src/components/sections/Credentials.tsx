@@ -9,7 +9,7 @@ export function Credentials() {
   return (
     <Section id="credentials" eyebrow="Credentials" title="Publications & certifications">
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-14">
-        <div>
+        <div data-reveal>
           <h3 className="mb-4 font-display text-base font-semibold text-ink">
             Publications
           </h3>
@@ -28,7 +28,7 @@ export function Credentials() {
           </ul>
         </div>
 
-        <div>
+        <div data-reveal>
           <h3 className="mb-4 font-display text-base font-semibold text-ink">
             Certifications
           </h3>

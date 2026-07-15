@@ -4,6 +4,7 @@ import { profile } from "@/content/data";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { ScrollFX } from "@/components/motion/ScrollFX";
 import "./globals.css";
 
 const unbounded = Unbounded({
@@ -29,6 +30,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // The inline script below adds a "js" class pre-hydration; React must
+      // not treat that as a mismatch (same pattern as theme-switcher scripts).
+      suppressHydrationWarning
       className={`${unbounded.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-ink">
@@ -41,6 +45,7 @@ export default function RootLayout({
           }}
         />
         <SmoothScroll />
+        <ScrollFX />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-crimson focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"

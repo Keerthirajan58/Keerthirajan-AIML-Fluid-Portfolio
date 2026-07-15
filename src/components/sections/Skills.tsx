@@ -9,6 +9,7 @@ export function Skills() {
         {skills.map((group) => (
           <div
             key={group.category}
+            data-reveal
             className="rounded-2xl border border-ink/10 bg-surface p-5"
           >
             <h3 className="mb-4 font-display text-base font-semibold text-ink">

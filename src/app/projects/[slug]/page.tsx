@@ -100,7 +100,10 @@ export default async function ProjectPage({
         </p>
       </header>
 
-      <dl className="mt-8 grid grid-cols-1 gap-6 border-y border-ink/10 py-6 sm:grid-cols-3">
+      <dl
+        data-reveal
+        className="mt-8 grid grid-cols-1 gap-6 border-y border-ink/10 py-6 sm:grid-cols-3"
+      >
         <div>
           <dt className="text-xs font-semibold uppercase tracking-wider text-crimson">
             Category
@@ -149,7 +152,7 @@ export default async function ProjectPage({
 
       <div className="mt-10 space-y-8">
         {sections.map((s) => (
-          <section key={s.heading}>
+          <section key={s.heading} data-reveal>
             <h2 className="font-display text-xl font-semibold text-ink">
               {s.heading}
             </h2>

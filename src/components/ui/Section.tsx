@@ -26,7 +26,7 @@ export function Section({
       className={`mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 ${className}`}
     >
       {(eyebrow || title) && (
-        <header className="mb-10 sm:mb-14">
+        <header data-reveal className="mb-10 sm:mb-14">
           {eyebrow && (
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-crimson">
               {eyebrow}
