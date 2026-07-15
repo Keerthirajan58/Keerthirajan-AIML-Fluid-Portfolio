@@ -1,5 +1,5 @@
 import { HeroIntro } from "@/components/motion/HeroIntro";
-import { NodeClusterStatic } from "@/components/NodeClusterStatic";
+import { NodeCluster } from "@/components/NodeCluster";
 
 export function Hero() {
   return (
@@ -13,7 +13,7 @@ export function Hero() {
         data-hero-cluster
         className="relative mx-auto w-full max-w-sm md:max-w-none"
       >
-        <NodeClusterStatic className="h-auto w-full" />
+        <NodeCluster />
       </div>
     </section>
   );
