@@ -9,7 +9,7 @@ export function FeaturedProjectCard({ project }: { project: ProjectEntry }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-surface transition-colors hover:border-crimson/40"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-surface transition-[border-color,transform] hover:border-crimson/40 active:scale-[0.99]"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-paper">
         <Image
@@ -87,7 +87,7 @@ export function GridProjectCard({ project }: { project: ProjectEntry }) {
   );
 
   const className =
-    "group flex flex-col rounded-2xl border border-ink/10 bg-surface p-5 transition-colors hover:border-crimson/40";
+    "group flex flex-col rounded-2xl border border-ink/10 bg-surface p-5 transition-[border-color,transform] hover:border-crimson/40 active:scale-[0.99]";
 
   return href ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
