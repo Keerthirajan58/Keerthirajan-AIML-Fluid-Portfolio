@@ -22,6 +22,12 @@ export function Section({
   return (
     <section
       id={id}
+      // Sections aren't naturally focusable, but SmoothScroll needs a valid
+      // programmatic focus target after an in-page anchor jump (see its
+      // comment) so keyboard/screen-reader users land in the right place,
+      // not just have the viewport move under them. tabIndex={-1} keeps it
+      // out of normal Tab order — it's only reachable via .focus() or click.
+      tabIndex={id ? -1 : undefined}
       aria-labelledby={title ? headingId : undefined}
       className={`mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 ${className}`}
     >

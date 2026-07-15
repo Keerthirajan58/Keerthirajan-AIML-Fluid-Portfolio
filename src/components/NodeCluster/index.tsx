@@ -60,6 +60,21 @@ export function NodeCluster({ className = "" }: { className?: string }) {
     return () => window.clearTimeout(handle);
   }, []);
 
+  // Live reduced-motion toggle: unlike ScrollFX (gsap.matchMedia, which
+  // listens for changes itself), the upgrade check above is a one-time
+  // snapshot. If the user turns on reduced-motion at the OS level while the
+  // WebGL scene is already running, demote back to the static SVG immediately
+  // rather than waiting for a reload.
+  useEffect(() => {
+    if (mode !== "webgl") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => {
+      if (mq.matches) setMode("static");
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [mode]);
+
   // Pause the frameloop when offscreen or the tab is hidden.
   useEffect(() => {
     if (mode !== "webgl") return;

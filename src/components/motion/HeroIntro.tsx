@@ -6,12 +6,13 @@ import { SocialLinks } from "@/components/ui/SocialLinks";
 import { DownloadIcon, ArrowUpRightIcon } from "@/components/ui/icons";
 
 /**
- * Hero left column with the orchestrated load-in. The h1 is never
- * opacity-hidden (it's the LCP element) — it rises via the CSS-only
- * `hero-rise` keyframe, which also runs pre-hydration. Everything secondary
- * staggers in with Motion springs after hydration. MotionConfig
- * reducedMotion="user" strips the translateY movement for reduced-motion
- * users (they get a plain non-moving fade, which is vestibular-safe).
+ * Hero left column with the orchestrated load-in. Nothing here is ever
+ * opacity-hidden — the h1 (LCP element) rises via the CSS-only `hero-rise`
+ * keyframe, which also runs pre-hydration; everything secondary (including
+ * the résumé link and social links) staggers in as a position-only rise, so a
+ * slow/blocked/no-JS load still shows full content immediately, just without
+ * the entrance motion. MotionConfig reducedMotion="user" strips the
+ * translateY movement entirely for reduced-motion users.
  */
 
 const list = {
@@ -21,10 +22,15 @@ const list = {
   },
 };
 
+// Position-only (no opacity): Motion applies the "hidden" state as an inline
+// style in the server-rendered HTML, before any JS has run. Animating opacity
+// there would mean a slow/blocked/no-JS load leaves the résumé link and
+// social links permanently invisible — the exact bug the [data-reveal] system
+// elsewhere in the app was deliberately built to avoid (see globals.css).
+// Content stays fully visible from first paint; only the rise is deferred.
 const item = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { y: 18 },
   show: {
-    opacity: 1,
     y: 0,
     transition: { type: "spring" as const, stiffness: 220, damping: 26 },
   },

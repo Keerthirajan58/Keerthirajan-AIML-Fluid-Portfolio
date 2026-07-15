@@ -38,6 +38,13 @@ export function SmoothScroll() {
       e.preventDefault();
       lenis.scrollTo(target, { offset: HEADER_OFFSET });
       history.pushState(null, "", url.hash);
+      // Native in-page anchor navigation moves focus to the target, not just
+      // the viewport — intercepting the click for smooth-scroll must not lose
+      // that. preventScroll avoids fighting Lenis's own animated scroll with
+      // the browser's instant scroll-into-view-on-focus. Nav targets are
+      // <section> landmarks with tabIndex={-1} (see ui/Section.tsx) so
+      // they're valid focus targets despite not being interactive elements.
+      target.focus({ preventScroll: true });
     };
     document.addEventListener("click", onClick);
 
