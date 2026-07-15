@@ -43,3 +43,31 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Scroll-reveal initial state. Deliberately narrow: only applies when
+ * (a) JS is running (`.js` set by the inline script in layout.tsx) and
+ * (b) the user hasn't asked for reduced motion. No-JS visitors, bots, and
+ * reduced-motion users always see content — GSAP's ScrollFX animates these
+ * back in (autoAlpha handles visibility) for everyone else.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+  }
+
+  /* Hero h1 entrance: transform-only so the text is painted from the first
+     frame (LCP-safe) and runs pre-hydration as plain CSS. */
+  .js .hero-rise {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes hero-rise {
+    from {
+      transform: translateY(26px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}

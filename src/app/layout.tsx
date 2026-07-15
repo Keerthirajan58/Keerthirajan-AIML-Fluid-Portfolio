@@ -3,6 +3,7 @@ import { Unbounded, Inter } from "next/font/google";
 import { profile } from "@/content/data";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.css";
 
 const unbounded = Unbounded({
@@ -31,6 +32,15 @@ export default function RootLayout({
       className={`${unbounded.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-ink">
+        {/* Marks JS availability before first paint of body content, so the
+            [data-reveal] hide-then-animate CSS only ever applies when the
+            reveal animations can actually run. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("js")`,
+          }}
+        />
+        <SmoothScroll />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-crimson focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
