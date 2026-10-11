@@ -1,6 +1,6 @@
 # Keerthirajan Senthilkumar — Portfolio
 
-Personal portfolio built with Next.js (App Router), TypeScript and Tailwind CSS v4. The "Clear Air" design uses a CSS light field behind white content sheets, Unbounded and Inter type, CSS scroll-driven animation, Lenis wheel smoothing on desktop, and Motion for one small hover effect. There is no WebGL. Webflow content has a validated local fallback; the Formspree contact form appears only when configured.
+Personal portfolio built with Next.js (App Router), TypeScript and Tailwind CSS v4. The "Clear Air" design floats glass panels over a living background: a soft light field plus a 2-D canvas loss landscape that real SGD, momentum and Adam "bubbles" descend, one test function per section. Unbounded and Inter type, CSS scroll-driven animation, Lenis wheel smoothing on desktop, Motion for one small hover effect; no WebGL. Webflow content has a validated local fallback; the contact popup posts to Formspree when configured and otherwise drafts an email.
 
 
 ## Local development
