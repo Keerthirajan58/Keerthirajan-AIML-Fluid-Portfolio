@@ -2,13 +2,9 @@ import Image from "next/image";
 import { localContent, type PortfolioContent } from "@/content/repository";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { ArrowUpRightIcon } from "@/components/ui/icons";
-import dynamic from "next/dynamic";
-import { formEndpoint } from "@/lib/contact";
+import { ContactLauncher } from "@/components/ContactLauncher";
+import { findPublicImage } from "@/lib/imageSize";
 
-// Only downloaded (with its validation library) when a Formspree ID is configured.
-const ContactForm = dynamic(() =>
-  import("@/components/ContactForm").then((m) => m.ContactForm),
-);
 export function Contact({
   content = localContent,
 }: {
@@ -16,7 +12,8 @@ export function Contact({
 }) {
   const { profile, contact } = content;
   const email = contact.emails[0];
-  const formId = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID;
+  // A dedicated contact portrait wins when one is present in /public/images.
+  const photo = findPublicImage("images/contact-profile") ?? profile.photo;
   return (
     <section
       id="contact"
@@ -37,20 +34,28 @@ export function Contact({
           {profile.location}, open to relocation.
         </p>
         <div className="contact-actions">
-          <a
-            href={"mailto:" + email}
+          <ContactLauncher
+            email={email}
+            formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID}
             className="button button-primary"
-            aria-label="Say hello — Send an email"
           >
             Say hello <ArrowUpRightIcon />
-          </a>
+          </ContactLauncher>
           <a className="button button-secondary" href={contact.resumeUrl}>
             View résumé <ArrowUpRightIcon />
           </a>
         </div>
-        <div className="contact-card">
+        <div className="contact-card glass">
           <div className="contact-person">
-            <Image src={profile.photo} width={96} height={96} alt="" />
+            <span className="contact-avatar">
+              <Image
+                src={photo}
+                width={112}
+                height={112}
+                sizes="160px"
+                alt=""
+              />
+            </span>
             <span>
               <a className="contact-email" href={"mailto:" + email}>
                 {email}
@@ -60,12 +65,6 @@ export function Contact({
           </div>
           <SocialLinks contact={contact} />
         </div>
-        {formEndpoint(formId) && (
-          <div className="contact-message">
-            <h3>Prefer to leave a message?</h3>
-            <ContactForm formId={formId} email={email} />
-          </div>
-        )}
       </div>
     </section>
   );

@@ -1,4 +1,6 @@
+import { Fragment, type CSSProperties } from "react";
 import { localContent, type PortfolioContent } from "@/content/repository";
+import { heroSentence, heroTokens } from "@/content/heroTokens";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import {
   AppleIcon,
@@ -26,9 +28,39 @@ export function Hero({
           <span>{first}</span> <span>{rest.join(" ")}</span>
         </h1>
         <p className="hero-intro">AIML + Software Engineering</p>
-        <p className="hero-description">
-          I build machine-learning systems, evaluate LLMs, and ship the
-          full-stack software around them.
+        {/* Decodes token by token (CSS only, so it runs before hydration and
+            is static under reduced motion). Hover a token for alternatives. */}
+        <p className="hero-description token-stream">
+          <span className="sr-only">{heroSentence}</span>
+          {heroTokens.map((t, i) => (
+            <Fragment key={t.text + i}>
+              <span
+                className="tok"
+                style={{ "--i": i } as CSSProperties}
+                aria-hidden="true"
+              >
+                {t.text}
+                <span className="tok-probs">
+                  <span className="tok-probs-title">Next-token candidates</span>
+                  {t.alts.map(([word, p], j) => (
+                    <span
+                      className="tok-row"
+                      data-pick={j === 0 || undefined}
+                      key={word}
+                    >
+                      <span>{word}</span>
+                      <span>{p.toFixed(2)}</span>
+                      <span className="tok-bar">
+                        <i style={{ width: `${p * 100}%` }} />
+                      </span>
+                    </span>
+                  ))}
+                  <span className="tok-probs-note">Illustrative</span>
+                </span>
+              </span>{" "}
+            </Fragment>
+          ))}
+          <span className="tok-caret" aria-hidden="true" />
         </p>
         <ul className="hero-facts">
           <li>
@@ -38,13 +70,13 @@ export function Hero({
             Apple AIML Intern
           </li>
           <li>
-            <span className="fact-icon">
+            <span className="fact-icon fact-school">
               <GraduationIcon />
             </span>
             MS CS · GWU 2026
           </li>
           <li>
-            <span className="fact-icon">
+            <span className="fact-icon fact-place">
               <MapPinIcon />
             </span>
             {profile.location}

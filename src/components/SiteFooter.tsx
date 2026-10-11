@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-inner shell">
         <Link href="/" className="wordmark" aria-label="KS. — Back home">
-          <BrandMark />
+          <BrandMark idPrefix="ks-foot" />
         </Link>
         <p>
           © {new Date().getFullYear()} {profile.name}. All rights reserved.

@@ -1,14 +1,20 @@
 "use client";
-import { useRef, type ReactNode } from "react";
+import { useRef, type CSSProperties, type ReactNode } from "react";
 import { useMotionEnabled } from "@/components/motion/useMotionEnabled";
 
-/** Pointer-only surface depth; no links, focus targets, or layout geometry move. */
+/**
+ * Pointer-only surface depth: a slight tilt, an iridescent sheen and a
+ * glowing edge that follow the cursor. No links, focus targets or layout
+ * geometry move.
+ */
 export function DepthCard({
   children,
   className = "",
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: CSSProperties;
 }) {
   const ref = useRef<HTMLElement>(null);
   const enabled = useMotionEnabled();
@@ -22,6 +28,7 @@ export function DepthCard({
   return (
     <article
       ref={ref}
+      style={style}
       className={`depth-card ${className}`}
       onPointerMove={(e) => {
         if (!enabled || e.pointerType === "touch") return;
@@ -37,6 +44,7 @@ export function DepthCard({
       onPointerLeave={reset}
       onPointerCancel={reset}
     >
+      <span className="depth-edge" aria-hidden="true" />
       {children}
     </article>
   );

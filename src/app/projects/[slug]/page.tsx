@@ -8,6 +8,7 @@ import {
   getCaseStudySections,
 } from "@/lib/projects";
 import { ProjectGallery } from "@/components/ProjectGallery";
+import { getImageSize } from "@/lib/imageSize";
 import {
   ArrowLeftIcon,
   ArrowUpRightIcon,
@@ -125,8 +126,8 @@ export default async function ProjectPage({
           </Link>
         )}
       </header>
-      <div className="sheet case-sheet">
-        <div className="case-body shell">
+      <div className="case-sheet shell">
+        <div className="case-body glass">
           {sections.map((s) => (
             <section key={s.heading} className="reveal">
               <h2>{s.heading}</h2>
@@ -167,10 +168,13 @@ export default async function ProjectPage({
             </section>
           ))}
         </div>
-        <div className="case-gallery shell">
+        <div className="case-gallery">
           <h2 className="subheading">A closer look</h2>
           <ProjectGallery
-            images={[p.gallery.cover, ...p.gallery.slides]}
+            images={[p.gallery.cover, ...p.gallery.slides].map((src) => ({
+              src,
+              ...getImageSize(src),
+            }))}
             title={p.title}
           />
           <Link href="/#projects" className="back-link">

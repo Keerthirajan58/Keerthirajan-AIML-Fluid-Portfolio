@@ -231,3 +231,62 @@ export function ArrowLeftIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function PauseIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} fill="currentColor">
+      <rect x="6.5" y="5" width="3.5" height="14" rx="1.2" />
+      <rect x="14" y="5" width="3.5" height="14" rx="1.2" />
+    </svg>
+  );
+}
+
+export function PlayIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} fill="currentColor">
+      <path d="M8 5.6v12.8c0 .8.9 1.3 1.6.9l10-6.4a1 1 0 0 0 0-1.8l-10-6.4C8.9 4.3 8 4.8 8 5.6Z" />
+    </svg>
+  );
+}
+
+export function SparkIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} fill="currentColor">
+      <path d="M12 2.5c.5 4.7 2.3 6.5 7 7-4.7.5-6.5 2.3-7 7-.5-4.7-2.3-6.5-7-7 4.7-.5 6.5-2.3 7-7Z" />
+    </svg>
+  );
+}
+
+export function SendIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path
+        d="m4 12 16-7-6 16-3-7-7-2Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function CopyIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <rect
+        x="8"
+        y="8"
+        width="12"
+        height="12"
+        rx="2.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      />
+      <path
+        d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}

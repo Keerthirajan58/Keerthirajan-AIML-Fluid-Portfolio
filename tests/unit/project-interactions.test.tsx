@@ -54,11 +54,21 @@ describe("project discovery", () => {
       const expected = allWork.filter((p) =>
         matchesProjectFilter(p.filters, filter.id),
       );
+      // Filtered-out cards stay mounted (so they can animate out) but are
+      // inert and hidden from assistive tech.
       expect(
-        Array.from(document.querySelectorAll(".project-card")).map((el) =>
-          el.getAttribute("data-project"),
-        ),
+        Array.from(
+          document.querySelectorAll(
+            ".project-slot:not([data-hidden]) .project-card",
+          ),
+        ).map((el) => el.getAttribute("data-project")),
       ).toEqual(expected.map((p) => p.slug));
+      document
+        .querySelectorAll(".project-slot[data-hidden]")
+        .forEach((slot) => {
+          expect(slot).toHaveAttribute("inert");
+          expect(slot).toHaveAttribute("aria-hidden", "true");
+        });
       expect(screen.getByRole("status")).toHaveTextContent(
         `${expected.length} projects`,
       );
@@ -95,7 +105,7 @@ describe("project discovery", () => {
   });
 });
 describe("experience tracker", () => {
-  it("tracks the nearest role on scroll/resize, responds instantly to selection, and cleans up", async () => {
+  it("marks the role at the reading line, fills the progress line, and cleans up", () => {
     const callbacks: FrameRequestCallback[] = [];
     vi.stubGlobal(
       "requestAnimationFrame",
@@ -107,44 +117,50 @@ describe("experience tracker", () => {
     vi.stubGlobal("cancelAnimationFrame", vi.fn());
     const remove = vi.spyOn(window, "removeEventListener");
     const { unmount } = render(<Experience />);
-    const cards = Array.from(
-      document.querySelectorAll<HTMLElement>(".experience-card"),
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>(".timeline-item"),
     );
-    cards.forEach((card, i) => {
-      card.getBoundingClientRect = () =>
-        ({ top: i === 1 ? 100 : 2000, height: 300 }) as DOMRect;
-    });
+    const place = (active: number) =>
+      items.forEach((item, i) => {
+        const top = active === i ? 100 : i < active ? -1000 : 2000;
+        item.getBoundingClientRect = () =>
+          ({ top, bottom: top + 300, height: 300 }) as DOMRect;
+      });
+    const journey = document.querySelector<HTMLElement>(".experience-journey")!;
+    journey.getBoundingClientRect = () =>
+      ({ top: -200, bottom: 1000, height: 1200 }) as DOMRect;
+    place(1);
     act(() => callbacks.shift()?.(0));
-    const nav = screen.getByRole("navigation", { name: "Experience timeline" });
-    expect(within(nav).getByRole("link", { name: /TCS/ })).toHaveAttribute(
-      "aria-current",
-      "step",
-    );
-    await userEvent.click(within(nav).getByRole("link", { name: /Apple/ }));
-    expect(within(nav).getByRole("link", { name: /Apple/ })).toHaveAttribute(
-      "aria-current",
-      "step",
-    );
+    expect(items[1]).toHaveAttribute("data-active");
+    expect(items[0]).toHaveAttribute("data-reached");
+    expect(items[2]).not.toHaveAttribute("data-reached");
+    expect(
+      Number(journey.style.getPropertyValue("--progress")),
+    ).toBeGreaterThan(0);
+    place(2);
     fireEvent.scroll(window);
     act(() => callbacks.shift()?.(0));
-    expect(within(nav).getByRole("link", { name: /TCS/ })).toHaveAttribute(
-      "aria-current",
-      "step",
-    );
+    expect(items[2]).toHaveAttribute("data-active");
+    expect(items[1]).not.toHaveAttribute("data-active");
     fireEvent.resize(window);
     act(() => callbacks.shift()?.(0));
-    expect(within(nav).getByRole("link", { name: /TCS/ })).toHaveAttribute(
-      "aria-current",
-      "step",
-    );
+    expect(items[2]).toHaveAttribute("data-active");
     unmount();
     expect(remove).toHaveBeenCalledWith("scroll", expect.any(Function));
     expect(remove).toHaveBeenCalledWith("resize", expect.any(Function));
   });
+  it("bolds known tools inside role bullets without changing the text", () => {
+    render(<Experience />);
+    const bullet = screen.getByText(/Built and evaluated AIML pipelines/);
+    expect(within(bullet).getByText("PyTorch").tagName).toBe("STRONG");
+    expect(bullet).toHaveTextContent(
+      "Built and evaluated AIML pipelines using PyTorch, Hugging Face Transformers, LoRA/PEFT",
+    );
+  });
   it("supports a new company mark and an empty timeline without exceptions", () => {
     render(
       <>
-        <ExperienceJourney steps={[]}>No roles</ExperienceJourney>
+        <ExperienceJourney>No roles</ExperienceJourney>
         <CompanyMark company="New company" />
       </>,
     );
@@ -153,20 +169,39 @@ describe("experience tracker", () => {
   });
 });
 describe("contact availability", () => {
-  it("only renders a message form when a valid endpoint is configured", () => {
+  it("opens the contact form from Say hello, posting to Formspree when configured", async () => {
     vi.stubEnv("NEXT_PUBLIC_FORMSPREE_FORM_ID", "abcdefgh");
     render(<Contact />);
+    expect(document.querySelector("form")).toBeNull();
+    const hello = screen.getByRole("link", { name: /Say hello/ });
+    expect(hello).toHaveAttribute("href", expect.stringMatching(/^mailto:/));
+    await userEvent.click(hello);
     expect(screen.getByRole("button", { name: /Send message/ })).toBeVisible();
     expect(document.querySelector("form")).toHaveAttribute(
       "action",
       "https://formspree.io/f/abcdefgh",
     );
   });
-  it("keeps the standalone form's email fallback safe", () => {
-    render(<ContactForm email="test@example.com" />);
-    expect(screen.getByRole("link", { name: /Send an email/ })).toHaveAttribute(
-      "href",
-      "mailto:test@example.com",
+  it("hands the drafted message to the mail app when no form service is set", async () => {
+    const openMail = vi.fn();
+    render(<ContactForm email="test@example.com" openMail={openMail} />);
+    const user = userEvent.setup();
+    await user.click(screen.getByLabelText("Collaboration"));
+    await user.type(screen.getByLabelText("name"), "Test Person");
+    await user.type(screen.getByLabelText("email"), "test@example.com");
+    await user.type(
+      screen.getByLabelText("message"),
+      "This is a synthetic test message.",
+    );
+    await user.click(screen.getByRole("button", { name: /Send message/ }));
+    expect(openMail).toHaveBeenCalledOnce();
+    const href = openMail.mock.calls[0][0] as string;
+    expect(href).toMatch(/^mailto:test@example\.com\?subject=/);
+    expect(decodeURIComponent(href)).toContain(
+      "Collaboration: hello from Test Person",
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "email app should open",
     );
   });
 });

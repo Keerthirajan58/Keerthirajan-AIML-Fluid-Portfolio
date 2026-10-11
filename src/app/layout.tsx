@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { MotionFoundation } from "@/components/motion/MotionFoundation";
 import { Atmosphere } from "@/components/scene/Atmosphere";
 import { RouteArrival } from "@/components/motion/RouteArrival";
+import { AnchorGlide } from "@/components/motion/AnchorGlide";
 import { loadContent } from "@/content/load";
 import "./globals.css";
 
@@ -64,6 +65,7 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <MotionFoundation />
+        <AnchorGlide />
         <Atmosphere />
         <RouteArrival />
         <a

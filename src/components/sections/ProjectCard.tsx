@@ -1,16 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProjectEntry, LeadershipProjectEntry } from "@/content/data";
-import { ArrowUpRightIcon, AwardIcon, GitHubIcon } from "@/components/ui/icons";
+import type { ImageDimensions } from "@/lib/imageSize";
+import {
+  ArrowUpRightIcon,
+  AwardIcon,
+  GitHubIcon,
+  SparkIcon,
+} from "@/components/ui/icons";
 import { ProjectNotes } from "@/components/ProjectNotes";
 
 export function ProjectCard({
   project: p,
   index,
+  media,
   leadership,
 }: {
   project: ProjectEntry;
   index: number;
+  /** Intrinsic size of the cover, so the frame keeps the photo's own shape. */
+  media: ImageDimensions;
   leadership?: LeadershipProjectEntry;
 }) {
   const route = p.gallery ? `/projects/${p.slug}` : undefined;
@@ -21,7 +30,7 @@ export function ProjectCard({
           src={p.gallery.cover}
           alt={p.title + " preview"}
           fill
-          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+          sizes="(max-width: 599px) 100vw, (max-width: 959px) 50vw, 33vw"
           className="object-cover"
         />
       ) : (
@@ -51,28 +60,53 @@ export function ProjectCard({
       )}
     </>
   );
+  const frame = { aspectRatio: `${media.width} / ${media.height}` };
   return (
-    <article className="project-card" data-project={p.slug}>
+    <article className="project-card glass" data-project={p.slug}>
       {route ? (
-        <Link href={route} className="project-image" tabIndex={-1}>
+        <Link
+          href={route}
+          className="project-image"
+          style={frame}
+          tabIndex={-1}
+        >
           {preview}
         </Link>
       ) : (
-        <div className="project-image">{preview}</div>
+        <div className="project-image" style={frame}>
+          {preview}
+        </div>
       )}
       <div className="project-content">
         <span className="project-category">{p.badge}</span>
-        <h3>
-          {route ? (
-            <Link href={route}>{p.title}</Link>
-          ) : p.links.github ? (
-            <a href={p.links.github} target="_blank" rel="noopener noreferrer">
-              {p.title}
-            </a>
-          ) : (
-            p.title
+        <div className="project-title-row">
+          <h3>
+            {route ? (
+              <Link href={route}>{p.title}</Link>
+            ) : p.links.github ? (
+              <a
+                href={p.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {p.title}
+              </a>
+            ) : (
+              p.title
+            )}
+          </h3>
+          {p.slug === "barterbrain" && (
+            <Link
+              href="/projects/barterbrain-nvc"
+              className="project-next-chapter"
+              aria-label="NVC finalist: BarterBrAIn — From hackathon to startup"
+            >
+              <SparkIcon />
+              NVC finalist
+              <ArrowUpRightIcon />
+            </Link>
           )}
-        </h3>
+        </div>
         <p>{p.description}</p>
         <ul className="tag-list">
           {p.tags.map((t) => (
@@ -98,16 +132,6 @@ export function ProjectCard({
             <ArrowUpRightIcon />
           </Link>
         ) : null}
-        {p.slug === "barterbrain" && (
-          <Link
-            href="/projects/barterbrain-nvc"
-            className="project-next-chapter"
-            aria-label="NVC finalist: BarterBrAIn — From hackathon to startup"
-          >
-            NVC finalist
-            <ArrowUpRightIcon />
-          </Link>
-        )}
         {(leadership || p.legacyDetailsNote) && (
           <ProjectNotes title={p.title}>
             {leadership && (

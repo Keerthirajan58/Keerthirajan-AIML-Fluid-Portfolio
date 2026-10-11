@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Hero } from "@/components/sections/Hero";
-import { Highlights } from "@/components/sections/Highlights";
+import { heroSentence } from "@/content/heroTokens";
 import { About } from "@/components/sections/About";
 import { Experience } from "@/components/sections/Experience";
 import { Projects } from "@/components/sections/Projects";
@@ -40,17 +40,15 @@ describe("readable portfolio content", () => {
       localContent.contact.social.leetcode,
     );
   });
-  it("links each highlight to the case study that proves it", () => {
-    render(<Highlights />);
-    const links = screen.getAllByRole("link");
-    expect(links.map((l) => l.getAttribute("href"))).toEqual([
-      "/projects/siri-core-modeling",
-      "/projects/barterbrain",
-      "/projects/barterbrain-nvc",
-    ]);
-    expect(screen.getByText("Siri Core Modeling")).toBeVisible();
-    expect(screen.getByText("Hackathon winner")).toBeVisible();
-    expect(screen.getByText("Top 5 finalist")).toBeVisible();
+  it("decodes the hero line as tokens while screen readers get one sentence", () => {
+    render(<Hero />);
+    expect(screen.getByText(heroSentence)).toHaveClass("sr-only");
+    const tokens = document.querySelectorAll(".token-stream .tok");
+    expect(tokens.length).toBeGreaterThan(5);
+    tokens.forEach((t) => expect(t).toHaveAttribute("aria-hidden", "true"));
+    expect(document.querySelector(".tok-probs-note")).toHaveTextContent(
+      "Illustrative",
+    );
   });
   it("keeps education exclusively in About with visible achievements", () => {
     render(
@@ -82,9 +80,9 @@ describe("readable portfolio content", () => {
       </>,
     );
     expect(document.querySelector("#experience details")).toBeNull();
-    expect(
-      screen.getByRole("navigation", { name: "Experience timeline" }),
-    ).toBeVisible();
+    expect(document.querySelectorAll(".timeline-item")).toHaveLength(
+      localContent.experience.length,
+    );
     const opener = screen.getByRole("button", {
       name: "Project notes: MoodBites",
     });
@@ -125,18 +123,25 @@ describe("readable portfolio content", () => {
         .closest(".project-card"),
     ).not.toBeNull();
   });
-  it("provides a controllable marquee and all skill groups", async () => {
+  it("lists every skill and lets each area bring its own skills forward", async () => {
     render(<Skills />);
-    for (const group of localContent.skills)
-      expect(
-        screen.getByRole("heading", { name: group.category }),
-      ).toBeVisible();
+    const total = new Set(localContent.skills.flatMap((g) => g.skills)).size;
+    expect(document.querySelectorAll(".skill-bubble")).toHaveLength(total);
+    const group = localContent.skills[1];
     await userEvent.click(
-      screen.getByRole("button", { name: /Pause technology/ }),
+      screen.getByRole("button", { name: new RegExp(group.category) }),
     );
     expect(
-      screen.getByRole("button", { name: /Play technology/ }),
+      screen.getByRole("button", { name: new RegExp(group.category) }),
     ).toHaveAttribute("aria-pressed", "true");
+    const lit = Array.from(
+      document.querySelectorAll(".skill-bubble:not([data-dim])"),
+    ).map((el) => el.firstChild?.textContent);
+    expect(lit).toEqual(group.skills);
+    // Evidence comes from real stacks: PyTorch appears in Apple and project tags.
+    const evidence = screen.getAllByText(/used in .*Apple/);
+    expect(evidence.length).toBeGreaterThan(0);
+    evidence.forEach((el) => expect(el).toHaveClass("sr-only"));
   });
   it("renders credential cards with safe external targets", () => {
     render(<Credentials />);
@@ -171,7 +176,7 @@ describe("readable portfolio content", () => {
       </>,
     );
     expect(screen.getByText(/All rights reserved/)).toBeVisible();
-    expect(screen.getByRole("link", { name: /Send an email/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Say hello/ })).toHaveAttribute(
       "href",
       "mailto:" + localContent.contact.emails[0],
     );
@@ -222,13 +227,23 @@ describe("navigation controls", () => {
   });
 });
 describe("ordered gallery", () => {
-  const images = ["/images/a.jpg", "/images/b.jpg", "/images/c.jpg"];
+  const images = [
+    { src: "/images/a.jpg", width: 1600, height: 1000 },
+    { src: "/images/b.jpg", width: 900, height: 1200 },
+    { src: "/images/c.jpg", width: 1200, height: 1200 },
+  ];
   it("preserves DOM order, handles next/previous/keyboard and thumbnails", async () => {
     render(<ProjectGallery images={images} title="Demo" />);
     const slides = document.querySelectorAll(".gallery-slide img");
     expect(Array.from(slides).map((el) => el.getAttribute("src"))).toEqual(
-      images,
+      images.map((i) => i.src),
     );
+    // Each slide keeps its own photo shape.
+    expect(
+      (
+        document.querySelectorAll(".gallery-slide")[1] as HTMLElement
+      ).style.getPropertyValue("--ratio"),
+    ).toBe("0.7500");
     await userEvent.click(screen.getByRole("button", { name: "Next image" }));
     expect(
       screen.getByRole("button", { name: "Show image 2" }),
@@ -252,16 +267,25 @@ describe("ordered gallery", () => {
     const opener = screen.getByRole("button", { name: "Open image 2" });
     await userEvent.click(opener);
     const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByRole("img")).toHaveAttribute("src", images[1]);
+    expect(within(dialog).getByRole("img")).toHaveAttribute(
+      "src",
+      images[1].src,
+    );
     await userEvent.click(
       within(dialog).getByRole("button", { name: "Next full image" }),
     );
-    expect(within(dialog).getByRole("img")).toHaveAttribute("src", images[2]);
+    expect(within(dialog).getByRole("img")).toHaveAttribute(
+      "src",
+      images[2].src,
+    );
     fireEvent.keyDown(dialog, { key: "ArrowLeft" });
     await userEvent.click(
       within(dialog).getByRole("button", { name: "Previous full image" }),
     );
-    expect(within(dialog).getByRole("img")).toHaveAttribute("src", images[0]);
+    expect(within(dialog).getByRole("img")).toHaveAttribute(
+      "src",
+      images[0].src,
+    );
     await userEvent.click(
       within(dialog).getByRole("button", { name: "Close image viewer" }),
     );
@@ -309,7 +333,8 @@ describe("contact delivery states", () => {
       expect(screen.getByRole("status")).toHaveTextContent("has been sent"),
     );
     expect(fetcher).toHaveBeenCalledOnce();
-    expect(screen.getByLabelText("name")).toHaveValue("");
+    // The sent state replaces the form with a confirmation.
+    expect(document.querySelector("form")).toBeNull();
   });
   it.each([false, true])(
     "retains entered text on delivery error (network=%s)",

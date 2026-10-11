@@ -1,39 +1,30 @@
 "use client";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
-export function ExperienceJourney({
-  steps,
-  children,
-}: {
-  steps: { company: string; dates: string; mark: ReactNode }[];
-  children: ReactNode;
-}) {
-  const [active, setActive] = useState(0);
+/**
+ * Drives the experience timeline: the crimson line fills with reading
+ * progress, and the role crossing the middle of the screen becomes active.
+ * Writes attributes/CSS variables directly, so scrolling never re-renders.
+ */
+export function ExperienceJourney({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let frame = 0;
     const update = () => {
       frame = 0;
-      const cards =
-        root.current?.querySelectorAll<HTMLElement>(".experience-card");
-      if (!cards?.length) return;
+      const el = root.current;
+      if (!el) return;
+      const items = el.querySelectorAll<HTMLElement>(".timeline-item");
+      if (!items.length) return;
+      const readingLine = window.innerHeight * 0.5;
       let nearest = 0,
         distance = Infinity;
-      cards.forEach((card, index) => {
-        const box = card.getBoundingClientRect();
-        // Select the card containing the reading line, or the nearest edge
-        // between cards. Measuring title positions misidentifies short cards
-        // after native scroll-padding / scroll-margin offsets are applied.
-        const readingLine = window.innerHeight * 0.5;
+      items.forEach((item, index) => {
+        const box = item.getBoundingClientRect();
+        // Distance from the reading line to the item's bounds (0 inside it).
         const next = Math.max(
           box.top - readingLine,
-          readingLine - (box.top + box.height),
+          readingLine - box.bottom,
           0,
         );
         if (next < distance) {
@@ -41,7 +32,16 @@ export function ExperienceJourney({
           nearest = index;
         }
       });
-      setActive(nearest);
+      items.forEach((item, index) => {
+        item.toggleAttribute("data-active", index === nearest);
+        item.toggleAttribute("data-reached", index <= nearest);
+      });
+      const box = el.getBoundingClientRect();
+      const progress = Math.min(
+        1,
+        Math.max(0, (readingLine - box.top) / Math.max(1, box.height)),
+      );
+      el.style.setProperty("--progress", progress.toFixed(4));
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -56,36 +56,7 @@ export function ExperienceJourney({
     };
   }, []);
   return (
-    <div
-      className="experience-journey"
-      ref={root}
-      style={
-        {
-          "--journey-progress":
-            steps.length > 1 ? active / (steps.length - 1) : 0,
-        } as CSSProperties
-      }
-    >
-      <nav className="journey-tracker" aria-label="Experience timeline">
-        <div className="journey-stops">
-          {steps.map((step, index) => (
-            <a
-              href={`#role-${index}`}
-              key={step.company}
-              aria-current={active === index ? "step" : undefined}
-              onClick={() => {
-                setActive(index);
-              }}
-            >
-              {step.mark}
-              <span>
-                <strong>{step.company}</strong>
-                <small>{step.dates}</small>
-              </span>
-            </a>
-          ))}
-        </div>
-      </nav>
+    <div className="experience-journey" ref={root}>
       {children}
     </div>
   );

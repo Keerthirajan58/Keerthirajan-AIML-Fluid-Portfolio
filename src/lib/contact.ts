@@ -21,3 +21,19 @@ export function formEndpoint(id?: string) {
     ? "https://formspree.io/f/" + id
     : null;
 }
+
+export const contactTopics = [
+  "Job opportunity",
+  "Collaboration",
+  "Just saying hi",
+] as const;
+
+/** Without a form service, hand the drafted message to the visitor's mail app. */
+export function mailtoHref(
+  to: string,
+  v: { name: string; email: string; message: string; topic?: string },
+) {
+  const subject = `${v.topic ? `${v.topic}: ` : ""}hello from ${v.name}`;
+  const body = `${v.message}\n\n${v.name} (${v.email})`;
+  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}

@@ -1,8 +1,15 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navigation } from "@/lib/navigation";
+import { scrollToSection } from "@/lib/smoothScroll";
 import { contact as defaultContact, type ContactInfo } from "@/content/data";
 import { ArrowUpRightIcon } from "./ui/icons";
 import { BrandMark } from "./ui/BrandMark";
@@ -13,9 +20,42 @@ export function SiteHeader({
 }) {
   const path = usePathname(),
     dialog = useRef<HTMLDialogElement>(null),
-    toggle = useRef<HTMLButtonElement>(null);
+    toggle = useRef<HTMLButtonElement>(null),
+    nav = useRef<HTMLElement>(null),
+    hovered = useRef<string | null>(null);
   const [active, setActive] = useState("");
   const pending = useRef<{ id: string; until: number } | null>(null);
+
+  /* Liquid lens: a glass pill that springs under the hovered link and rests
+     on the current section. Positioned with CSS variables, no re-renders. */
+  const placeLens = useCallback(() => {
+    const el = nav.current;
+    if (!el) return;
+    const id = hovered.current ?? (path === "/" ? active : "");
+    const link = id
+      ? el.querySelector<HTMLElement>(`a[data-section="${id}"]`)
+      : null;
+    if (!link) {
+      el.style.setProperty("--lens-o", "0");
+      return;
+    }
+    el.style.setProperty("--lens-x", `${link.offsetLeft}px`);
+    el.style.setProperty("--lens-w", `${link.offsetWidth}px`);
+    el.style.setProperty("--lens-o", "1");
+    if (!el.dataset.ready)
+      requestAnimationFrame(() => {
+        el.dataset.ready = "true";
+      });
+  }, [active, path]);
+  useEffect(placeLens, [placeLens]);
+  useEffect(() => {
+    if (typeof ResizeObserver === "undefined" || !nav.current) return;
+    const observer = new ResizeObserver(() => placeLens());
+    observer.observe(nav.current);
+    void document.fonts?.ready.then(() => placeLens());
+    return () => observer.disconnect();
+  }, [placeLens]);
+
   useEffect(() => {
     if (path !== "/") return;
     let scheduled = false;
@@ -48,32 +88,57 @@ export function SiteHeader({
   const close = () => {
     dialog.current?.close();
   };
-  const choose = (id: string, timestamp: number) => {
-    pending.current = { id, until: timestamp + 1000 };
+  const choose = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    pending.current = { id, until: e.timeStamp + 1400 };
     setActive(id);
+    const inMenu = !!dialog.current?.open;
     close();
+    if (path !== "/" || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    if (!document.getElementById(id)) return;
+    // Glide instead of letting the router jump straight to the anchor.
+    e.preventDefault();
+    if (inMenu) requestAnimationFrame(() => scrollToSection(id));
+    else scrollToSection(id);
   };
   return (
     <header className="site-header">
       <div className="header-pill">
         <Link href="/" className="wordmark" aria-label="KS. — Home">
-          <BrandMark />
+          <BrandMark idPrefix="ks-head" />
         </Link>
-        <nav aria-label="Primary" className="desktop-nav">
+        <nav
+          aria-label="Primary"
+          className="desktop-nav"
+          ref={nav}
+          onMouseLeave={() => {
+            hovered.current = null;
+            placeLens();
+          }}
+        >
+          <span className="nav-lens" aria-hidden="true" />
           {navigation.map((n) => (
             <Link
               key={n.id}
               href={"/#" + n.id}
-              onClick={(e) => choose(n.id, e.timeStamp)}
+              data-section={n.id}
+              onClick={(e) => choose(e, n.id)}
+              onMouseEnter={() => {
+                hovered.current = n.id;
+                placeLens();
+              }}
+              onFocus={() => {
+                hovered.current = n.id;
+                placeLens();
+              }}
+              onBlur={() => {
+                hovered.current = null;
+                placeLens();
+              }}
               aria-current={
                 path === "/" && active === n.id ? "location" : undefined
               }
             >
-              <span className="nav-window">
-                <span className="nav-label" data-label={n.label}>
-                  {n.label}
-                </span>
-              </span>
+              {n.label}
             </Link>
           ))}
         </nav>
@@ -111,7 +176,7 @@ export function SiteHeader({
       >
         <div className="menu-top">
           <span className="wordmark">
-            <BrandMark />
+            <BrandMark idPrefix="ks-menu" />
           </span>
           <button
             className="icon-button"
@@ -126,7 +191,7 @@ export function SiteHeader({
             <Link
               key={n.id}
               href={"/#" + n.id}
-              onClick={(e) => choose(n.id, e.timeStamp)}
+              onClick={(e) => choose(e, n.id)}
             >
               {n.label}
               <ArrowUpRightIcon />

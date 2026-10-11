@@ -1,12 +1,15 @@
 "use client";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { wrapIndex } from "@/lib/navigation";
+export type GalleryImage = { src: string; width: number; height: number };
+
+/** Slides keep each photo's own shape: portrait shots stay portrait. */
 export function ProjectGallery({
   images,
   title,
 }: {
-  images: string[];
+  images: GalleryImage[];
   title: string;
 }) {
   const rail = useRef<HTMLDivElement>(null),
@@ -76,8 +79,16 @@ export function ProjectGallery({
           setActive(index);
         }}
       >
-        {images.map((src, i) => (
-          <figure className="gallery-slide" key={src}>
+        {images.map((img, i) => (
+          <figure
+            className="gallery-slide"
+            key={img.src}
+            style={
+              {
+                "--ratio": (img.width / img.height).toFixed(4),
+              } as CSSProperties
+            }
+          >
             <button
               aria-label={"Open image " + (i + 1)}
               onClick={(e) => {
@@ -87,11 +98,11 @@ export function ProjectGallery({
               }}
             >
               <Image
-                src={src}
+                src={img.src}
                 alt={title + " — image " + (i + 1)}
-                width={1600}
-                height={1000}
-                sizes="(max-width: 767px) 100vw, 80vw"
+                width={img.width}
+                height={img.height}
+                sizes="(max-width: 767px) 90vw, 60vw"
                 className="gallery-image"
               />
             </button>
@@ -100,14 +111,14 @@ export function ProjectGallery({
         ))}
       </div>
       <div className="gallery-thumbs" aria-label="Choose image">
-        {images.map((src, i) => (
+        {images.map((img, i) => (
           <button
-            key={src}
+            key={img.src}
             onClick={() => select(i)}
             aria-label={"Show image " + (i + 1)}
             aria-pressed={active === i}
           >
-            <Image src={src} alt="" width={96} height={64} />
+            <Image src={img.src} alt="" width={96} height={64} />
           </button>
         ))}
       </div>
@@ -138,10 +149,10 @@ export function ProjectGallery({
           </button>
         </div>
         <Image
-          src={images[lightbox]}
+          src={images[lightbox].src}
           alt={title + " — image " + (lightbox + 1)}
-          width={1600}
-          height={1000}
+          width={images[lightbox].width}
+          height={images[lightbox].height}
           sizes="100vw"
           className="lightbox-image"
         />

@@ -7,7 +7,7 @@ import {
   matchesProjectFilter,
 } from "../../src/lib/projectFilters";
 
-test("project filters preserve ordered, equally sized cards and usable actions", async ({
+test("project filters keep order, animate into a non-overlapping masonry, and keep actions usable", async ({
   page,
 }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -25,16 +25,34 @@ test("project filters preserve ordered, equally sized cards and usable actions",
     const expected = allWork.filter((p) =>
       matchesProjectFilter(p.filters, filter.id),
     );
-    await expect(page.locator(".project-card")).toHaveCount(expected.length);
+    const visible = page.locator(
+      ".project-slot:not([data-hidden]) .project-card",
+    );
+    await expect(visible).toHaveCount(expected.length);
     expect(
-      await page
-        .locator(".project-card")
-        .evaluateAll((els) => els.map((el) => el.getAttribute("data-project"))),
+      await visible.evaluateAll((els) =>
+        els.map((el) => el.getAttribute("data-project")),
+      ),
     ).toEqual(expected.map((p) => p.slug));
-    const sizes = await page
-      .locator(".project-card")
-      .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
-    expect(Math.max(...sizes) - Math.min(...sizes)).toBeLessThan(2);
+    // Masonry: photos keep their own shape, and once settled no cards overlap.
+    await expect
+      .poll(() =>
+        visible.evaluateAll((els) => {
+          const boxes = els.map((el) => el.getBoundingClientRect());
+          for (let i = 0; i < boxes.length; i++)
+            for (let j = i + 1; j < boxes.length; j++) {
+              const a = boxes[i],
+                b = boxes[j];
+              if (
+                Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
+                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1
+              )
+                return `${i} overlaps ${j}`;
+            }
+          return "clear";
+        }),
+      )
+      .toBe("clear");
     const boundaries = await page.evaluate(() => ({
       work: document.getElementById("projects")!.getBoundingClientRect().bottom,
       skills: document.getElementById("skills")!.getBoundingClientRect().top,
@@ -82,8 +100,9 @@ test("project notes trap focus, close with Escape, and restore the initiating co
   await expect(trigger).toBeFocused();
 });
 
-test("navigation floats over content and the experience rail follows the role in view", async ({
+test("header floats over content, nav glides to sections, and the timeline follows the role in view", async ({
   page,
+  isMobile,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
@@ -92,21 +111,19 @@ test("navigation floats over content and the experience rail follows the role in
       .locator(".site-header")
       .evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe("rgba(0, 0, 0, 0)");
-  const timeline = page.getByRole("navigation", {
-    name: "Experience timeline",
-  });
-  await timeline.getByRole("link", { name: /TCS/ }).click();
-  await expect(timeline.getByRole("link", { name: /TCS/ })).toHaveAttribute(
-    "aria-current",
-    "step",
-  );
-  await expect(page.locator("#role-1")).toBeInViewport();
+  if (!isMobile) {
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "Experience" })
+      .click();
+    await expect(page).toHaveURL(/#experience$/);
+    await expect(page.locator("#experience h2")).toBeInViewport();
+  }
   await page
     .locator("#role-2")
     .evaluate((el) => el.scrollIntoView({ block: "center" }));
-  await expect(
-    timeline.getByRole("link", { name: /The Sparks Foundation/ }),
-  ).toHaveAttribute("aria-current", "step");
+  await expect(page.locator("#role-2")).toHaveAttribute("data-active", "");
+  await expect(page.locator("#role-0")).toHaveAttribute("data-reached", "");
   const social = page
     .getByRole("link", { name: "LeetCode", exact: true })
     .first();
@@ -131,9 +148,18 @@ test("home retains identity, one education section and copyright", async ({
   await expect(page.locator("footer")).toContainText("All rights reserved");
   await expect(page.locator(".project-card")).toHaveCount(11);
   await page.locator("#contact").scrollIntoViewIfNeeded();
+  const hello = page.getByRole("link", { name: /Say hello/ });
+  await expect(hello).toBeVisible();
+  await hello.click();
+  const dialog = page.getByRole("dialog", { name: "Tell me about it." });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByLabel("name")).toBeFocused();
   await expect(
-    page.getByRole("link", { name: /Say hello — Send an email/ }),
+    dialog.getByRole("button", { name: /Send message/ }),
   ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(hello).toBeFocused();
   expect(errors).toEqual([]);
 });
 test("revised art direction keeps credentials visible and project actions integrated", async ({
@@ -155,9 +181,7 @@ test("revised art direction keeps credentials visible and project actions integr
   await expect(page.locator(".education-card .award-row")).toHaveCount(1);
   await expect(page.locator(".more-projects")).toHaveCount(0);
   await expect(page.locator(".project-placeholder")).toHaveCount(5);
-  await expect(
-    page.getByRole("navigation", { name: "Experience timeline" }),
-  ).toBeVisible();
+  await expect(page.locator(".timeline-item")).toHaveCount(3);
   await expect(
     page.locator(".project-image .project-achievement"),
   ).toContainText("Technica winner");
@@ -328,7 +352,7 @@ test("unknown routes fail safely without a broken redirect", async ({
   await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
 });
 
-test("light field follows a fine pointer and route transitions fail open", async ({
+test("living background boots, follows the pointer, can be paused, and route transitions fail open", async ({
   page,
   isMobile,
 }, testInfo) => {
@@ -336,6 +360,7 @@ test("light field follows a fine pointer and route transitions fail open", async
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
   await expect(page.locator('.atmosphere[data-live="true"]')).toBeAttached();
+  await expect(page.locator(".atmosphere canvas")).toHaveCount(3);
   const glow = page.locator(".glow-pointer");
   const before = await glow.evaluate((el) => getComputedStyle(el).transform);
   await page.mouse.move(120, 160);
@@ -343,12 +368,25 @@ test("light field follows a fine pointer and route transitions fail open", async
   await expect
     .poll(() => glow.evaluate((el) => getComputedStyle(el).transform))
     .not.toBe(before);
+  // The monitor reports a real loss once the landscape renderer is running.
+  const monitor = page.getByRole("complementary", { name: "Training monitor" });
+  await expect(monitor).toBeVisible();
+  await expect
+    .poll(() => monitor.locator(".trainer-loss strong").textContent(), {
+      timeout: 10000,
+    })
+    .not.toBe("…");
+  await monitor
+    .getByRole("button", { name: "Pause background animation" })
+    .click();
+  await expect(
+    monitor.getByRole("button", { name: "Resume background animation" }),
+  ).toHaveAttribute("aria-pressed", "true");
   await page.screenshot({
     path: testInfo.outputPath("hero-live.png"),
     animations: "disabled",
   });
   await expect(page.locator(".cursor-halo")).toHaveCount(0);
-  await expect(page.locator("canvas")).toHaveCount(0);
   await page.evaluate(() => {
     HTMLElement.prototype.animate = () => {
       throw new Error("Synthetic animation failure");
@@ -363,6 +401,7 @@ test("light field follows a fine pointer and route transitions fail open", async
 test("WCAG automated scan on homepage and project", async ({ page }) => {
   for (const path of ["/", "/projects/barterbrain-nvc"]) {
     await page.goto(path);
+    await page.waitForTimeout(2500);
     const result = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
       .options({ rules: { "label-content-name-mismatch": { enabled: true } } })
