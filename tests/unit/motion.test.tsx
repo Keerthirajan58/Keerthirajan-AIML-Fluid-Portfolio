@@ -53,17 +53,6 @@ vi.mock("@/lib/gsap", () => ({
     },
   },
 }));
-vi.mock("@unseenco/taxi", () => ({
-  Transition: class {
-    onEnter(props: { to: HTMLElement; done: () => void }) {
-      void props;
-    }
-    enter({ to }: { to: HTMLElement }) {
-      this.onEnter({ to, done: vi.fn() });
-      return Promise.resolve();
-    }
-  },
-}));
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { ScrollFX } from "@/components/motion/ScrollFX";
 import { RouteArrival } from "@/components/motion/RouteArrival";
