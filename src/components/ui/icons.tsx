@@ -3,6 +3,38 @@ import { type SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
+export function AppleIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} viewBox="4 2 17 21" fill="currentColor">
+      <path d="M16.8 12.8c0-2 1.6-3 1.7-3.1-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.6-1.4 0-2.8.9-3.5 2.1-1.5 2.5-.4 6.2 1 8.2.6 1 1.4 2 2.4 1.9 1-.1 1.4-.6 2.6-.6s1.6.6 2.6.6c1.1 0 1.7-1 2.4-1.9.7-1.1 1.1-2.2 1.1-2.3-.1 0-1.8-.7-1.8-3.4ZM14.7 6.8c.5-.7.9-1.6.8-2.5-.8 0-1.8.6-2.4 1.2-.5.6-1 1.5-.9 2.4.9.1 1.9-.5 2.5-1.1Z" />
+    </svg>
+  );
+}
+export function GraduationIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+    >
+      <path d="m2 9 10-5 10 5-10 5L2 9Zm4 2v6c4 3 8 3 12 0v-6M22 9v8" />
+    </svg>
+  );
+}
+export function AwardIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+    >
+      <path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v5m-5 3h10l-2-3H9l-2 3Z" />
+    </svg>
+  );
+}
+
 const base = (props: IconProps) => ({
   width: 20,
   height: 20,
@@ -32,11 +64,79 @@ export function LinkedInIcon(props: IconProps) {
   );
 }
 
+/** LeetCode brand glyph from Simple Icons (CC0). */
 export function LeetCodeIcon(props: IconProps) {
   return (
     <svg {...base(props)} fill="currentColor">
-      <path d="M13.48 2.5a1.3 1.3 0 0 1 .12 1.72l-.12.13-3.9 3.86 5.1 5.06a1.3 1.3 0 0 1-1.7 1.96l-.13-.11-6.03-5.98a1.3 1.3 0 0 1-.12-1.72l.12-.14 4.83-4.79a1.3 1.3 0 0 1 1.83.02Zm4.7 12.02a1.3 1.3 0 0 1 .12 2.58l-.13.01h-5.35a1.3 1.3 0 0 1-.12-2.59l.13-.01h5.35Z" />
-      <path d="M11.35 18.08a1.3 1.3 0 0 0 .1 1.72l.05.05 2.02 1.9a1.3 1.3 0 0 0 1.82-1.84l-.1-.1-2.01-1.9a1.3 1.3 0 0 0-1.88.17Z" />
+      <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" />
+    </svg>
+  );
+}
+
+export function CertificateIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 20H4V3h16v9M8 7h8M8 11h4" />
+      <circle cx="17" cy="16" r="3" />
+      <path d="m15 18-1 4 3-1 3 1-1-4" />
+    </svg>
+  );
+}
+export function BookIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 6C8 3 4 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-2-1-6-2-10 1v14M6 8l3 1M6 12l3 1m6-4 3-1m-3 5 3-1" />
+    </svg>
+  );
+}
+export function CodeIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m7 7-5 5 5 5m10-10 5 5-5 5M14 4l-4 16" />
+    </svg>
+  );
+}
+export function BriefcaseIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="7" width="18" height="14" rx="2" />
+      <path d="M8 7V3h8v4M3 12c6 4 12 4 18 0M12 12v5" />
+    </svg>
+  );
+}
+export function PeopleIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <circle cx="9" cy="7" r="3" />
+      <path d="M2 21v-3a7 7 0 0 1 14 0v3m2-17a3 3 0 0 1 0 6m1 3c3 1 3 3 3 6" />
     </svg>
   );
 }
@@ -44,8 +144,21 @@ export function LeetCodeIcon(props: IconProps) {
 export function MailIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" />
-      <path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <rect
+        x="3"
+        y="5"
+        width="18"
+        height="14"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="m4 7 8 6 8-6"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

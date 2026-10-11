@@ -1,59 +1,54 @@
 "use client";
-
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
-
-/** Height of the sticky header — anchor scrolls stop just below it. */
-const HEADER_OFFSET = -72;
-
-/**
- * Initializes Lenis (wheel-smoothing only — touch stays native so mobile keeps
- * platform scroll physics) and keeps ScrollTrigger in sync with it. Renders
- * nothing. Skipped entirely under prefers-reduced-motion: the browser's normal
- * scrolling is the reduced-motion behavior.
- */
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { getAnchorTarget } from "@/lib/navigation";
+import { useMotionEnabled } from "./useMotionEnabled";
 export function SmoothScroll() {
+  const enabled = useMotionEnabled();
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-
-    const lenis = new Lenis({ duration: 1.1 });
-
+    if (!enabled) return;
+    const lenis = new Lenis({
+      lerp: 0.12,
+      smoothWheel: true,
+      syncTouch: false,
+    });
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-
-    // Route same-page anchor clicks through Lenis so they get the same easing
-    // and stop below the sticky header. Links to other pages pass through.
-    const onClick = (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest<HTMLAnchorElement>(
-        'a[href*="#"]',
-      );
-      if (!anchor) return;
-      const url = new URL(anchor.href, location.href);
-      if (url.pathname !== location.pathname || !url.hash) return;
-      const target = document.querySelector<HTMLElement>(url.hash);
+    const click = (e: MouseEvent) => {
+      if (
+        e.defaultPrevented ||
+        e.button !== 0 ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.shiftKey ||
+        e.altKey
+      )
+        return;
+      const link =
+        e.target instanceof Element
+          ? e.target.closest<HTMLAnchorElement>("a[href]")
+          : null;
+      if (!link || link.target === "_blank" || link.hasAttribute("download"))
+        return;
+      const id = getAnchorTarget(link.href, location.href),
+        target = id ? document.getElementById(id) : null;
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target, { offset: HEADER_OFFSET });
-      history.pushState(null, "", url.hash);
-      // Native in-page anchor navigation moves focus to the target, not just
-      // the viewport — intercepting the click for smooth-scroll must not lose
-      // that. preventScroll avoids fighting Lenis's own animated scroll with
-      // the browser's instant scroll-into-view-on-focus. Nav targets are
-      // <section> landmarks with tabIndex={-1} (see ui/Section.tsx) so
-      // they're valid focus targets despite not being interactive elements.
-      target.focus({ preventScroll: true });
+      history.pushState(null, "", link.href);
+      lenis.scrollTo(target, {
+        offset: -88,
+        duration: 0.7,
+        onComplete: () => target.focus({ preventScroll: true }),
+      });
     };
-    document.addEventListener("click", onClick);
-
+    document.addEventListener("click", click);
     return () => {
-      document.removeEventListener("click", onClick);
+      document.removeEventListener("click", click);
       gsap.ticker.remove(tick);
       lenis.destroy();
     };
-  }, []);
-
+  }, [enabled]);
   return null;
 }

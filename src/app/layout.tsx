@@ -1,21 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Unbounded, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { profile, contact } from "@/content/data";
 import { getSiteUrl } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SmoothScroll } from "@/components/motion/SmoothScroll";
-import { ScrollFX } from "@/components/motion/ScrollFX";
+import { MotionFoundation } from "@/components/motion/MotionFoundation";
+import { Atmosphere } from "@/components/scene/Atmosphere";
+import { RouteArrival } from "@/components/motion/RouteArrival";
+import { loadContent } from "@/content/load";
 import "./globals.css";
+import "./editorial.css";
 
-const unbounded = Unbounded({
+const unbounded = localFont({
+  src: "../assets/fonts/Unbounded-Latin-Variable.woff2",
   variable: "--font-unbounded",
-  subsets: ["latin"],
+  preload: false,
+  display: "swap",
 });
 
-const inter = Inter({
+const inter = localFont({
+  src: "../assets/fonts/Inter-Latin-Variable.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
+});
+const instrument = localFont({
+  src: "../assets/fonts/InstrumentSans-Latin-Variable.woff2",
+  variable: "--font-instrument",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -41,42 +51,33 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light",
-  themeColor: "#E23744",
+  colorScheme: "dark",
+  themeColor: "#0b1728",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const content = await loadContent();
   return (
     <html
       lang="en"
-      // The inline script below adds a "js" class pre-hydration; React must
-      // not treat that as a mismatch (same pattern as theme-switcher scripts).
-      suppressHydrationWarning
-      className={`${unbounded.variable} ${inter.variable} h-full antialiased`}
+      className={`${unbounded.variable} ${inter.variable} ${instrument.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-ink">
-        {/* Marks JS availability before first paint of body content, so the
-            [data-reveal] hide-then-animate CSS only ever applies when the
-            reveal animations can actually run. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("js")`,
-          }}
-        />
-        <SmoothScroll />
-        <ScrollFX />
+        <MotionFoundation />
+        <Atmosphere />
+        <RouteArrival />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-crimson focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
         >
           Skip to content
         </a>
-        <SiteHeader />
-        <main id="main" className="flex-1">
+        <SiteHeader contact={content.contact} />
+        <main id="main" tabIndex={-1} className="flex-1">
           {children}
         </main>
         <SiteFooter />

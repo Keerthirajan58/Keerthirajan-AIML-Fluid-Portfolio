@@ -1,34 +1,19 @@
-import { testimonials } from "@/content/data";
+import { localContent, type PortfolioContent } from "@/content/repository";
 import { Section } from "@/components/ui/Section";
-
-export function Testimonials() {
+import { RecommendationCarousel } from "@/components/RecommendationCarousel";
+export function Testimonials({
+  content = localContent,
+}: {
+  content?: PortfolioContent;
+}) {
+  const { testimonials } = content;
   return (
-    <Section id="testimonials" eyebrow="Recommendations" title="What others say">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {testimonials.map((t) => (
-          <figure
-            key={t.name}
-            data-reveal
-            className="flex flex-col rounded-2xl border border-ink/10 bg-surface p-6"
-          >
-            <blockquote className="flex-1 text-sm leading-7 text-ink-muted sm:text-base">
-              <span aria-hidden="true" className="text-crimson">
-                “
-              </span>
-              {t.quote}
-              <span aria-hidden="true" className="text-crimson">
-                ”
-              </span>
-            </blockquote>
-            <figcaption className="mt-5">
-              <p className="font-display text-sm font-semibold text-ink">
-                {t.name}
-              </p>
-              <p className="text-sm text-ink-muted">{t.title}</p>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+    <Section
+      id="testimonials"
+      eyebrow="06 / In good company"
+      title="Trusted by people I've worked with."
+    >
+      <RecommendationCarousel items={testimonials} />
     </Section>
   );
 }

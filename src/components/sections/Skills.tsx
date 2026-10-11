@@ -1,28 +1,46 @@
-import { skills } from "@/content/data";
+import { localContent, type PortfolioContent } from "@/content/repository";
 import { Section } from "@/components/ui/Section";
-import { Tag } from "@/components/ui/Tag";
-
-export function Skills() {
+import { SkillsMarquee } from "@/components/SkillsMarquee";
+import { DepthCard } from "@/components/ui/DepthCard";
+import { CodeIcon } from "@/components/ui/icons";
+export function Skills({
+  content = localContent,
+}: {
+  content?: PortfolioContent;
+}) {
+  const { skills } = content;
   return (
-    <Section id="skills" eyebrow="Skills" title="Tools & technologies">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {skills.map((group) => (
-          <div
-            key={group.category}
-            data-reveal
-            className="rounded-2xl border border-ink/10 bg-surface p-5"
-          >
-            <h3 className="mb-4 font-display text-base font-semibold text-ink">
-              {group.category}
-            </h3>
-            <ul className="flex flex-wrap gap-2">
-              {group.skills.map((skill) => (
-                <li key={skill}>
-                  <Tag>{skill}</Tag>
-                </li>
+    <Section
+      id="skills"
+      eyebrow="04 / The toolkit"
+      title="The right tools. Deeper possibilities."
+    >
+      <SkillsMarquee
+        items={[
+          "PyTorch",
+          "Python",
+          "Gemini",
+          "React",
+          "Firebase",
+          "Flutter",
+          "TypeScript",
+          "RAG",
+        ]}
+      />
+      <div className="skills-grid">
+        {skills.map((group, i) => (
+          <DepthCard key={group.category} className="skill-group">
+            <div className="skill-top">
+              <CodeIcon />
+              <span>0{i + 1}</span>
+            </div>
+            <h3>{group.category}</h3>
+            <ul>
+              {group.skills.map((s) => (
+                <li key={s}>{s}</li>
               ))}
             </ul>
-          </div>
+          </DepthCard>
         ))}
       </div>
     </Section>

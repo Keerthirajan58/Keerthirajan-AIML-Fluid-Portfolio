@@ -1,108 +1,143 @@
 import Image from "next/image";
 import Link from "next/link";
-import { type ProjectEntry } from "@/content/data";
-import { Badge } from "@/components/ui/Badge";
-import { GitHubIcon, ArrowUpRightIcon } from "@/components/ui/icons";
+import type { ProjectEntry, LeadershipProjectEntry } from "@/content/data";
+import {
+  ArrowUpRightIcon,
+  AwardIcon,
+  GitHubIcon,
+  CodeIcon,
+} from "@/components/ui/icons";
+import { ProjectNotes } from "@/components/ProjectNotes";
 
-/** Image card for a project with real screenshots — links to its detail page. */
-export function FeaturedProjectCard({ project }: { project: ProjectEntry }) {
-  return (
-    <Link
-      href={`/projects/${project.slug}`}
-      data-reveal
-      className="group flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-surface transition-[border-color,transform] hover:border-crimson/40 active:scale-[0.99]"
-    >
-      <div className="relative aspect-[4/3] overflow-hidden bg-paper">
-        <Image
-          src={project.gallery!.cover}
-          alt={`${project.title} preview`}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-3">
-          <Badge>{project.badge}</Badge>
-        </div>
-        <h3 className="font-display text-lg font-semibold text-ink">
-          {project.title}
-        </h3>
-        <p className="mt-2 flex-1 text-sm leading-6 text-ink-muted">
-          {project.description}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {project.tags.map((t) => (
-            <span
-              key={t}
-              className="rounded-full bg-paper px-2.5 py-1 text-xs text-ink-muted"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-        <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-crimson">
-          View case study
-          <ArrowUpRightIcon
-            width={16}
-            height={16}
-            className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          />
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-/** Text card for a lighter project (no screenshots) — links out to GitHub. */
-export function GridProjectCard({ project }: { project: ProjectEntry }) {
-  const href = project.links.github;
-  const body = (
+export function ProjectCard({
+  project: p,
+  index,
+  leadership,
+}: {
+  project: ProjectEntry;
+  index: number;
+  leadership?: LeadershipProjectEntry;
+}) {
+  const route = p.gallery ? `/projects/${p.slug}` : undefined;
+  const preview = (
     <>
-      <div className="mb-3">
-        <Badge>{project.badge}</Badge>
-      </div>
-      <h3 className="font-display text-base font-semibold text-ink">
-        {project.title}
-      </h3>
-      <p className="mt-2 flex-1 text-sm leading-6 text-ink-muted">
-        {project.description}
-      </p>
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        {project.tags.map((t) => (
-          <span
-            key={t}
-            className="rounded-full border border-ink/10 px-2.5 py-1 text-xs text-ink-muted"
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-      {href && (
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-crimson">
-          <GitHubIcon width={16} height={16} />
-          View on GitHub
+      {p.gallery ? (
+        <Image
+          src={p.gallery.cover}
+          alt={p.title + " preview"}
+          fill
+          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+          className="object-cover"
+        />
+      ) : (
+        <div
+          className={`project-placeholder placeholder-${index % 3}`}
+          aria-hidden="true"
+        >
+          <CodeIcon />
+          <span>Project visual forthcoming</span>
+          <i />
+          <i />
+          <i />
+        </div>
+      )}
+      <span className="project-number">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      {route && (
+        <span className="project-open">
+          Explore <ArrowUpRightIcon />
+        </span>
+      )}
+      {p.achievement && (
+        <span className="project-achievement">
+          <AwardIcon />
+          {p.achievement.label}
         </span>
       )}
     </>
   );
-
-  const className =
-    "group flex flex-col rounded-2xl border border-ink/10 bg-surface p-5 transition-[border-color,transform] hover:border-crimson/40 active:scale-[0.99]";
-
-  return href ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-reveal
-      className={className}
-    >
-      {body}
-    </a>
-  ) : (
-    <div data-reveal className={className}>
-      {body}
-    </div>
+  return (
+    <article className="project-card" data-project={p.slug}>
+      {route ? (
+        <Link href={route} className="project-image">
+          {preview}
+        </Link>
+      ) : (
+        <div className="project-image">{preview}</div>
+      )}
+      <div className="project-content">
+        <span className="project-category">{p.badge}</span>
+        <h3>
+          {route ? (
+            <Link href={route}>{p.title}</Link>
+          ) : p.links.github ? (
+            <a href={p.links.github} target="_blank" rel="noopener noreferrer">
+              {p.title}
+            </a>
+          ) : (
+            p.title
+          )}
+        </h3>
+        <p>{p.description}</p>
+        <ul className="tag-list">
+          {p.tags.map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="project-actions">
+        {p.links.github ? (
+          <a
+            href={p.links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="project-source"
+          >
+            <GitHubIcon />
+            View on GitHub
+            <ArrowUpRightIcon />
+          </a>
+        ) : route ? (
+          <Link className="project-source" href={route}>
+            Read case study
+            <ArrowUpRightIcon />
+          </Link>
+        ) : null}
+        {p.slug === "barterbrain" && (
+          <Link
+            href="/projects/barterbrain-nvc"
+            className="project-next-chapter"
+            aria-label="NVC finalist: BarterBrAIn — From hackathon to startup"
+          >
+            NVC finalist
+            <ArrowUpRightIcon />
+          </Link>
+        )}
+        {(leadership || p.legacyDetailsNote) && (
+          <ProjectNotes title={p.title}>
+            {leadership && (
+              <>
+                <p className="notes-meta">
+                  {leadership.role} · {leadership.dates}
+                </p>
+                <ul className="result-list">
+                  {leadership.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {p.legacyDetailsNote && (
+              <>
+                <p>{p.legacyDetailsNote.fullDescription}</p>
+                <p className="notes-meta">{p.legacyDetailsNote.techStack}</p>
+                <p>{p.legacyDetailsNote.confidentialityNote}</p>
+              </>
+            )}
+          </ProjectNotes>
+        )}
+      </div>
+    </article>
   );
 }

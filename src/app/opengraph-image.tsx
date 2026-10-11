@@ -14,82 +14,71 @@ export default async function Image() {
   );
 
   return new ImageResponse(
-    (
-      <div
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "80px 96px",
+        background: colors.paper,
+        position: "relative",
+      }}
+    >
+      {/* Static material bands echo the graphite / copper atmosphere. */}
+      <svg
+        width="420"
+        height="420"
+        viewBox="0 0 400 400"
+        style={{ position: "absolute", right: 40, top: 105, opacity: 0.9 }}
+      >
+        <g transform="rotate(-25 200 200)" fill={colors.wine} opacity="0.1">
+          <rect x="110" y="-80" width="50" height="540" rx="25" />
+          <rect x="220" y="-80" width="50" height="540" rx="25" />
+          <rect x="330" y="-80" width="50" height="540" rx="25" />
+        </g>
+      </svg>
+
+      <p
         style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "80px 96px",
-          background: colors.paper,
-          position: "relative",
+          margin: 0,
+          fontSize: 26,
+          fontWeight: 700,
+          letterSpacing: 4,
+          textTransform: "uppercase",
+          color: colors.crimson,
         }}
       >
-        {/* Echo of the hero node-cluster motif — a few static crimson/wine
-            dots with connecting lines, kept simple for satori's renderer. */}
-        <svg
-          width="420"
-          height="420"
-          viewBox="0 0 400 400"
-          style={{ position: "absolute", right: 40, top: 105, opacity: 0.9 }}
-        >
-          <g stroke={colors.crimson} strokeOpacity="0.3" strokeWidth="2">
-            <line x1="200" y1="200" x2="96" y2="120" />
-            <line x1="200" y1="200" x2="312" y2="104" />
-            <line x1="200" y1="200" x2="328" y2="232" />
-            <line x1="200" y1="200" x2="232" y2="320" />
-            <line x1="200" y1="200" x2="84" y2="268" />
-          </g>
-          <circle cx="200" cy="200" r="14" fill={colors.crimson} />
-          <circle cx="96" cy="120" r="9" fill={colors.wine} />
-          <circle cx="312" cy="104" r="9" fill={colors.wine} />
-          <circle cx="328" cy="232" r="9" fill={colors.wine} />
-          <circle cx="232" cy="320" r="9" fill={colors.wine} />
-          <circle cx="84" cy="268" r="9" fill={colors.wine} />
-        </svg>
+        {profile.heroEyebrow}
+      </p>
 
-        <p
-          style={{
-            margin: 0,
-            fontSize: 26,
-            fontWeight: 700,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-            color: colors.crimson,
-          }}
-        >
-          {profile.heroEyebrow}
-        </p>
+      <p
+        style={{
+          margin: "20px 0 0",
+          fontFamily: "Unbounded",
+          fontSize: 76,
+          fontWeight: 800,
+          lineHeight: 1.05,
+          color: colors.ink,
+          maxWidth: 820,
+        }}
+      >
+        {profile.name}
+      </p>
 
-        <p
-          style={{
-            margin: "20px 0 0",
-            fontFamily: "Unbounded",
-            fontSize: 76,
-            fontWeight: 800,
-            lineHeight: 1.05,
-            color: colors.ink,
-            maxWidth: 820,
-          }}
-        >
-          {profile.name}
-        </p>
-
-        <p
-          style={{
-            margin: "28px 0 0",
-            fontSize: 32,
-            fontWeight: 500,
-            color: colors.inkMuted,
-            maxWidth: 760,
-          }}
-        >
-          {profile.roles.join("  ·  ")}
-        </p>
-      </div>
-    ),
+      <p
+        style={{
+          margin: "28px 0 0",
+          fontSize: 32,
+          fontWeight: 500,
+          color: colors.inkMuted,
+          maxWidth: 760,
+        }}
+      >
+        {profile.roles.join("  ·  ")}
+      </p>
+    </div>,
     {
       ...size,
       fonts: [

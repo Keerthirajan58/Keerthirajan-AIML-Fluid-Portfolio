@@ -1,102 +1,53 @@
-import {
-  experience,
-  education,
-  personalProjectsLeadership,
-} from "@/content/data";
+import { localContent, type PortfolioContent } from "@/content/repository";
 import { Section } from "@/components/ui/Section";
-
-export function Experience() {
+import { CompanyMark } from "@/components/ui/CompanyMark";
+import { ExperienceJourney } from "@/components/ExperienceJourney";
+export function Experience({
+  content = localContent,
+}: {
+  content?: PortfolioContent;
+}) {
   return (
-    <Section id="experience" eyebrow="Experience" title="Where I've worked">
-      <ol data-timeline className="relative border-l border-ink/10 pl-6 sm:pl-8">
-        {/* Crimson line that ScrollFX draws down over the faint track above. */}
-        <span
-          data-timeline-line
-          aria-hidden="true"
-          className="absolute -left-px top-0 h-full w-px origin-top bg-crimson"
-        />
-        {experience.map((job) => (
-          <li
-            key={`${job.company}-${job.dates}`}
-            data-reveal
-            className="mb-10 last:mb-0"
-          >
-            <span
-              data-timeline-dot
-              className="absolute -left-[7px] mt-1.5 h-3 w-3 rounded-full border-2 border-paper bg-crimson"
-              aria-hidden="true"
-            />
-            <p className="text-sm font-medium text-ink-muted">{job.dates}</p>
-            <h3 className="mt-1 font-display text-lg font-semibold text-ink sm:text-xl">
-              {job.role} ·{" "}
-              <span className="text-crimson">{job.company}</span>
-            </h3>
-            <p className="text-sm text-ink-muted">{job.location}</p>
-            <ul className="mt-3 space-y-2">
-              {job.bullets.map((b, i) => (
-                <li
-                  key={i}
-                  className="text-sm leading-6 text-ink-muted sm:text-base"
-                >
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ol>
-
-      <h3 className="mb-6 mt-14 text-xs font-semibold uppercase tracking-[0.22em] text-crimson">
-        Education
-      </h3>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        {education.map((e) => (
-          <div
-            key={e.degree}
-            data-reveal
-            className="rounded-2xl border border-ink/10 bg-surface p-5"
-          >
-            <p className="text-sm font-medium text-ink-muted">{e.dates}</p>
-            <h4 className="mt-1 font-display text-base font-semibold text-ink">
-              {e.degree}
-            </h4>
-            <p className="text-sm text-ink-muted">{e.institution}</p>
-            <ul className="mt-3 space-y-2">
-              {e.bullets.map((b, i) => (
-                <li key={i} className="text-sm leading-6 text-ink-muted">
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <h3 className="mb-6 mt-14 text-xs font-semibold uppercase tracking-[0.22em] text-crimson">
-        Leadership
-      </h3>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {personalProjectsLeadership.map((p) => (
-          <div
-            key={p.title}
-            data-reveal
-            className="rounded-2xl border border-ink/10 bg-surface p-5"
-          >
-            <p className="text-sm font-medium text-ink-muted">{p.dates}</p>
-            <h4 className="mt-1 font-display text-base font-semibold text-ink">
-              {p.title}
-            </h4>
-            <p className="text-sm text-crimson">{p.role}</p>
-            <ul className="mt-3 space-y-2">
-              {p.bullets.map((b, i) => (
-                <li key={i} className="text-sm leading-6 text-ink-muted">
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+    <Section
+      id="experience"
+      eyebrow="02 / Experience"
+      title="Where I've put it to work."
+    >
+      <ExperienceJourney
+        steps={content.experience.map((job) => ({
+          company: job.company,
+          dates: job.dates,
+          mark: <CompanyMark company={job.company} />,
+        }))}
+      >
+        <ol className="experience-list">
+          {content.experience.map((job, i) => (
+            <li
+              id={`role-${i}`}
+              tabIndex={-1}
+              className={`experience-card company-${i}`}
+              key={job.company}
+            >
+              <div className="job-identity">
+                <CompanyMark company={job.company} />
+                <div>
+                  <span className="eyebrow">{job.dates}</span>
+                  <h3>{job.company}</h3>
+                  <p className="job-location">{job.location}</p>
+                </div>
+              </div>
+              <div className="job-work">
+                <h4>{job.role}</h4>
+                <ul className="result-list">
+                  {job.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </ExperienceJourney>
     </Section>
   );
 }

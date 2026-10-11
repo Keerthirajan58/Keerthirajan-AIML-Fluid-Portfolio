@@ -70,8 +70,6 @@ export interface Profile {
 export interface ContactInfo {
   /** [primary, secondary]. Primary confirmed current by site owner. */
   emails: string[];
-  phone: string;
-  whatsapp: string;
   /** Verbatim from contact.html (shorter form than profile.location) */
   location: string;
   social: {
@@ -151,6 +149,10 @@ export interface LegacyDetailsNote {
 }
 
 export interface ProjectEntry {
+  displayOrder?: number;
+  parentSlug?: string;
+  achievement?: { label: string; detail: string };
+  sections?: CaseStudySection[];
   slug: string;
   title: string;
   kind: ProjectKind;
@@ -187,6 +189,18 @@ export interface Testimonial {
   image: string;
 }
 
+export interface MediaAsset {
+  src: string;
+  alt: string;
+}
+export interface CaseStudySection {
+  heading: string;
+  body?: string;
+  bullets?: string[];
+  metrics?: { value: string; label: string }[];
+  media?: MediaAsset;
+}
+
 // ---------------------------------------------------------------------------
 // Profile
 // ---------------------------------------------------------------------------
@@ -199,7 +213,7 @@ export const profile: Profile = {
   tagline:
     "Portfolio of Keerthirajan Senthilkumar, an AIML and software engineering graduate focused on machine learning, LLM evaluation, and full-stack projects.",
   roles: [
-    "Machine Learning Engineer",
+    "AIML Engineer",
     "Software Engineer",
     "AIML Evaluation Builder",
     "Full-Stack Developer",
@@ -207,18 +221,18 @@ export const profile: Profile = {
   heroHighlights: [
     { icon: "bi-mortarboard", text: "MS CS, GWU 2026" },
     { icon: "bi-cpu", text: "Apple AIML Intern" },
-    { icon: "bi-geo-alt", text: "Arlington, VA" },
+    { icon: "bi-geo-alt", text: "San Francisco, CA" },
   ],
-  location: "Arlington, VA",
+  location: "San Francisco, CA",
   bio: [
     "I am a recent Master's in Computer Science graduate from The George Washington University, specializing in AIML and software engineering. My work sits at the intersection of machine learning systems, evaluation design, and practical full-stack development, with recent industry experience as an AIML Machine Learning Engineer intern on Apple's Siri Core Modeling team.",
     "I build data-driven products with a focus on reliable model behavior, clean engineering, and measurable user value. My recent work includes LLM evaluation workflows, transformer-based modeling, mobile applications, applied ML projects, and responsive web experiences.",
   ],
-  aboutHeadline: "Machine Learning Engineer / Software Engineer",
+  aboutHeadline: "AIML Engineer / Software Engineer",
   aboutHighlights: [
     { icon: "bi-award", text: "SEAS Dean's Award" },
     { icon: "bi-apple", text: "Apple AIML Internship" },
-    { icon: "bi-code-square", text: "ML + Full Stack Projects" },
+    { icon: "bi-code-square", text: "AIML + Full Stack Projects" },
   ],
   resumeSummary:
     "Machine Learning Engineer and Software Engineer with an MS in Computer Science from The George Washington University, specializing in AIML and SWE. Recent Apple AIML internship experience across Siri Core Modeling, LLM evaluation, transformer-based workflows, vector embeddings, fine-tuning, and performance benchmarking.",
@@ -233,9 +247,7 @@ export const contact: ContactInfo = {
   // Primary confirmed current by site owner; secondary kept as a real
   // alternate contact (both appear on the legacy site).
   emails: ["keerthirajans@gwu.edu", "rajankeerthi0261@gmail.com"],
-  phone: "+1 (571) 220-6152",
-  whatsapp: "+91 9500525311",
-  location: "Arlington, VA",
+  location: "San Francisco, CA",
   social: {
     linkedin: "https://www.linkedin.com/in/keerthirajans58/",
     github: "https://github.com/Keerthirajan58/",
@@ -254,16 +266,17 @@ export const education: EducationEntry[] = [
     dates: "Aug 2024 - May 2026",
     institution: "The George Washington University, USA",
     bullets: [
-      "Honored with the SEAS Dean's Award in recognition of outstanding accomplishments.",
-      "Recipient of the Dean's Merit Scholarship Award, providing a 50% tuition discount totaling over $38,000.",
+      "SEAS Dean's Award / Dean's Merit Scholarship — 50% tuition scholarship, totaling over $38,000.",
       "Relevant Coursework: Design and Analysis of Algorithms, Advanced Software Paradigms, Computer System Architecture.",
     ],
   },
   {
     degree: "Bachelor's in Computer Science & Engineering",
-    dates: "2019 - 2023",
+    dates: "Aug 2019 - May 2023",
     institution: "Sri Venkateswara College of Engineering, India",
     bullets: [
+      "Completed 3 internships alongside my undergraduate studies.",
+      "Volleyball captain and Youth Red Cross volunteer.",
       "Relevant Coursework: Data Structures, Natural Language Processing, Artificial Intelligence, Machine Learning and Algorithms, Business Intelligence, Advanced User-interface and Technology.",
     ],
   },
@@ -286,7 +299,7 @@ export const experience: ExperienceEntry[] = [
     ],
   },
   {
-    role: "Software Engineer Intern",
+    role: "Machine Learning Intern",
     company: "TCS",
     dates: "Nov 2021 - Dec 2021",
     location: "Chennai, India",
@@ -545,12 +558,6 @@ export const projects: ProjectEntry[] = [
         "/images/projects/barterbrain/slide-4.jpg",
         "/images/projects/barterbrain/slide-5.jpg",
         "/images/projects/barterbrain/slide-6.jpg",
-        // GW New Venture Competition (startup competition) photo set — same
-        // project, second recognition. Owner-provided, merged per their call.
-        "/images/projects/barterbrain-nvc/cover.jpg",
-        "/images/projects/barterbrain-nvc/slide-1.jpg",
-        "/images/projects/barterbrain-nvc/slide-2.jpg",
-        "/images/projects/barterbrain-nvc/slide-3.jpg",
       ],
       imageStatus: "real",
     },
@@ -584,7 +591,7 @@ export const projects: ProjectEntry[] = [
         "Added sustainability calculations to estimate CO2 savings after successful trades.",
       ],
       impact:
-        "Won Best Hack for Social Good (Sustainability) at Technica 2025 among 80+ teams and 450+ participants, and later reached the Top 5 in the Social Innovation track at the GW New Venture Competition, advancing through 3 rounds among 200+ teams.",
+        "Won Best Hack for Social Good (Sustainability) at Technica 2025 among 80+ teams and 450+ participants.",
     },
   },
   {
@@ -776,9 +783,8 @@ export const projects: ProjectEntry[] = [
     tags: ["Deep Learning", "Computer Vision", "Medical AI"],
     filters: ["aiml", "cv"],
     primaryImage: "assets/img/portfolio/app-3.jpg",
-    links: {
-      github: "https://github.com/Keerthirajan58/GI-Tract-Segmentation",
-    },
+    // Previous public repository URL returned 404; retain the project without a dead link.
+    links: {},
   },
   {
     slug: "water-quality-analysis",
@@ -793,7 +799,7 @@ export const projects: ProjectEntry[] = [
     primaryImage: "assets/img/portfolio/app-4.jpg",
     links: {
       github:
-        "https://github.com/Keerthirajan58/IBM-Efficient-Water-Quality-Analysis-and-Prediction",
+        "https://github.com/Keerthirajan58/IBM---EFFICIENT-WATER-QUALITY-ANALYSIS-AND-PREDICTION",
     },
   },
   {
@@ -913,7 +919,7 @@ export const projects: ProjectEntry[] = [
     filters: ["certification", "web"],
     primaryImage: "assets/img/portfolio/branding-8.jpg",
     links: {
-      credential: "http://coursera.org/verify/T7H86R7HML9R",
+      credential: "https://coursera.org/verify/T7H86R7HML9R",
     },
   },
   {
@@ -941,7 +947,7 @@ export const projects: ProjectEntry[] = [
     filters: ["certification"],
     primaryImage: "assets/img/portfolio/branding-3.jpg",
     links: {
-      credential: "http://coursera.org/verify/MB2V55ZDEUFW",
+      credential: "https://coursera.org/verify/MB2V55ZDEUFW",
     },
   },
   {
@@ -1023,13 +1029,13 @@ export const testimonials: Testimonial[] = [
     title: "Professor",
     // Source pairs this testimonial with the "-2" image file, not "-1" —
     // preserved exactly as authored, not reordered to match name/number.
-    image: "assets/img/testimonials/testimonials-2.jpg",
+    image: "/images/testimonials/testimonials-2.jpg",
   },
   {
     quote:
       "Keerthirajan is one of the top 10 students in our department of Computer Science and Engineering. His strong academic background, along with his capacity to succeed in research and problem-solving, distinguishes him as an extraordinary prospect. I am confident that his ravenous appetite for knowledge, along with his ambition to make a significant contribution, will propel him to unprecedented success in his future endeavors.",
     name: "Dr. P. Janarthanan",
     title: "Mentor & Professor",
-    image: "assets/img/testimonials/testimonials-1.jpg",
+    image: "/images/testimonials/testimonials-1.jpg",
   },
 ];

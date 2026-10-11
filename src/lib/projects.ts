@@ -1,37 +1,71 @@
-/**
- * Shared selectors over `projects` in `src/content/data.ts`, so the home page
- * and the `/projects/[slug]` route filter from one place instead of repeating
- * `.filter(...)` logic.
- *
- * A project gets a dedicated detail page iff it has a real `gallery`. That is
- * the 6 image-bearing projects (the 5 with a `caseStudy` object plus Siri Core
- * Modeling, which has real images but no case-study prose). Everything else —
- * grid-only projects, certifications, publications — renders inline on the home
- * page only.
- */
-import { projects, type ProjectEntry } from "@/content/data";
-
-/** Projects with real screenshots — shown as image cards, each linking to /projects/<slug>. */
-export function getFeaturedProjects(): ProjectEntry[] {
-  return projects.filter((p) => p.gallery !== undefined);
+import {
+  projects,
+  experience,
+  type ProjectEntry,
+  type CaseStudySection,
+} from "@/content/data";
+import { nvcProject } from "@/content/nvc";
+const order = [
+  "siri-core-modeling",
+  "pitchpulse",
+  "barterbrain",
+  "historical-event-narrator",
+  "coding-problem-recommender",
+  "face-cloaking",
+];
+export const allProjects: ProjectEntry[] = [
+  ...projects.map((p) => ({
+    ...p,
+    displayOrder: order.includes(p.slug) ? order.indexOf(p.slug) : 99,
+    ...(p.slug === "barterbrain"
+      ? {
+          achievement: {
+            label: "Technica winner",
+            detail: "Best Hack for Social Good · Sustainability",
+          },
+        }
+      : {}),
+  })),
+  nvcProject,
+];
+export function getFeaturedProjects(source = allProjects) {
+  return source
+    .filter((p) => p.gallery && !p.parentSlug)
+    .sort((a, b) => (a.displayOrder ?? 99) - (b.displayOrder ?? 99));
 }
-
-/** Lighter projects (no gallery) — shown as text cards linking out to GitHub. */
-export function getGridProjects(): ProjectEntry[] {
-  return projects.filter((p) => p.kind === "grid" && p.gallery === undefined);
+export function getGridProjects(source = allProjects) {
+  return source.filter((p) => p.kind === "grid" && !p.gallery);
 }
-
-export function getCertifications(): ProjectEntry[] {
-  return projects.filter((p) => p.kind === "certification");
+export function getCertifications(source = allProjects) {
+  return source.filter((p) => p.kind === "certification");
 }
-
-export function getPublications(): ProjectEntry[] {
-  return projects.filter((p) => p.kind === "publication");
+export function getPublications(source = allProjects) {
+  return source.filter((p) => p.kind === "publication");
 }
-
-/** Slugs that get a prerendered detail page (drives generateStaticParams). */
-export const caseStudySlugs: string[] = getFeaturedProjects().map((p) => p.slug);
-
-export function getProjectBySlug(slug: string): ProjectEntry | undefined {
-  return projects.find((p) => p.slug === slug);
+export const caseStudySlugs = allProjects
+  .filter((p) => p.gallery)
+  .map((p) => p.slug);
+export function getProjectBySlug(slug: string, source = allProjects) {
+  return source.find((p) => p.slug === slug);
+}
+export function getCaseStudySections(
+  project: ProjectEntry,
+  jobs = experience,
+): CaseStudySection[] {
+  if (project.sections) return project.sections;
+  const cs = project.caseStudy;
+  if (cs)
+    return [
+      { heading: "Overview", body: cs.overview },
+      { heading: "Problem", body: cs.problem },
+      { heading: "How I built it", bullets: cs.engineeringBullets },
+      { heading: "Impact", body: cs.impact },
+    ];
+  const apple = jobs.find((e) => e.company === "Apple");
+  return [
+    { heading: "Overview", body: project.description },
+    ...(project.slug === "siri-core-modeling" && apple
+      ? [{ heading: "At Apple", bullets: apple.bullets }]
+      : []),
+  ];
 }

@@ -1,79 +1,133 @@
 import Image from "next/image";
-import { profile, contact, education } from "@/content/data";
+import { localContent, type PortfolioContent } from "@/content/repository";
 import { Section } from "@/components/ui/Section";
+import {
+  AwardIcon,
+  AppleIcon,
+  GraduationIcon,
+  BriefcaseIcon,
+  PeopleIcon,
+} from "@/components/ui/icons";
+import { DepthCard } from "@/components/ui/DepthCard";
 
-export function About() {
+export function About({
+  content = localContent,
+}: {
+  content?: PortfolioContent;
+}) {
+  const { profile, education } = content;
   return (
-    <Section id="about" eyebrow="About" title={profile.aboutHeadline}>
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-14">
-        <div data-reveal className="order-2 md:order-1">
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-xs overflow-hidden rounded-2xl border border-ink/10 bg-surface">
-            <Image
-              src={profile.photo}
-              alt={`Portrait of ${profile.name}`}
-              fill
-              sizes="(max-width: 768px) 20rem, 24rem"
-              className="object-cover"
-            />
-          </div>
-        </div>
-
-        <div data-reveal className="order-1 md:order-2">
-          {profile.bio.map((para, i) => (
-            <p
-              key={i}
-              className="mb-4 text-base leading-7 text-ink-muted sm:text-lg"
-            >
-              {para}
-            </p>
+    <Section
+      id="about"
+      eyebrow="01 / The person behind the work"
+      title={profile.aboutHeadline}
+    >
+      <div className="about-grid">
+        <figure className="portrait">
+          <Image
+            src={profile.photo}
+            alt={profile.name}
+            fill
+            sizes="(max-width: 767px) 85vw, 32vw"
+            className="object-cover"
+          />
+          <figcaption>Curiosity, with a practical purpose.</figcaption>
+        </figure>
+        <div className="about-story">
+          <span className="eyebrow">A little about me</span>
+          <p className="large-copy">
+            I turn questions into
+            <br />
+            <em>working systems.</em>
+          </p>
+          {profile.bio.map((p) => (
+            <p key={p}>{p}</p>
           ))}
-
-          <dl className="mt-6 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
-            <div>
-              <dt className="text-xs font-semibold uppercase tracking-wider text-crimson">
-                Education
-              </dt>
-              {education.map((e) => (
-                <dd key={e.degree} className="mt-1 text-sm text-ink">
-                  {e.degree.split(",")[0]} — {e.institution.split(",")[0]}
-                </dd>
-              ))}
-            </div>
-            <div>
-              <dt className="text-xs font-semibold uppercase tracking-wider text-crimson">
-                Based in
-              </dt>
-              <dd className="mt-1 text-sm text-ink">{profile.location}</dd>
-              {profile.openToRelocation && (
-                <dd className="mt-1 text-sm text-ink-muted">
-                  Open to relocation
-                </dd>
-              )}
-            </div>
-          </dl>
-
-          <ul className="mt-6 flex flex-wrap gap-2">
-            {profile.aboutHighlights.map((h) => (
-              <li
-                key={h.text}
-                className="rounded-full border border-ink/10 bg-surface px-3 py-1.5 text-sm text-ink"
-              >
+          <ul className="achievement-list">
+            {profile.aboutHighlights.map((h, i) => (
+              <li key={h.text}>
+                <span
+                  className={`highlight-icon ${i === 0 ? "icon-award" : i === 1 ? "icon-apple" : "icon-school"}`}
+                >
+                  {i === 0 ? (
+                    <AwardIcon />
+                  ) : i === 1 ? (
+                    <AppleIcon />
+                  ) : (
+                    <GraduationIcon />
+                  )}
+                </span>
                 {h.text}
               </li>
             ))}
           </ul>
-
-          <p className="mt-6 text-sm text-ink-muted">
-            Reach me at{" "}
-            <a
-              href={`mailto:${contact.emails[0]}`}
-              className="font-medium text-crimson underline-offset-4 hover:underline"
-            >
-              {contact.emails[0]}
-            </a>
-            .
+          <p className="location-note">
+            {profile.location} · Open to relocation
           </p>
         </div>
+      </div>
+      <div className="education-header">
+        <h3>Education</h3>
+        <span>One throughline: keep learning.</span>
+      </div>
+      <div className="education-grid">
+        {education.map((e, i) => (
+          <DepthCard
+            className={`education-card education-${i === 0 ? "graduate" : "undergraduate"}`}
+            key={e.degree}
+          >
+            <div className="card-top">
+              <span className="school-monogram">
+                {i === 0 ? (
+                  "GW"
+                ) : (
+                  <Image
+                    src="/images/brands/svce.jpg"
+                    width={72}
+                    height={72}
+                    alt="SVCE, Sriperumbudur emblem"
+                  />
+                )}
+              </span>
+              <span>{e.dates}</span>
+            </div>
+            <p className="eyebrow">{i === 0 ? "Graduate" : "Undergraduate"}</p>
+            <h4>{e.degree}</h4>
+            <p className="institution">{e.institution}</p>
+            <ul>
+              {e.bullets.map((b, j) => (
+                <li
+                  className={
+                    i === 0 && j === 0
+                      ? "award-row"
+                      : i === 1 && j < 2
+                        ? "activity-row"
+                        : ""
+                  }
+                  key={b}
+                >
+                  {i === 0 && j === 0 ? (
+                    <span className="education-medallion">
+                      <AwardIcon />
+                    </span>
+                  ) : i === 1 && j < 2 ? (
+                    <span className="education-activity-icon">
+                      {j === 0 ? <BriefcaseIcon /> : <PeopleIcon />}
+                    </span>
+                  ) : null}
+                  {i === 0 && j === 0 && b.includes(" — ") ? (
+                    <span>
+                      <strong>{b.split(" — ")[0]}</strong>
+                      {b.split(" — ").slice(1).join(" — ")}
+                    </span>
+                  ) : (
+                    <span>{b}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </DepthCard>
+        ))}
       </div>
     </Section>
   );

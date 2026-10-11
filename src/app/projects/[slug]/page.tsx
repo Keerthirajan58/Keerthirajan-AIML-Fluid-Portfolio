@@ -1,207 +1,173 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { experience } from "@/content/data";
-import { getProjectBySlug, caseStudySlugs } from "@/lib/projects";
+import {
+  getProjectBySlug,
+  caseStudySlugs,
+  getCaseStudySections,
+} from "@/lib/projects";
 import { ProjectGallery } from "@/components/ProjectGallery";
-import { Badge } from "@/components/ui/Badge";
 import {
   ArrowLeftIcon,
-  GitHubIcon,
   ArrowUpRightIcon,
+  AwardIcon,
 } from "@/components/ui/icons";
-
+import { loadContent } from "@/content/load";
 export function generateStaticParams() {
   return caseStudySlugs.map((slug) => ({ slug }));
 }
-
-// Only the 6 image-backed projects have detail pages; anything else 404s.
-export const dynamicParams = false;
-
+export const dynamicParams = true;
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const project = getProjectBySlug(slug);
-  if (!project) return {};
-  // Real project screenshot as the share preview — the root layout's title
-  // template appends "| <name>" automatically.
-  const cover = project.gallery?.cover;
+  const content = await loadContent();
+  const p = getProjectBySlug((await params).slug, content.projects);
+  if (!p) return {};
   return {
-    title: project.title,
-    description: project.description,
-    openGraph: cover
-      ? { title: project.title, description: project.description, images: [cover] }
-      : { title: project.title, description: project.description },
-    twitter: cover
-      ? { card: "summary_large_image", images: [cover] }
-      : { card: "summary_large_image" },
+    title: p.title,
+    description: p.description,
+    openGraph: {
+      title: p.title,
+      description: p.description,
+      ...(p.gallery ? { images: [p.gallery.cover] } : {}),
+    },
   };
 }
-
-type BodySection = { heading: string; body?: string; bullets?: string[] };
-
 export default async function ProjectPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const project = getProjectBySlug(slug);
-  if (!project || !project.gallery) notFound();
-
-  const cs = project.caseStudy;
-  // Siri Core Modeling has no case-study prose (Apple work) — compose its page
-  // from the real, public Apple internship bullets in `experience`.
-  const apple = experience.find((e) => e.company === "Apple");
-
-  const meta = cs
-    ? {
-        category: cs.category,
-        dates: cs.dates,
-        tech: cs.tech,
-        links: [
-          { label: "GitHub", href: cs.githubUrl, Icon: GitHubIcon },
-          { label: "Devpost", href: cs.devpostUrl, Icon: ArrowUpRightIcon },
-          { label: "Write-up", href: cs.blogUrl, Icon: ArrowUpRightIcon },
-        ].filter((l) => l.href),
-      }
-    : {
-        category: project.badge,
-        dates: apple?.dates ?? "",
-        tech: project.tags,
-        links: [] as { label: string; href?: string; Icon: typeof GitHubIcon }[],
-      };
-
-  const sections: BodySection[] = cs
-    ? [
-        { heading: "Overview", body: cs.overview },
-        { heading: "Problem", body: cs.problem },
-        { heading: "How I built it", bullets: cs.engineeringBullets },
-        { heading: "Impact", body: cs.impact },
-      ]
-    : [
-        { heading: "Overview", body: project.description },
-        ...(apple ? [{ heading: "At Apple", bullets: apple.bullets }] : []),
-      ];
-
-  const galleryImages = [project.gallery.cover, ...project.gallery.slides];
-
+  const content = await loadContent();
+  const p = getProjectBySlug((await params).slug, content.projects);
+  if (!p?.gallery) notFound();
+  const sections = getCaseStudySections(p, content.experience),
+    links = Object.entries(p.links).filter(
+      ([key, value]) => key !== "detailsPage" && value,
+    );
   return (
-    <article className="mx-auto max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
-      <Link
-        href="/#projects"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted transition-colors hover:text-crimson"
-      >
+    <article className="case-study shell">
+      <Link href="/#projects" className="text-link">
         <ArrowLeftIcon width={16} height={16} />
-        Back to projects
+        Back to work
       </Link>
-
-      <header className="mt-6">
-        <Badge>{project.badge}</Badge>
-        <h1 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-          {project.title}
-        </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-ink-muted sm:text-lg">
-          {project.description}
-        </p>
+      <header>
+        <p className="eyebrow mt-8">{p.badge}</p>
+        <h1>{p.title}</h1>
+        <p className="case-description">{p.description}</p>
       </header>
-
-      <dl
-        data-reveal
-        className="mt-8 grid grid-cols-1 gap-6 border-y border-ink/10 py-6 sm:grid-cols-3"
-      >
+      {p.achievement && (
+        <p className="achievement mt-6 w-fit">
+          <AwardIcon />
+          {p.achievement.label} · {p.achievement.detail}
+        </p>
+      )}
+      <dl className="case-meta">
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wider text-crimson">
-            Category
-          </dt>
-          <dd className="mt-1 text-sm text-ink">{meta.category}</dd>
+          <dt>Focus</dt>
+          <dd>{p.caseStudy?.category ?? p.badge}</dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wider text-crimson">
-            Timeline
-          </dt>
-          <dd className="mt-1 text-sm text-ink">{meta.dates}</dd>
+          <dt>Timeline</dt>
+          <dd>
+            {p.caseStudy?.dates ??
+              (p.parentSlug
+                ? "2026 · April 22–23 finals"
+                : "May – August 2025")}
+          </dd>
         </div>
-        {meta.links.length > 0 && (
+        {links.length > 0 && (
           <div>
-            <dt className="text-xs font-semibold uppercase tracking-wider text-crimson">
-              Links
-            </dt>
-            <dd className="mt-1 flex flex-wrap gap-3">
-              {meta.links.map(({ label, href, Icon }) => (
+            <dt>Links</dt>
+            <dd className="flex flex-wrap gap-4">
+              {links.map(([label, href]) => (
                 <a
+                  className="text-link capitalize"
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-crimson"
                 >
-                  <Icon width={16} height={16} />
-                  {label}
+                  {label === "blog" ? "Read more" : label}
+                  <ArrowUpRightIcon width={14} height={14} />
                 </a>
               ))}
             </dd>
           </div>
         )}
       </dl>
-
-      <div className="mt-6 flex flex-wrap gap-2">
-        {meta.tech.map((t) => (
-          <span
-            key={t}
-            className="rounded-full border border-ink/10 bg-surface px-3 py-1 text-sm text-ink-muted"
-          >
-            {t}
-          </span>
+      <ul className="tag-list">
+        {(p.caseStudy?.tech ?? p.tags).map((t) => (
+          <li key={t}>{t}</li>
         ))}
-      </div>
-
-      <div className="mt-10 space-y-8">
+      </ul>
+      {p.slug === "barterbrain" && (
+        <Link href="/projects/barterbrain-nvc" className="related-mini">
+          <AwardIcon />
+          <span>
+            <small>The next chapter</small>From hackathon to startup — NVC 2026
+            finalist
+          </span>
+          <ArrowUpRightIcon />
+        </Link>
+      )}
+      {p.parentSlug && (
+        <Link href={"/projects/" + p.parentSlug} className="related-mini">
+          <ArrowLeftIcon />
+          <span>Explore the original hackathon product</span>
+        </Link>
+      )}
+      <div className="case-body">
         {sections.map((s) => (
-          <section key={s.heading} data-reveal>
-            <h2 className="font-display text-xl font-semibold text-ink">
-              {s.heading}
-            </h2>
-            {s.body && (
-              <p className="mt-3 text-base leading-7 text-ink-muted">
-                {s.body}
-              </p>
+          <section key={s.heading}>
+            <h2>{s.heading}</h2>
+            {s.metrics && (
+              <dl className="case-metrics">
+                {s.metrics.map((m) => (
+                  <div key={m.label}>
+                    <dt>
+                      <strong>{m.value}</strong>
+                    </dt>
+                    <dd>
+                      <span>{m.label}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            {s.body && <p>{s.body}</p>}
+            {s.media && (
+              <Image
+                src={s.media.src}
+                alt={s.media.alt}
+                width={1200}
+                height={800}
+                sizes="(max-width: 767px) 100vw, 800px"
+                className="mt-6 h-auto w-full rounded-2xl"
+              />
             )}
             {s.bullets && (
-              <ul className="mt-3 space-y-2">
-                {s.bullets.map((b, i) => (
-                  <li
-                    key={i}
-                    className="relative pl-5 text-base leading-7 text-ink-muted before:absolute before:left-0 before:top-3 before:h-1.5 before:w-1.5 before:rounded-full before:bg-crimson"
-                  >
-                    {b}
-                  </li>
+              <ul className="result-list">
+                {s.bullets.map((b) => (
+                  <li key={b}>{b}</li>
                 ))}
               </ul>
             )}
           </section>
         ))}
       </div>
-
-      <div className="mt-12">
-        <h2 className="mb-5 font-display text-xl font-semibold text-ink">
-          Gallery
-        </h2>
-        <ProjectGallery images={galleryImages} title={project.title} />
-      </div>
-
-      <div className="mt-12 border-t border-ink/10 pt-8">
-        <Link
-          href="/#projects"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted transition-colors hover:text-crimson"
-        >
-          <ArrowLeftIcon width={16} height={16} />
-          Back to projects
-        </Link>
-      </div>
+      <h2 className="subheading">A closer look</h2>
+      <ProjectGallery
+        images={[p.gallery.cover, ...p.gallery.slides]}
+        title={p.title}
+      />
+      <Link href="/#projects" className="text-link mt-12">
+        <ArrowLeftIcon width={16} height={16} />
+        Back to work
+      </Link>
     </article>
   );
 }

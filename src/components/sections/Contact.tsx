@@ -1,76 +1,90 @@
-import { profile, contact } from "@/content/data";
-import { Section } from "@/components/ui/Section";
+import { localContent, type PortfolioContent } from "@/content/repository";
+import Image from "next/image";
 import { SocialLinks } from "@/components/ui/SocialLinks";
-import {
-  MailIcon,
-  PhoneIcon,
-  MapPinIcon,
-  DownloadIcon,
-} from "@/components/ui/icons";
-
-export function Contact() {
+import { ArrowUpRightIcon } from "@/components/ui/icons";
+import { ContactForm } from "@/components/ContactForm";
+import { formEndpoint } from "@/lib/contact";
+export function Contact({
+  content = localContent,
+}: {
+  content?: PortfolioContent;
+}) {
+  const { profile, contact } = content;
   return (
-    <Section id="contact" eyebrow="Contact" title="Let's build something">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-14">
-        <div data-reveal>
-          <p className="max-w-md text-base leading-7 text-ink-muted sm:text-lg">
-            I&apos;m actively looking for AIML / software engineering roles
-            {profile.openToRelocation ? " and open to relocation" : ""}. The
-            fastest way to reach me is email — I read everything.
+    <section
+      id="contact"
+      tabIndex={-1}
+      aria-labelledby="contact-heading"
+      className="section shell contact-stage"
+    >
+      <div className="contact-prelude">
+        <span className="eyebrow">07 / The next conversation</span>
+        <span className="contact-availability">
+          <span className="status-dot" />
+          Open to opportunities
+        </span>
+      </div>
+      <div className="contact-invitation">
+        <h2 id="contact-heading">
+          Good ideas deserve
+          <br />
+          <span>a conversation.</span>
+        </h2>
+        <div className="contact-person">
+          <Image src={profile.photo} width={76} height={76} alt="" />
+          <p>
+            Have a role in mind?
+            <br />
+            Let&apos;s see what we can build.
           </p>
-          <a
-            href={contact.resumeUrl}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-crimson px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-wine"
-          >
-            <DownloadIcon width={16} height={16} />
-            Download résumé
+        </div>
+      </div>
+      <div className="contact-line">
+        <a
+          href={"mailto:" + contact.emails[0]}
+          className="contact-orbit"
+          aria-label="Say hello — Send an email"
+        >
+          <ArrowUpRightIcon />
+          <span>Say hello</span>
+        </a>
+      </div>
+      <div className="contact-directory">
+        <div className="contact-direct">
+          <span className="eyebrow">Start here</span>
+          <a href={"mailto:" + contact.emails[0]}>
+            {contact.emails[0]}
+            <ArrowUpRightIcon />
           </a>
-          <div className="mt-8">
-            <SocialLinks />
+          <p>AIML & software engineering opportunities.</p>
+        </div>
+        <div>
+          <span className="eyebrow">Based in</span>
+          <p>{profile.location}</p>
+          <small>Open to relocation</small>
+        </div>
+        <div>
+          <span className="eyebrow">Find me elsewhere</span>
+          <SocialLinks contact={contact} />
+          <a className="text-link" href={contact.resumeUrl}>
+            View résumé <ArrowUpRightIcon />
+          </a>
+        </div>
+      </div>
+      {formEndpoint(process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID) && (
+        <div className="contact-message">
+          <div>
+            <h3>Prefer to leave a message?</h3>
+            <p>A little context is a great place to start.</p>
+          </div>
+          <div>
+            <ContactForm
+              formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID}
+              email={contact.emails[0]}
+            />
           </div>
         </div>
-
-        <ul data-reveal className="space-y-5">
-          <li className="flex items-start gap-3">
-            <MailIcon className="mt-0.5 shrink-0 text-crimson" />
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                Email
-              </p>
-              {contact.emails.map((email) => (
-                <a
-                  key={email}
-                  href={`mailto:${email}`}
-                  className="block text-ink underline-offset-4 hover:text-crimson hover:underline"
-                >
-                  {email}
-                </a>
-              ))}
-            </div>
-          </li>
-          <li className="flex items-start gap-3">
-            <PhoneIcon className="mt-0.5 shrink-0 text-crimson" />
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                Phone
-              </p>
-              <p className="text-ink">{contact.phone}</p>
-              <p className="text-sm text-ink-muted">
-                WhatsApp {contact.whatsapp}
-              </p>
-            </div>
-          </li>
-          <li className="flex items-start gap-3">
-            <MapPinIcon className="mt-0.5 shrink-0 text-crimson" />
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                Location
-              </p>
-              <p className="text-ink">{contact.location}</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </Section>
+      )}
+    </section>
   );
 }

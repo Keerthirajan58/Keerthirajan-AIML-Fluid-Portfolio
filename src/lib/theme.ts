@@ -12,15 +12,15 @@
  */
 
 export const colors = {
-  paper: "#FDFCFC",
-  surface: "#F6EEEE",
-  ink: "#171313",
-  inkMuted: "#6E6467",
-  crimson: "#DF212F",
-  wine: "#7A1F2B",
+  paper: "#0B1728",
+  surface: "#172B40",
+  ink: "#EEF5F8",
+  inkMuted: "#B0C0CE",
+  crimson: "#A9DDE7",
+  wine: "#B5D7E7",
 } as const;
 
 export const fonts = {
-  display: "var(--font-unbounded)",
+  display: "var(--font-instrument)",
   body: "var(--font-inter)",
 } as const;
