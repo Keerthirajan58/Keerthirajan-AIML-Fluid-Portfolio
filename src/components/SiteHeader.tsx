@@ -113,7 +113,11 @@ export function SiteHeader({
           <span className="wordmark">
             <BrandMark />
           </span>
-          <button className="icon-button" aria-label="Close menu" onClick={close}>
+          <button
+            className="icon-button"
+            aria-label="Close menu"
+            onClick={close}
+          >
             ×
           </button>
         </div>

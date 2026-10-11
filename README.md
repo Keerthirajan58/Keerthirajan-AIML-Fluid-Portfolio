@@ -1,6 +1,6 @@
 # Keerthirajan Senthilkumar — Portfolio
 
-Personal portfolio built with Next.js (App Router), TypeScript, Tailwind CSS v4, Motion, GSAP/ScrollTrigger, Lenis, and Three.js/React Three Fiber. Webflow content has a validated local fallback. Taxi provides route-arrival animation without replacing Next routing. The optional Rive asset and live contact/CMS configuration remain setup-dependent.
+Personal portfolio built with Next.js (App Router), TypeScript and Tailwind CSS v4. The "Clear Air" design uses a CSS light field behind white content sheets, Unbounded and Inter type, CSS scroll-driven animation, Lenis wheel smoothing on desktop, and Motion for one small hover effect. There is no WebGL. Webflow content has a validated local fallback; the Formspree contact form appears only when configured.
 
 
 ## Local development
@@ -10,7 +10,7 @@ npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Factual local content lives in `src/content/data.ts` and `src/content/nvc.ts`. See `.env.example` for optional integrations; the site works without credentials.
+Open [http://localhost:3000](http://localhost:3000). Factual content lives in `src/content/data.ts` and `src/content/nvc.ts`. See `.env.example` for optional integrations; the site works without credentials.
 
 ## Verification
 
@@ -19,22 +19,19 @@ npx playwright install chromium webkit
 npm run verify
 ```
 
-The complete command runs TypeScript, ESLint, Vitest with enforced coverage, the production build, and Chromium/mobile WebKit browser tests. Port 3100 must be free: Playwright starts its own production server. On Linux CI, use `npx playwright install --with-deps chromium webkit`.
+This runs TypeScript, ESLint, Vitest with enforced coverage, the production build, and Chromium/mobile WebKit browser tests. Port 3100 must be free: Playwright starts its own production server. On Linux CI, use `npx playwright install --with-deps chromium webkit`.
 
-- Unit coverage: `coverage/index.html`, `coverage/coverage-summary.json`, `coverage/lcov.info`.
-- Browser evidence: `playwright-report/index.html`, `test-results/results.json`, and screenshots under `test-results/`.
-- CI workflow: `.github/workflows/verify.yml`; it uploads reports, but has not been run remotely as part of this local work.
+- Unit coverage: `coverage/index.html`. Browser evidence: `playwright-report/index.html` and `test-results/`. Both folders are generated and disposable.
+- CI workflow: `.github/workflows/verify.yml` (not yet run remotely).
 
 
-## Recovery and deployment safety
+## Deployment
 
-Work is isolated on `immersive-redesign-v2`, based on `4e986b1fe58bcf127c38282de9e9ac7499a8ae73` from `origin/redesign`. The failed uncommitted rewrite is preserved in the stash named `recovery: failed local redesign before immersive v2`. Do not apply it onto this branch. No push, deployment, merge, or cutover is part of verification. The production deployment and original static-site branch remain untouched.
-
-`src/lib/site.ts`'s `getSiteUrl()` resolves the canonical domain for metadata/sitemap/OG images automatically via Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, or can be overridden by setting a `NEXT_PUBLIC_SITE_URL` environment variable (e.g. once a custom domain is attached).
+Vercel project `portfolio58` auto-deploys the `redesign` branch to https://portfolio-portfolio58.vercel.app. This branch (`immersive-redesign-v2`) is not deployed; cutting over is an explicit owner decision. `src/lib/site.ts`'s `getSiteUrl()` resolves the canonical domain from `VERCEL_PROJECT_PRODUCTION_URL`, or from `NEXT_PUBLIC_SITE_URL` once a custom domain is attached.
 
 ## Project structure
 
-- `src/app/` — routes (home page, `/projects/[slug]` case studies, sitemap/robots/OG image)
-- `src/components/` — UI, page sections, and the motion/WebGL layer
+- `src/app/` — routes (home, `/projects/[slug]` case studies, sitemap, robots, OG image, icons) and `globals.css`, the only stylesheet
+- `src/components/` — page sections, interactive islands, light field and motion
 - `src/content/` — authoritative local content, validation, and Webflow field mapping
 - `tests/` — unit/component and real-browser regression suites

@@ -136,7 +136,11 @@ it("keeps Lenis wheel-only and handles same-page links with focus, then cleans u
     </>,
   );
   expect(runtime.lenisOptions).toHaveBeenCalledWith(
-    expect.objectContaining({ smoothWheel: true, syncTouch: false, autoRaf: true }),
+    expect.objectContaining({
+      smoothWheel: true,
+      syncTouch: false,
+      autoRaf: true,
+    }),
   );
   fireEvent.click(screen.getByText("Jump"));
   expect(runtime.scrollTo).toHaveBeenCalledOnce();

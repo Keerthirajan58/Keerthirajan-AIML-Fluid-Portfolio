@@ -2,8 +2,13 @@ import Image from "next/image";
 import { localContent, type PortfolioContent } from "@/content/repository";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { ArrowUpRightIcon } from "@/components/ui/icons";
-import { ContactForm } from "@/components/ContactForm";
+import dynamic from "next/dynamic";
 import { formEndpoint } from "@/lib/contact";
+
+// Only downloaded (with its validation library) when a Formspree ID is configured.
+const ContactForm = dynamic(() =>
+  import("@/components/ContactForm").then((m) => m.ContactForm),
+);
 export function Contact({
   content = localContent,
 }: {

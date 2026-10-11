@@ -15,6 +15,12 @@ import { CompanyMark } from "@/components/ui/CompanyMark";
 import { Contact } from "@/components/sections/Contact";
 import { ContactForm } from "@/components/ContactForm";
 
+// Contact lazy-loads its form; the only dynamic import rendered in this file.
+vi.mock("next/dynamic", async () => {
+  const { ContactForm } = await import("@/components/ContactForm");
+  return { default: () => ContactForm };
+});
+
 const allWork = [...getFeaturedProjects(), ...getGridProjects()];
 describe("project discovery", () => {
   it("derives non-empty filter counts from actual work, excluding credentials and NVC child", () => {

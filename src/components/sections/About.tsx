@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/icons";
 import { DepthCard } from "@/components/ui/DepthCard";
 
-const highlightIcons = [<AwardIcon key="a" />, <AppleIcon key="b" />, <GraduationIcon key="c" />];
+const highlightIcons = [
+  <AwardIcon key="a" />,
+  <AppleIcon key="b" />,
+  <GraduationIcon key="c" />,
+];
 
 export function About({
   content = localContent,
@@ -82,7 +86,9 @@ export function About({
                 const [lead, ...detail] = b.split(" — ");
                 return (
                   <li
-                    className={award ? "award-row" : activity ? "activity-row" : ""}
+                    className={
+                      award ? "award-row" : activity ? "activity-row" : ""
+                    }
                     key={b}
                   >
                     {award ? (
