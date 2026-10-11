@@ -1,26 +1,23 @@
 /**
- * JS-readable mirror of the design tokens defined in `src/app/globals.css`.
- *
- * Tailwind v4 tokens live in CSS (`@theme`) and have no built-in way to be
- * read back out in JS. This file exists for consumers that need raw values
- * outside of className strings — e.g. the Phase 4 node-scatter signature
- * element, which draws to canvas/SVG and needs real hex/pixel values, not
- * CSS custom properties.
- *
- * Keep this in sync with `src/app/globals.css` by hand — there is no
- * automated link between the two.
+ * JS-readable mirror of the Clear Air tokens in `src/app/globals.css` (`@theme`).
+ * Used where CSS custom properties are unavailable: the OG image, the
+ * viewport theme colour, and generated icons. Keep in sync by hand.
  */
 
 export const colors = {
-  paper: "#0B1728",
-  surface: "#172B40",
-  ink: "#EEF5F8",
-  inkMuted: "#B0C0CE",
-  crimson: "#A9DDE7",
-  wine: "#B5D7E7",
+  air: "#F1F2F4",
+  sheet: "#FFFFFF",
+  panel: "#F5F6F8",
+  line: "#E5E7EB",
+  ink: "#0F1013",
+  slate: "#5B616B",
+  crimson: "#DF212F",
+  blush: "#F6CFCB",
+  haze: "#D6E2F3",
+  peach: "#FFE4D6",
 } as const;
 
 export const fonts = {
-  display: "var(--font-instrument)",
+  display: "var(--font-unbounded)",
   body: "var(--font-inter)",
 } as const;

@@ -67,7 +67,6 @@ export function ExperienceJourney({
       }
     >
       <nav className="journey-tracker" aria-label="Experience timeline">
-        <p className="eyebrow">The journey</p>
         <div className="journey-stops">
           {steps.map((step, index) => (
             <a
@@ -83,14 +82,9 @@ export function ExperienceJourney({
                 <strong>{step.company}</strong>
                 <small>{step.dates}</small>
               </span>
-              <span className="journey-dot" aria-hidden="true" />
             </a>
           ))}
         </div>
-        <p className="journey-caption">
-          <span>{String(active + 1).padStart(2, "0")}</span> /{" "}
-          {String(steps.length).padStart(2, "0")}
-        </p>
       </nav>
       {children}
     </div>

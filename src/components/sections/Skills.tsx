@@ -1,8 +1,6 @@
 import { localContent, type PortfolioContent } from "@/content/repository";
 import { Section } from "@/components/ui/Section";
 import { SkillsMarquee } from "@/components/SkillsMarquee";
-import { DepthCard } from "@/components/ui/DepthCard";
-import { CodeIcon } from "@/components/ui/icons";
 export function Skills({
   content = localContent,
 }: {
@@ -10,11 +8,7 @@ export function Skills({
 }) {
   const { skills } = content;
   return (
-    <Section
-      id="skills"
-      eyebrow="04 / The toolkit"
-      title="The right tools. Deeper possibilities."
-    >
+    <Section id="skills" eyebrow="Skills" title="Tools I work with">
       <SkillsMarquee
         items={[
           "PyTorch",
@@ -27,22 +21,18 @@ export function Skills({
           "RAG",
         ]}
       />
-      <div className="skills-grid">
-        {skills.map((group, i) => (
-          <DepthCard key={group.category} className="skill-group">
-            <div className="skill-top">
-              <CodeIcon />
-              <span>0{i + 1}</span>
-            </div>
+      <ul className="skill-rows">
+        {skills.map((group) => (
+          <li key={group.category} className="skill-row reveal">
             <h3>{group.category}</h3>
-            <ul>
+            <ul className="chip-list">
               {group.skills.map((s) => (
                 <li key={s}>{s}</li>
               ))}
             </ul>
-          </DepthCard>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   );
 }

@@ -8,6 +8,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Hero } from "@/components/sections/Hero";
+import { Highlights } from "@/components/sections/Highlights";
 import { About } from "@/components/sections/About";
 import { Experience } from "@/components/sections/Experience";
 import { Projects } from "@/components/sections/Projects";
@@ -24,8 +25,9 @@ import { Section } from "@/components/ui/Section";
 describe("readable portfolio content", () => {
   it("renders the name first and real contact/work destinations", () => {
     render(<Hero />);
+    // A real space keeps screen readers from reading the name as one word.
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "KeerthirajanSenthilkumar",
+      "Keerthirajan Senthilkumar",
     );
     expect(
       screen.getByRole("link", { name: /Explore my work/ }),
@@ -37,6 +39,18 @@ describe("readable portfolio content", () => {
       "href",
       localContent.contact.social.leetcode,
     );
+  });
+  it("links each highlight to the case study that proves it", () => {
+    render(<Highlights />);
+    const links = screen.getAllByRole("link");
+    expect(links.map((l) => l.getAttribute("href"))).toEqual([
+      "/projects/siri-core-modeling",
+      "/projects/barterbrain",
+      "/projects/barterbrain-nvc",
+    ]);
+    expect(screen.getByText("Siri Core Modeling")).toBeVisible();
+    expect(screen.getByText("Hackathon winner")).toBeVisible();
+    expect(screen.getByText("Top 5 finalist")).toBeVisible();
   });
   it("keeps education exclusively in About with visible achievements", () => {
     render(

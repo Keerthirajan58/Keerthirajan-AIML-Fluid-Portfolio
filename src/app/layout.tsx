@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { profile, contact } from "@/content/data";
 import { getSiteUrl } from "@/lib/site";
+import { colors } from "@/lib/theme";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { MotionFoundation } from "@/components/motion/MotionFoundation";
@@ -9,22 +10,17 @@ import { Atmosphere } from "@/components/scene/Atmosphere";
 import { RouteArrival } from "@/components/motion/RouteArrival";
 import { loadContent } from "@/content/load";
 import "./globals.css";
-import "./editorial.css";
 
+// Unbounded sets the hero name (the LCP element), so it is preloaded too.
 const unbounded = localFont({
   src: "../assets/fonts/Unbounded-Latin-Variable.woff2",
   variable: "--font-unbounded",
-  preload: false,
   display: "swap",
 });
 
 const inter = localFont({
   src: "../assets/fonts/Inter-Latin-Variable.woff2",
   variable: "--font-inter",
-});
-const instrument = localFont({
-  src: "../assets/fonts/InstrumentSans-Latin-Variable.woff2",
-  variable: "--font-instrument",
   display: "swap",
 });
 
@@ -51,8 +47,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "dark",
-  themeColor: "#0b1728",
+  colorScheme: "light",
+  themeColor: colors.air,
 };
 
 export default async function RootLayout({
@@ -64,15 +60,15 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${unbounded.variable} ${inter.variable} ${instrument.variable} h-full antialiased`}
+      className={`${unbounded.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-paper text-ink">
+      <body className="flex min-h-full flex-col">
         <MotionFoundation />
         <Atmosphere />
         <RouteArrival />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-crimson focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-sheet"
         >
           Skip to content
         </a>

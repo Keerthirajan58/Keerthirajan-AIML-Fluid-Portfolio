@@ -20,48 +20,48 @@ export default async function Image() {
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
+        textAlign: "center",
         padding: "80px 96px",
-        background: colors.paper,
-        position: "relative",
+        // A still frame of the Clear Air light field.
+        background: `radial-gradient(circle at 12% 0%, ${colors.blush}, transparent 55%), radial-gradient(circle at 92% 6%, ${colors.haze}, transparent 58%), radial-gradient(circle at 50% 120%, ${colors.peach}, transparent 60%), ${colors.air}`,
       }}
     >
-      {/* Static material bands echo the graphite / copper atmosphere. */}
-      <svg
-        width="420"
-        height="420"
-        viewBox="0 0 400 400"
-        style={{ position: "absolute", right: 40, top: 105, opacity: 0.9 }}
-      >
-        <g transform="rotate(-25 200 200)" fill={colors.wine} opacity="0.1">
-          <rect x="110" y="-80" width="50" height="540" rx="25" />
-          <rect x="220" y="-80" width="50" height="540" rx="25" />
-          <rect x="330" y="-80" width="50" height="540" rx="25" />
-        </g>
-      </svg>
-
-      <p
+      <div
         style={{
-          margin: 0,
-          fontSize: 26,
-          fontWeight: 700,
-          letterSpacing: 4,
-          textTransform: "uppercase",
-          color: colors.crimson,
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          padding: "12px 24px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.75)",
+          fontSize: 24,
+          fontWeight: 600,
+          color: colors.slate,
         }}
       >
+        <div
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            background: colors.crimson,
+          }}
+        />
         {profile.heroEyebrow}
-      </p>
+      </div>
 
       <p
         style={{
-          margin: "20px 0 0",
+          margin: "36px 0 0",
           fontFamily: "Unbounded",
-          fontSize: 76,
+          fontSize: 84,
           fontWeight: 800,
-          lineHeight: 1.05,
+          lineHeight: 1,
+          letterSpacing: -4,
           color: colors.ink,
-          maxWidth: 820,
+          maxWidth: 1000,
         }}
       >
         {profile.name}
@@ -69,11 +69,11 @@ export default async function Image() {
 
       <p
         style={{
-          margin: "28px 0 0",
-          fontSize: 32,
+          margin: "32px 0 0",
+          fontSize: 30,
           fontWeight: 500,
-          color: colors.inkMuted,
-          maxWidth: 760,
+          color: colors.slate,
+          maxWidth: 900,
         }}
       >
         {profile.roles.join("  ·  ")}

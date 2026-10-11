@@ -5,17 +5,11 @@ const SmoothScroll = dynamic(
   () => import("./SmoothScroll").then((module) => module.SmoothScroll),
   { ssr: false },
 );
-const ScrollFX = dynamic(
-  () => import("./ScrollFX").then((module) => module.ScrollFX),
-  { ssr: false },
-);
-/** Do not download desktop animation engines on touch/reduced-motion devices. */
+/**
+ * Desktop wheel smoothing only. Scroll choreography is CSS scroll-driven
+ * animation (see globals.css), so no animation engine is downloaded.
+ */
 export function MotionFoundation() {
   const enabled = useMotionEnabled();
-  return enabled ? (
-    <>
-      <SmoothScroll />
-      <ScrollFX />
-    </>
-  ) : null;
+  return enabled ? <SmoothScroll /> : null;
 }

@@ -82,7 +82,7 @@ test("project notes trap focus, close with Escape, and restore the initiating co
   await expect(trigger).toBeFocused();
 });
 
-test("navigation remains transparent and the experience rail follows the role in view", async ({
+test("navigation floats over content and the experience rail follows the role in view", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -278,7 +278,7 @@ test("direct anchors remain visible with reduced motion", async ({ page }) => {
     await expect(page.locator("#" + id + " h2")).toBeVisible();
   }
   await expect(page.locator(".cursor-halo")).toHaveCount(0);
-  await expect(page.locator(".atmosphere canvas")).toHaveCount(0);
+  await expect(page.locator(".atmosphere")).not.toHaveAttribute("data-live");
 });
 test("no-JavaScript content, links and gallery remain usable", async ({
   browser,
@@ -328,27 +328,27 @@ test("unknown routes fail safely without a broken redirect", async ({
   await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
 });
 
-test("live scene is optional, context loss recovers, and route transitions fail open", async ({
+test("light field follows a fine pointer and route transitions fail open", async ({
   page,
   isMobile,
 }, testInfo) => {
   test.skip(isMobile);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
-  await expect(page.locator(".atmosphere canvas")).toBeVisible({
-    timeout: 15000,
-  });
-  await page.mouse.move(650, 350);
+  await expect(page.locator('.atmosphere[data-live="true"]')).toBeAttached();
+  const glow = page.locator(".glow-pointer");
+  const before = await glow.evaluate((el) => getComputedStyle(el).transform);
+  await page.mouse.move(120, 160);
+  await page.mouse.move(160, 200);
+  await expect
+    .poll(() => glow.evaluate((el) => getComputedStyle(el).transform))
+    .not.toBe(before);
   await page.screenshot({
     path: testInfo.outputPath("hero-live.png"),
     animations: "disabled",
   });
   await expect(page.locator(".cursor-halo")).toHaveCount(0);
-  await page
-    .locator(".atmosphere canvas")
-    .evaluate((canvas) => canvas.dispatchEvent(new Event("webglcontextlost")));
-  await expect(page.locator(".atmosphere canvas")).toHaveCount(0);
-  await expect(page.locator(".atmosphere-fallback")).toBeVisible();
+  await expect(page.locator("canvas")).toHaveCount(0);
   await page.evaluate(() => {
     HTMLElement.prototype.animate = () => {
       throw new Error("Synthetic animation failure");

@@ -1,5 +1,5 @@
-import { localContent, type PortfolioContent } from "@/content/repository";
 import Image from "next/image";
+import { localContent, type PortfolioContent } from "@/content/repository";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { ArrowUpRightIcon } from "@/components/ui/icons";
 import { ContactForm } from "@/components/ContactForm";
@@ -10,81 +10,58 @@ export function Contact({
   content?: PortfolioContent;
 }) {
   const { profile, contact } = content;
+  const email = contact.emails[0];
+  const formId = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID;
   return (
     <section
       id="contact"
       tabIndex={-1}
       aria-labelledby="contact-heading"
-      className="section shell contact-stage"
+      className="contact"
     >
-      <div className="contact-prelude">
-        <span className="eyebrow">07 / The next conversation</span>
-        <span className="contact-availability">
-          <span className="status-dot" />
+      <div className="contact-inner shell reveal">
+        <p className="availability">
+          <span className="status-dot" aria-hidden="true" />
           Open to opportunities
-        </span>
-      </div>
-      <div className="contact-invitation">
+        </p>
         <h2 id="contact-heading">
-          Good ideas deserve
-          <br />
-          <span>a conversation.</span>
+          Have a role in mind? <span>Let&apos;s talk.</span>
         </h2>
-        <div className="contact-person">
-          <Image src={profile.photo} width={76} height={76} alt="" />
-          <p>
-            Have a role in mind?
-            <br />
-            Let&apos;s see what we can build.
-          </p>
-        </div>
-      </div>
-      <div className="contact-line">
-        <a
-          href={"mailto:" + contact.emails[0]}
-          className="contact-orbit"
-          aria-label="Say hello — Send an email"
-        >
-          <ArrowUpRightIcon />
-          <span>Say hello</span>
-        </a>
-      </div>
-      <div className="contact-directory">
-        <div className="contact-direct">
-          <span className="eyebrow">Start here</span>
-          <a href={"mailto:" + contact.emails[0]}>
-            {contact.emails[0]}
-            <ArrowUpRightIcon />
+        <p className="contact-lede">
+          I&apos;m looking for AIML and software engineering roles. Based in{" "}
+          {profile.location}, open to relocation.
+        </p>
+        <div className="contact-actions">
+          <a
+            href={"mailto:" + email}
+            className="button button-primary"
+            aria-label="Say hello — Send an email"
+          >
+            Say hello <ArrowUpRightIcon />
           </a>
-          <p>AIML & software engineering opportunities.</p>
-        </div>
-        <div>
-          <span className="eyebrow">Based in</span>
-          <p>{profile.location}</p>
-          <small>Open to relocation</small>
-        </div>
-        <div>
-          <span className="eyebrow">Find me elsewhere</span>
-          <SocialLinks contact={contact} />
-          <a className="text-link" href={contact.resumeUrl}>
+          <a className="button button-secondary" href={contact.resumeUrl}>
             View résumé <ArrowUpRightIcon />
           </a>
         </div>
-      </div>
-      {formEndpoint(process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID) && (
-        <div className="contact-message">
-          <div>
-            <h3>Prefer to leave a message?</h3>
-            <p>A little context is a great place to start.</p>
+        <div className="contact-card">
+          <div className="contact-person">
+            <Image src={profile.photo} width={96} height={96} alt="" />
+            <span>
+              <a className="contact-email" href={"mailto:" + email}>
+                {email}
+              </a>
+              <small>AIML &amp; software engineering opportunities</small>
+            </span>
           </div>
-          <div>
-            <ContactForm
-              formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID}
-              email={contact.emails[0]}
-            />
-          </div>
+          <SocialLinks contact={contact} />
         </div>
-      )}
+        {formEndpoint(formId) && (
+          <div className="contact-message">
+            <h3>Prefer to leave a message?</h3>
+            <ContactForm formId={formId} email={email} />
+          </div>
+        )}
+      </div>
     </section>
   );
 }

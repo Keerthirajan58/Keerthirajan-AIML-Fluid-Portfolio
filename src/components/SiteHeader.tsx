@@ -30,7 +30,8 @@ export function SiteHeader({
       let id = "";
       navigation.forEach((n) => {
         const el = document.getElementById(n.id);
-        if (el && el.offsetTop <= y) id = n.id;
+        if (el && el.getBoundingClientRect().top + window.scrollY <= y)
+          id = n.id;
       });
       setActive(id);
     };
@@ -54,7 +55,7 @@ export function SiteHeader({
   };
   return (
     <header className="site-header">
-      <div className="header-inner shell">
+      <div className="header-pill">
         <Link href="/" className="wordmark" aria-label="KS. — Home">
           <BrandMark />
         </Link>
@@ -73,12 +74,11 @@ export function SiteHeader({
                   {n.label}
                 </span>
               </span>
-              <span className="nav-marker" aria-hidden="true" />
             </Link>
           ))}
         </nav>
         <a className="header-resume" href={contact.resumeUrl}>
-          Résumé <ArrowUpRightIcon width={16} height={16} />
+          Résumé <ArrowUpRightIcon width={15} height={15} />
         </a>
         <button
           ref={toggle}
@@ -91,47 +91,6 @@ export function SiteHeader({
           <span />
           <span />
         </button>
-        <dialog
-          ref={dialog}
-          id="mobile-menu"
-          data-lenis-prevent
-          aria-label="Navigation menu"
-          className="mobile-menu"
-          onClose={() => toggle.current?.focus()}
-        >
-          <div className="menu-top">
-            <span className="wordmark">
-              <BrandMark />
-            </span>
-            <button
-              className="icon-button"
-              aria-label="Close menu"
-              onClick={close}
-            >
-              ×
-            </button>
-          </div>
-          <nav aria-label="Mobile">
-            {navigation.map((n, i) => (
-              <Link
-                key={n.id}
-                href={"/#" + n.id}
-                onClick={(e) => choose(n.id, e.timeStamp)}
-              >
-                <span aria-hidden="true">0{i + 1}</span>
-                {n.label}
-                <ArrowUpRightIcon />
-              </Link>
-            ))}
-          </nav>
-          <a
-            href={contact.resumeUrl}
-            onClick={close}
-            className="button button-primary"
-          >
-            View résumé <ArrowUpRightIcon />
-          </a>
-        </dialog>
         <noscript>
           <nav className="nojs-nav" aria-label="Mobile without JavaScript">
             {navigation.map((n) => (
@@ -142,6 +101,42 @@ export function SiteHeader({
           </nav>
         </noscript>
       </div>
+      <dialog
+        ref={dialog}
+        id="mobile-menu"
+        data-lenis-prevent
+        aria-label="Navigation menu"
+        className="mobile-menu"
+        onClose={() => toggle.current?.focus()}
+      >
+        <div className="menu-top">
+          <span className="wordmark">
+            <BrandMark />
+          </span>
+          <button className="icon-button" aria-label="Close menu" onClick={close}>
+            ×
+          </button>
+        </div>
+        <nav aria-label="Mobile">
+          {navigation.map((n) => (
+            <Link
+              key={n.id}
+              href={"/#" + n.id}
+              onClick={(e) => choose(n.id, e.timeStamp)}
+            >
+              {n.label}
+              <ArrowUpRightIcon />
+            </Link>
+          ))}
+        </nav>
+        <a
+          href={contact.resumeUrl}
+          onClick={close}
+          className="button button-primary"
+        >
+          View résumé <ArrowUpRightIcon />
+        </a>
+      </dialog>
     </header>
   );
 }

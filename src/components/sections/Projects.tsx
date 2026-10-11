@@ -8,17 +8,19 @@ export function Projects({
 }: {
   content?: PortfolioContent;
 }) {
+  const work = [
+    ...getFeaturedProjects(content.projects),
+    ...getGridProjects(content.projects),
+  ];
   return (
     <Section
       id="projects"
-      eyebrow="03 / Selected work"
-      title="Ideas, made real."
+      eyebrow="Work"
+      title="Selected work"
+      lede="Machine learning, generative AI, and the full-stack software that ships them. Open a project for the full case study."
     >
       <ProjectExplorer
-        items={[
-          ...getFeaturedProjects(content.projects),
-          ...getGridProjects(content.projects),
-        ].map((p, i) => ({
+        items={work.map((p, i) => ({
           slug: p.slug,
           filters: p.filters,
           card: (

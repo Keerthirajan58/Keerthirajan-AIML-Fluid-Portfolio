@@ -12,14 +12,7 @@ const runtime = vi.hoisted(() => ({
   path: "/",
   scrollTo: vi.fn(),
   destroy: vi.fn(),
-  raf: vi.fn(),
-  tickerAdd: vi.fn(),
-  tickerRemove: vi.fn(),
-  revert: vi.fn(),
-  contextRevert: vi.fn(),
-  to: vi.fn(),
-  fromTo: vi.fn(),
-  lenisOn: vi.fn(),
+  lenisOptions: vi.fn(),
 }));
 vi.mock("@/components/motion/useMotionEnabled", () => ({
   useMotionEnabled: () => runtime.enabled,
@@ -29,32 +22,12 @@ vi.mock("lenis", () => ({
   default: class {
     scrollTo = runtime.scrollTo;
     destroy = runtime.destroy;
-    raf = runtime.raf;
-    on = runtime.lenisOn;
-  },
-}));
-vi.mock("@/lib/gsap", () => ({
-  ScrollTrigger: { update: vi.fn() },
-  gsap: {
-    ticker: { add: runtime.tickerAdd, remove: runtime.tickerRemove },
-    matchMedia: () => ({
-      add: (_query: string, callback: () => void) => callback(),
-      revert: runtime.revert,
-    }),
-    context: (callback: () => void) => {
-      callback();
-      return { revert: runtime.contextRevert };
-    },
-    to: runtime.to,
-    fromTo: runtime.fromTo,
-    utils: {
-      toArray: (selector: string) =>
-        Array.from(document.querySelectorAll(selector)),
-    },
+    constructor(options: unknown) {
+      runtime.lenisOptions(options);
+    }
   },
 }));
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
-import { ScrollFX } from "@/components/motion/ScrollFX";
 import { RouteArrival } from "@/components/motion/RouteArrival";
 import { Atmosphere } from "@/components/scene/Atmosphere";
 import { MotionFoundation } from "@/components/motion/MotionFoundation";
@@ -137,14 +110,16 @@ it("never loads motion or decorative cursor when disabled", () => {
   const { container } = render(
     <>
       <SmoothScroll />
-      <ScrollFX />
       <Atmosphere />
       <MotionFoundation />
     </>,
   );
-  expect(runtime.tickerAdd).not.toHaveBeenCalled();
+  expect(runtime.lenisOptions).not.toHaveBeenCalled();
   expect(container.querySelector(".cursor-halo")).toBeNull();
   expect(container.querySelector("canvas")).toBeNull();
+  expect(container.querySelector(".atmosphere")).not.toHaveAttribute(
+    "data-live",
+  );
 });
 it("keeps Lenis wheel-only and handles same-page links with focus, then cleans up", () => {
   runtime.scrollTo.mockImplementation(
@@ -160,9 +135,9 @@ it("keeps Lenis wheel-only and handles same-page links with focus, then cleans u
       </section>
     </>,
   );
-  const tick = runtime.tickerAdd.mock.calls[0][0];
-  tick(2);
-  expect(runtime.raf).toHaveBeenCalledWith(2000);
+  expect(runtime.lenisOptions).toHaveBeenCalledWith(
+    expect.objectContaining({ smoothWheel: true, syncTouch: false, autoRaf: true }),
+  );
   fireEvent.click(screen.getByText("Jump"));
   expect(runtime.scrollTo).toHaveBeenCalledOnce();
   expect(document.getElementById("target")).toHaveFocus();
@@ -170,7 +145,6 @@ it("keeps Lenis wheel-only and handles same-page links with focus, then cleans u
   expect(runtime.scrollTo).toHaveBeenCalledOnce();
   unmount();
   expect(runtime.destroy).toHaveBeenCalledOnce();
-  expect(runtime.tickerRemove).toHaveBeenCalledWith(tick);
 });
 it("does not intercept missing targets, external routes or new tabs", () => {
   render(
@@ -187,21 +161,6 @@ it("does not intercept missing targets, external routes or new tabs", () => {
   for (const name of ["Missing", "Project", "New tab"])
     fireEvent.click(screen.getByText(name));
   expect(runtime.scrollTo).not.toHaveBeenCalled();
-});
-it("owns section transforms and tears down all GSAP matches", () => {
-  const { unmount } = render(
-    <>
-      <div className="project-image">
-        <span />
-      </div>
-      <div className="experience-card" />
-      <ScrollFX />
-    </>,
-  );
-  expect(runtime.to).toHaveBeenCalledTimes(2);
-  expect(runtime.fromTo).toHaveBeenCalled();
-  unmount();
-  expect(runtime.revert).toHaveBeenCalledOnce();
 });
 it("route arrival never delays routing and cancels when unmounted", async () => {
   const cancel = vi.fn(),
@@ -248,15 +207,41 @@ it("skips route animation under reduced motion and keeps project pages canvas-fr
     </>,
   );
   expect(container.querySelector("canvas")).toBeNull();
-  expect(container.querySelector(".atmosphere-fallback")).not.toBeNull();
+  expect(container.querySelector(".atmosphere .glow-pointer")).not.toBeNull();
 });
-it("provides an immediate CSS atmosphere without an artificial mounting timer", () => {
+it("renders the light field immediately, with no mounting timer", () => {
   vi.useFakeTimers();
   const { container, unmount } = render(<Atmosphere />);
-  expect(container.querySelector(".atmosphere-fallback")).not.toBeNull();
+  expect(container.querySelectorAll(".atmosphere .glow")).toHaveLength(4);
   expect(vi.getTimerCount()).toBe(0);
   unmount();
   expect(vi.getTimerCount()).toBe(0);
+});
+it("eases the pointer glow toward a fine pointer and ignores touch", () => {
+  const frames: FrameRequestCallback[] = [];
+  vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => {
+    frames.push(cb);
+    return frames.length;
+  });
+  vi.stubGlobal("cancelAnimationFrame", vi.fn());
+  const { container, unmount } = render(<Atmosphere />);
+  const glow = container.querySelector<HTMLElement>(".glow-pointer")!;
+  expect(container.querySelector(".atmosphere")).toHaveAttribute(
+    "data-live",
+    "true",
+  );
+  const touch = new Event("pointermove");
+  Object.assign(touch, { pointerType: "touch", clientX: 10, clientY: 10 });
+  window.dispatchEvent(touch);
+  expect(frames).toHaveLength(0);
+  const mouse = new Event("pointermove");
+  Object.assign(mouse, { pointerType: "mouse", clientX: 0, clientY: 0 });
+  window.dispatchEvent(mouse);
+  expect(frames).toHaveLength(1);
+  frames.shift()!(0);
+  expect(glow.style.transform).toMatch(/^translate3d\(/);
+  unmount();
+  expect(glow.style.transform).toBe("");
 });
 it("limits education depth to fine pointers, resets on departure and respects static mode", () => {
   const { container, rerender } = render(<DepthCard>Education</DepthCard>);

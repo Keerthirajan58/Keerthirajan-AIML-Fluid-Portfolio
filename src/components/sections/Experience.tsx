@@ -8,11 +8,7 @@ export function Experience({
   content?: PortfolioContent;
 }) {
   return (
-    <Section
-      id="experience"
-      eyebrow="02 / Experience"
-      title="Where I've put it to work."
-    >
+    <Section id="experience" eyebrow="Experience" title="Where I've worked">
       <ExperienceJourney
         steps={content.experience.map((job) => ({
           company: job.company,
@@ -25,25 +21,24 @@ export function Experience({
             <li
               id={`role-${i}`}
               tabIndex={-1}
-              className={`experience-card company-${i}`}
+              className="experience-card reveal"
               key={job.company}
             >
               <div className="job-identity">
                 <CompanyMark company={job.company} />
                 <div>
-                  <span className="eyebrow">{job.dates}</span>
                   <h3>{job.company}</h3>
-                  <p className="job-location">{job.location}</p>
+                  <p className="job-meta">
+                    {job.dates} · {job.location}
+                  </p>
                 </div>
               </div>
-              <div className="job-work">
-                <h4>{job.role}</h4>
-                <ul className="result-list">
-                  {job.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </div>
+              <h4>{job.role}</h4>
+              <ul className="result-list">
+                {job.bullets.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
             </li>
           ))}
         </ol>

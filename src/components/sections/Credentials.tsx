@@ -11,43 +11,47 @@ export function Credentials({
 }: {
   content?: PortfolioContent;
 }) {
+  const publications = getPublications(content.projects);
+  const certifications = getCertifications(content.projects);
   return (
     <Section
       id="credentials"
-      eyebrow="05 / Continuing to learn"
-      title="Research & credentials."
+      eyebrow="Credentials"
+      title="Research and certifications"
     >
       <div className="credentials-layout">
-        <div className="publications-panel">
-          <h3>
-            <span>01</span>Publications
+        <div>
+          <h3 className="sub-title">
+            Publications <span>{publications.length}</span>
           </h3>
-          {getPublications(content.projects).map((p) => (
-            <article className="publication" key={p.slug}>
-              <span className="publication-icon">
-                <BookIcon />
-              </span>
-              <div>
-                <h4>{p.title}</h4>
-                <p>{p.description}</p>
-              </div>
-            </article>
-          ))}
+          <div className="publication-list">
+            {publications.map((p) => (
+              <article className="publication reveal" key={p.slug}>
+                <span className="tile-icon">
+                  <BookIcon />
+                </span>
+                <div>
+                  <h4>{p.title}</h4>
+                  <p>{p.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
-        <div className="certifications-panel">
-          <h3>
-            <span>02</span>Certifications
+        <div>
+          <h3 className="sub-title">
+            Certifications <span>{certifications.length}</span>
           </h3>
           <ul className="cert-grid">
-            {getCertifications(content.projects).map((p) => (
-              <li key={p.slug}>
+            {certifications.map((p) => (
+              <li key={p.slug} className="reveal">
                 <a
                   className="cert-card"
                   href={p.links.credential}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span className="credential-icon">
+                  <span className="tile-icon">
                     <CertificateIcon />
                   </span>
                   <span>

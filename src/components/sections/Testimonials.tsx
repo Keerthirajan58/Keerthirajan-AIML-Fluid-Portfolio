@@ -10,8 +10,8 @@ export function Testimonials({
   return (
     <Section
       id="testimonials"
-      eyebrow="06 / In good company"
-      title="Trusted by people I've worked with."
+      eyebrow="Recommendations"
+      title="From people I've worked with"
     >
       <RecommendationCarousel items={testimonials} />
     </Section>

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { getAnchorTarget } from "@/lib/navigation";
 import { useMotionEnabled } from "./useMotionEnabled";
 export function SmoothScroll() {
@@ -12,10 +11,8 @@ export function SmoothScroll() {
       lerp: 0.12,
       smoothWheel: true,
       syncTouch: false,
+      autoRaf: true,
     });
-    lenis.on("scroll", ScrollTrigger.update);
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
     const click = (e: MouseEvent) => {
       if (
         e.defaultPrevented ||
@@ -46,7 +43,6 @@ export function SmoothScroll() {
     document.addEventListener("click", click);
     return () => {
       document.removeEventListener("click", click);
-      gsap.ticker.remove(tick);
       lenis.destroy();
     };
   }, [enabled]);

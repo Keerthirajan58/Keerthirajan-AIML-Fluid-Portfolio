@@ -14,48 +14,37 @@ export function Hero({
   content?: PortfolioContent;
 }) {
   const { profile, contact } = content;
+  const [first, ...rest] = profile.name.split(" ");
   return (
-    <section id="hero" aria-labelledby="hero-heading" className="hero shell">
-      <div className="hero-top">
-        <span className="eyebrow">
-          <span className="status-dot" /> {profile.heroEyebrow}
-        </span>
-        <span className="edition">PORTFOLIO / 2026</span>
-      </div>
-      <div className="hero-copy">
-        <h1 id="hero-heading">
-          <span>{profile.name.split(" ")[0]}</span>
-          <span>
-            {profile.name.split(" ").slice(1).join(" ")}
-            <span className="hero-period">.</span>
-          </span>
+    <section id="hero" aria-labelledby="hero-heading" className="hero">
+      <div className="hero-inner shell">
+        <p className="availability">
+          <span className="status-dot" aria-hidden="true" />
+          Open to AIML &amp; software engineering roles
+        </p>
+        <h1 id="hero-heading" className="hero-name">
+          <span>{first}</span> <span>{rest.join(" ")}</span>
         </h1>
-        <div className="hero-intro">
-          <p>
-            AIML + Software Engineering.
-            <br />
-            <span>Intelligence, put to work.</span>
-          </p>
-        </div>
+        <p className="hero-intro">AIML + Software Engineering</p>
         <p className="hero-description">
-          From AI systems to the software around them.
-          <br className="desktop-break" /> I build the whole experience.
+          I build machine-learning systems, evaluate LLMs, and ship the
+          full-stack software around them.
         </p>
         <ul className="hero-facts">
           <li>
-            <span className="fact-icon icon-apple">
+            <span className="fact-icon">
               <AppleIcon />
             </span>
             Apple AIML Intern
           </li>
           <li>
-            <span className="fact-icon icon-school">
+            <span className="fact-icon">
               <GraduationIcon />
             </span>
             MS CS · GWU 2026
           </li>
           <li>
-            <span className="fact-icon icon-location">
+            <span className="fact-icon">
               <MapPinIcon />
             </span>
             {profile.location}
@@ -65,19 +54,11 @@ export function Hero({
           <MagneticLink href="#projects">
             Explore my work <ArrowUpRightIcon />
           </MagneticLink>
-          <a className="text-link" href={contact.resumeUrl}>
-            View résumé <ArrowUpRightIcon width={16} height={16} />
+          <a className="button button-secondary" href={contact.resumeUrl}>
+            View résumé <ArrowUpRightIcon />
           </a>
           <SocialLinks contact={contact} />
         </div>
-      </div>
-      <div className="hero-bottom">
-        <span className="hero-footnote">
-          Thoughtful systems. Tangible experiences.
-        </span>
-        <a className="scroll-cue" href="#about">
-          Scroll to discover <span aria-hidden="true">↓</span>
-        </a>
       </div>
     </section>
   );

@@ -22,9 +22,6 @@ export default defineConfig({
         "src/app/page.tsx",
         "src/app/projects/**",
         "src/app/opengraph-image.tsx",
-        // Browser/GPU integration is exercised by Playwright; binary rendering is not meaningful in jsdom.
-        "src/components/scene/SilkScene.tsx",
-        "src/components/ui/RiveMark.tsx",
       ],
       reporter: ["text", "html", "json", "json-summary", "lcov"],
       thresholds: { lines: 80, statements: 80, functions: 80, branches: 70 },

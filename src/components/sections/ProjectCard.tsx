@@ -1,12 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProjectEntry, LeadershipProjectEntry } from "@/content/data";
-import {
-  ArrowUpRightIcon,
-  AwardIcon,
-  GitHubIcon,
-  CodeIcon,
-} from "@/components/ui/icons";
+import { ArrowUpRightIcon, AwardIcon, GitHubIcon } from "@/components/ui/icons";
 import { ProjectNotes } from "@/components/ProjectNotes";
 
 export function ProjectCard({
@@ -30,23 +25,22 @@ export function ProjectCard({
           className="object-cover"
         />
       ) : (
+        // No screenshot exists yet: show the real stack instead of a fake visual.
         <div
           className={`project-placeholder placeholder-${index % 3}`}
           aria-hidden="true"
         >
-          <CodeIcon />
-          <span>Project visual forthcoming</span>
-          <i />
-          <i />
-          <i />
+          <ul>
+            {p.tags.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+          <span className="placeholder-note">Screenshot coming soon</span>
         </div>
       )}
-      <span className="project-number">
-        {String(index + 1).padStart(2, "0")}
-      </span>
       {route && (
         <span className="project-open">
-          Explore <ArrowUpRightIcon />
+          Case study <ArrowUpRightIcon />
         </span>
       )}
       {p.achievement && (
@@ -60,7 +54,7 @@ export function ProjectCard({
   return (
     <article className="project-card" data-project={p.slug}>
       {route ? (
-        <Link href={route} className="project-image">
+        <Link href={route} className="project-image" tabIndex={-1}>
           {preview}
         </Link>
       ) : (
