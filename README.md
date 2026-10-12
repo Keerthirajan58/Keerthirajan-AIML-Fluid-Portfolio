@@ -10,7 +10,7 @@ npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Factual content lives in `src/content/data.ts` and `src/content/nvc.ts`. See `.env.example` for optional integrations; the site works without credentials.
+Open [http://localhost:3000](http://localhost:3000). Factual content lives in `src/content/data.ts` and `src/content/nvc.ts`. See `.env.example` for optional integrations; the site works without credentials. The contact popup posts to the portfolio's Formspree form (`FORMSPREE_FORM_ID` in `src/lib/contact.ts`; `NEXT_PUBLIC_FORMSPREE_FORM_ID` overrides it). Tests never send a real message.
 
 ## Verification
 
@@ -27,12 +27,11 @@ This runs TypeScript, ESLint, Vitest with enforced coverage, the production buil
 
 ## Contact photo
 
-The avatar next to the email in Contact is `public/images/contact-profile.jpg` (a `.png` or `.webp` with the same name also works). To swap it:
 
-1. Crop to a square (1:1), at least 600 × 600 px; 720–1200 px is plenty.
-2. Frame head and shoulders: face centred, eyes about 40% down from the top, the top of the hair just inside the top edge (5–10% margin), shoulders at the bottom.
-3. The avatar is shown as a circle, so keep anything important away from the corners.
-4. Save it over `public/images/contact-profile.jpg`. No code change is needed; CSS never zooms or re-crops it.
+1. Crop to roughly head and shoulders; square (1:1) is ideal, and a slightly taller portrait also works because the circle shows the top square of the photo.
+2. Keep the face in the upper middle with a little space above the hair.
+3. Use at least 600 px of width; 720–1200 px is plenty.
+4. Save it over `public/images/contact-profile.jpg`. No code change is needed; CSS never zooms it.
 
 ## Deployment
 
