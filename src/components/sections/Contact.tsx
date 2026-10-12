@@ -5,6 +5,7 @@ import { ArrowUpRightIcon } from "@/components/ui/icons";
 import { ContactLauncher } from "@/components/ContactLauncher";
 import { findPublicImage } from "@/lib/imageSize";
 import { FORMSPREE_FORM_ID } from "@/lib/contact";
+import { HoverLens } from "@/components/ui/HoverLens";
 
 export function Contact({
   content = localContent,
@@ -68,6 +69,7 @@ export function Contact({
           </div>
           <SocialLinks contact={contact} />
         </div>
+        <HoverLens items=".contact-inner > .availability, .contact-actions .button, .contact-card .social-link" />
       </div>
     </section>
   );

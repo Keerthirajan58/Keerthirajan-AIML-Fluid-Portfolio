@@ -208,10 +208,10 @@ export interface CaseStudySection {
 export const profile: Profile = {
   name: "Keerthirajan Senthilkumar",
   photo: "/images/profile.jpg",
-  pageTitle: "Keerthirajan Senthilkumar | AIML & Software Engineer",
+  pageTitle: "Keerthirajan · AI, end to end",
   heroEyebrow: "AIML & Software Engineering Graduate",
   tagline:
-    "Portfolio of Keerthirajan Senthilkumar, an AIML and software engineering graduate focused on machine learning, LLM evaluation, and full-stack projects.",
+    "Keerthirajan Senthilkumar builds AI end to end: fine-tuning and evaluating models, and the agents, retrieval and full-stack products around them.",
   roles: [
     "AIML Engineer",
     "Software Engineer",

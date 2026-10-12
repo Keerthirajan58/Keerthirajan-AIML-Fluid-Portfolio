@@ -4,7 +4,7 @@
  * are a playful design device, labelled as such, not real model output.
  */
 export const heroSentence =
-  "I build machine-learning systems, evaluate LLMs, and ship the full-stack software around them.";
+  "I build AI end to end, from fine-tuning and evaluating models to the agents, retrieval and full-stack products around them.";
 
 export type HeroToken = { text: string; alts: [string, number][] };
 
@@ -26,51 +26,83 @@ export const heroTokens: HeroToken[] = [
     ],
   },
   {
-    text: "machine-learning",
+    text: "AI",
     alts: [
-      ["machine-learning", 0.58],
-      ["AI", 0.24],
-      ["data", 0.09],
+      ["AI", 0.64],
+      ["models", 0.18],
+      ["systems", 0.11],
     ],
   },
   {
-    text: "systems,",
+    text: "end",
     alts: [
-      ["systems", 0.66],
-      ["models", 0.21],
-      ["products", 0.07],
+      ["end", 0.58],
+      ["that", 0.21],
+      ["products", 0.12],
     ],
   },
   {
-    text: "evaluate",
+    text: "to",
     alts: [
-      ["evaluate", 0.49],
-      ["fine-tune", 0.27],
-      ["deploy", 0.12],
+      ["to", 0.93],
+      ["and", 0.04],
+      ["through", 0.02],
     ],
   },
   {
-    text: "LLMs,",
+    text: "end,",
     alts: [
-      ["LLMs", 0.72],
-      ["models", 0.17],
-      ["agents", 0.06],
+      ["end", 0.96],
+      ["finish", 0.02],
+      ["production", 0.01],
+    ],
+  },
+  {
+    text: "from",
+    alts: [
+      ["from", 0.68],
+      ["across", 0.17],
+      ["spanning", 0.08],
+    ],
+  },
+  {
+    text: "fine-tuning",
+    alts: [
+      ["fine-tuning", 0.52],
+      ["training", 0.29],
+      ["pretraining", 0.08],
     ],
   },
   {
     text: "and",
     alts: [
-      ["and", 0.91],
-      ["then", 0.05],
-      ["or", 0.02],
+      ["and", 0.88],
+      ["to", 0.07],
+      ["or", 0.03],
     ],
   },
   {
-    text: "ship",
+    text: "evaluating",
     alts: [
-      ["ship", 0.55],
-      ["build", 0.26],
-      ["deploy", 0.12],
+      ["evaluating", 0.56],
+      ["judging", 0.22],
+      ["benchmarking", 0.13],
+    ],
+  },
+  {
+    text: "models",
+    alts: [
+      ["models", 0.61],
+      ["LLMs", 0.27],
+      ["embeddings", 0.06],
+    ],
+  },
+  {
+    text: "to",
+    alts: [
+      ["to", 0.86],
+      ["through", 0.08],
+      ["and", 0.04],
     ],
   },
   {
@@ -82,6 +114,30 @@ export const heroTokens: HeroToken[] = [
     ],
   },
   {
+    text: "agents,",
+    alts: [
+      ["agents", 0.57],
+      ["tools", 0.19],
+      ["pipelines", 0.14],
+    ],
+  },
+  {
+    text: "retrieval",
+    alts: [
+      ["retrieval", 0.48],
+      ["RAG", 0.31],
+      ["search", 0.12],
+    ],
+  },
+  {
+    text: "and",
+    alts: [
+      ["and", 0.91],
+      ["plus", 0.05],
+      ["or", 0.02],
+    ],
+  },
+  {
     text: "full-stack",
     alts: [
       ["full-stack", 0.47],
@@ -90,11 +146,11 @@ export const heroTokens: HeroToken[] = [
     ],
   },
   {
-    text: "software",
+    text: "products",
     alts: [
-      ["software", 0.64],
-      ["products", 0.19],
-      ["apps", 0.11],
+      ["products", 0.62],
+      ["apps", 0.21],
+      ["software", 0.11],
     ],
   },
   {

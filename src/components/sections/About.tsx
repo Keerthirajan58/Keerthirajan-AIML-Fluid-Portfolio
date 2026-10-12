@@ -11,6 +11,7 @@ import {
   MapPinIcon,
 } from "@/components/ui/icons";
 import { DepthCard } from "@/components/ui/DepthCard";
+import { HoverLens } from "@/components/ui/HoverLens";
 
 /** Colour-coded chips: gold for awards, ink for Apple, navy for academics. */
 const chipStyles = [
@@ -71,6 +72,7 @@ export function About({
                 </small>
               </span>
             </div>
+            <HoverLens items=".achievement-list li, .location-pill" />
           </div>
           <div className="education">
             <div className="education-header reveal">

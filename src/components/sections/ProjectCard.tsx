@@ -8,6 +8,7 @@ import {
   SparkIcon,
 } from "@/components/ui/icons";
 import { ProjectNotes } from "@/components/ProjectNotes";
+import { projectCover } from "@/lib/imageSize";
 
 export function ProjectCard({
   project: p,
@@ -19,11 +20,12 @@ export function ProjectCard({
   leadership?: LeadershipProjectEntry;
 }) {
   const route = p.gallery ? `/projects/${p.slug}` : undefined;
+  const cover = projectCover(p);
   const preview = (
     <>
-      {p.gallery ? (
+      {cover ? (
         <Image
-          src={p.gallery.cover}
+          src={cover}
           alt={p.title + " preview"}
           fill
           sizes="(max-width: 599px) 100vw, (max-width: 959px) 50vw, 33vw"

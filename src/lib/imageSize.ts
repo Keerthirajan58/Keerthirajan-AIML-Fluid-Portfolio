@@ -74,6 +74,17 @@ function parse(buf: Buffer): ImageDimensions {
   return { width: 1200, height: 900 };
 }
 
+/**
+ * A project card's image: its case-study cover, or else a `cover` file
+ * dropped into `public/images/projects/<slug>/` (null shows the placeholder).
+ */
+export function projectCover(p: {
+  slug: string;
+  gallery?: { cover: string };
+}): string | null {
+  return p.gallery?.cover ?? findPublicImage(`images/projects/${p.slug}/cover`);
+}
+
 /** First existing `/public` file among `base` + common image extensions. */
 export function findPublicImage(base: string): string | null {
   for (const ext of ["jpg", "jpeg", "png", "webp"]) {

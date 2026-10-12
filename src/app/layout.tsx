@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
     default: profile.pageTitle,
-    template: `%s | ${profile.name}`,
+    template: `%s · ${profile.name.split(" ")[0]}`,
   },
   description: profile.tagline,
   keywords: [profile.name, ...profile.roles, "Portfolio"],

@@ -1,6 +1,7 @@
 import { Fragment, type CSSProperties } from "react";
 import { localContent, type PortfolioContent } from "@/content/repository";
 import { heroSentence, heroTokens } from "@/content/heroTokens";
+import { HoverLens } from "@/components/ui/HoverLens";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import {
   AppleIcon,
@@ -91,6 +92,7 @@ export function Hero({
           </a>
           <SocialLinks contact={contact} />
         </div>
+        <HoverLens items=".availability, .hero-facts li, .hero-actions .button, .hero-actions .social-link" />
       </div>
     </section>
   );

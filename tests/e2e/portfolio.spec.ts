@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { caseStudySlugs } from "../../src/lib/projects";
 import { getFeaturedProjects, getGridProjects } from "../../src/lib/projects";
+import { projectCover } from "../../src/lib/imageSize";
 import {
   projectFilters,
   matchesProjectFilter,
@@ -320,7 +321,11 @@ test("revised art direction keeps credentials visible and project actions integr
   );
   await expect(page.locator(".education-card .award-row")).toHaveCount(1);
   await expect(page.locator(".more-projects")).toHaveCount(0);
-  await expect(page.locator(".project-placeholder")).toHaveCount(5);
+  await expect(page.locator(".project-placeholder")).toHaveCount(
+    [...getFeaturedProjects(), ...getGridProjects()].filter(
+      (p) => !projectCover(p),
+    ).length,
+  );
   await expect(page.locator(".timeline-item")).toHaveCount(3);
   await expect(
     page.getByRole("heading", { level: 2, name: "AIML / Software Engineer" }),
@@ -965,4 +970,39 @@ test("each skill area's tab is filled with its colour; a click moves the ink pil
       .evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe("rgb(15, 16, 19)");
   await expect(page.locator(".skill-bubble[data-lit]").first()).toBeVisible();
+});
+
+test("buttons get the glass lens only on hover, and it glides between them", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, "hover is a fine-pointer interaction");
+  await page.goto("/");
+  await expect(page).toHaveTitle("Keerthirajan · AI, end to end");
+  const lens = page.locator(".hero-inner > .hover-lens");
+  await expect(lens).not.toHaveAttribute("data-on");
+  await expect(lens).toHaveCSS("opacity", "0");
+  const resume = page.locator(".hero-actions .button-secondary");
+  await resume.hover();
+  await expect(lens).toHaveAttribute("data-on", "");
+  await expect(lens).toHaveCSS("opacity", "1");
+  const around = async (target: typeof resume) => {
+    const [l, t] = [await lens.boundingBox(), await target.boundingBox()];
+    return (
+      !!l &&
+      !!t &&
+      Math.abs(l.x - (t.x - 4)) < 1.5 &&
+      Math.abs(l.width - (t.width + 8)) < 1.5 &&
+      Math.abs(l.height - (t.height + 8)) < 1.5
+    );
+  };
+  await expect.poll(() => around(resume)).toBe(true);
+  const github = page.locator(".hero-actions .social-link").nth(1);
+  await github.hover();
+  await expect.poll(() => around(github)).toBe(true);
+  await page.mouse.move(4, 600);
+  await expect(lens).not.toHaveAttribute("data-on");
+  // The About card and the contact band have their own lens.
+  await expect(page.locator(".about-story > .hover-lens")).toHaveCount(1);
+  await expect(page.locator(".contact-inner > .hover-lens")).toHaveCount(1);
 });

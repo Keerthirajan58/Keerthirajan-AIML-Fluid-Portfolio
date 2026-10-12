@@ -13,6 +13,8 @@ import { heroSentence } from "@/content/heroTokens";
 import { About } from "@/components/sections/About";
 import { Experience } from "@/components/sections/Experience";
 import { Projects } from "@/components/sections/Projects";
+import { getFeaturedProjects, getGridProjects } from "@/lib/projects";
+import { projectCover } from "@/lib/imageSize";
 import { Skills } from "@/components/sections/Skills";
 import { Credentials } from "@/components/sections/Credentials";
 import { Testimonials } from "@/components/sections/Testimonials";
@@ -115,7 +117,15 @@ describe("readable portfolio content", () => {
   it("renders eleven unified project cards and an independent related startup link", () => {
     render(<Projects />);
     expect(document.querySelectorAll(".project-card")).toHaveLength(11);
-    expect(document.querySelectorAll(".project-placeholder")).toHaveLength(5);
+    // Placeholders stand in only until a cover screenshot is dropped in.
+    const waiting = [
+      ...getFeaturedProjects(localContent.projects),
+      ...getGridProjects(localContent.projects),
+    ].filter((p) => !projectCover(p));
+    expect(waiting.length).toBeLessThanOrEqual(5);
+    expect(document.querySelectorAll(".project-placeholder")).toHaveLength(
+      waiting.length,
+    );
     expect(document.querySelector(".more-projects")).toBeNull();
     expect(document.querySelector("a a")).toBeNull();
     expect(
