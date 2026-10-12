@@ -4,6 +4,7 @@ import { SocialLinks } from "@/components/ui/SocialLinks";
 import { ArrowUpRightIcon } from "@/components/ui/icons";
 import { ContactLauncher } from "@/components/ContactLauncher";
 import { findPublicImage } from "@/lib/imageSize";
+import { FORMSPREE_FORM_ID } from "@/lib/contact";
 
 export function Contact({
   content = localContent,
@@ -36,7 +37,9 @@ export function Contact({
         <div className="contact-actions">
           <ContactLauncher
             email={email}
-            formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID}
+            formId={
+              process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID || FORMSPREE_FORM_ID
+            }
             className="button button-primary"
           >
             Say hello <ArrowUpRightIcon />
@@ -50,9 +53,9 @@ export function Contact({
             <span className="contact-avatar">
               <Image
                 src={photo}
-                width={112}
-                height={112}
-                sizes="160px"
+                width={128}
+                height={157}
+                sizes="128px"
                 alt=""
               />
             </span>

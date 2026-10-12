@@ -72,6 +72,13 @@ describe("readable portfolio content", () => {
       screen.getByText(/Volleyball captain and Youth Red Cross volunteer/),
     ).toBeVisible();
     expect(screen.getByText("One throughline: keep learning.")).toBeVisible();
+    // Owner's wording: one "Engineer", not two.
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "AIML / Software Engineer",
+      }),
+    ).toBeVisible();
   });
   it("keeps leadership in matching project notes without enlarging cards", async () => {
     render(
@@ -139,6 +146,27 @@ describe("readable portfolio content", () => {
       document.querySelectorAll(".skill-bubble:not([data-dim])"),
     ).map((el) => el.firstChild?.textContent);
     expect(lit).toEqual(group.skills);
+    // Each area has its own colour: the sliding pill takes it, and so do the
+    // area's bubbles (every bubble carries its area's dot).
+    const tabs = screen.getByRole("group", {
+      name: "Highlight skills by area",
+    });
+    expect(tabs).toHaveAttribute("data-tone", "2");
+    const litBubbles = document.querySelectorAll(".skill-bubble[data-lit]");
+    expect(litBubbles).toHaveLength(group.skills.length);
+    litBubbles.forEach((el) => expect(el).toHaveAttribute("data-tone", "2"));
+    expect(
+      document.querySelector(".skill-bubble")?.getAttribute("data-tone"),
+    ).toBe("1");
+    // Every switch replays the pop across the chosen bubbles.
+    const cloud = document.getElementById("skill-cloud")!;
+    expect(cloud).toHaveAttribute("data-wave", "a");
+    await userEvent.click(screen.getByRole("button", { name: /^All/ }));
+    expect(cloud).toHaveAttribute("data-wave", "b");
+    expect(tabs).not.toHaveAttribute("data-tone");
+    expect(document.querySelectorAll(".skill-bubble[data-lit]")).toHaveLength(
+      0,
+    );
     // Evidence comes from real stacks: PyTorch appears in Apple and project tags.
     const evidence = screen.getAllByText(/used in .*Apple/);
     expect(evidence.length).toBeGreaterThan(0);
@@ -177,6 +205,8 @@ describe("readable portfolio content", () => {
       </>,
     );
     expect(screen.getByText(/All rights reserved/)).toBeVisible();
+    // The KS mark lives in the header only.
+    expect(document.querySelector(".site-footer .wordmark")).toBeNull();
     expect(screen.getByRole("link", { name: /Say hello/ })).toHaveAttribute(
       "href",
       "mailto:" + localContent.contact.emails[0],
@@ -241,7 +271,7 @@ describe("case-study gallery", () => {
         return this.classList.contains("gallery-wall") ? width() : 0;
       });
 
-  it("lays every image out in reading order at its own shape", () => {
+  it("lays the images out in justified rows, each at its own shape", () => {
     let width = 1000;
     wallWidth(() => width);
     const resize: { callback?: () => void } = {};
@@ -274,41 +304,43 @@ describe("case-study gallery", () => {
       "0.7500",
       "1.0000",
     ]);
-    // 1000px wide: three columns of (1000 - 2 × 14) / 3 = 324px, in order.
-    expect(wall).toHaveAttribute("data-masonry", "true");
-    expect(tiles.map((t) => t.style.getPropertyValue("--x"))).toEqual([
-      "0px",
-      "338px",
-      "676px",
-    ]);
-    expect(tiles[1].style.width).toBe("324px");
-    // Each tile is sized from its image's shape: 324 / 0.75.
-    expect(tiles[1].style.height).toBe("432px");
-    expect(wall.style.height).toBe("432px");
-    // On a phone-width wall the third tile tucks under the shorter first column.
+    expect(wall).toHaveAttribute("data-justified", "true");
+    const size = (t: HTMLElement) => ({
+      x: parseFloat(t.style.getPropertyValue("--x")),
+      y: parseFloat(t.style.getPropertyValue("--y")),
+      w: parseFloat(t.style.width),
+      h: parseFloat(t.style.height),
+    });
+    // 1000px wide: one row, one height, edge to edge.
+    const row = (1000 - 2 * 14) / 3.35;
+    tiles.map(size).forEach((t, i) => {
+      expect(t.y).toBe(0);
+      expect(t.h).toBeCloseTo(row);
+      expect(t.w / t.h).toBeCloseTo([1.6, 0.75, 1][i]);
+    });
+    expect(size(tiles[0]).x).toBe(0);
+    expect(size(tiles[2]).x + size(tiles[2]).w).toBeCloseTo(1000);
+    expect(parseFloat(wall.style.height)).toBeCloseTo(row);
+    // On a phone-width wall the rows re-balance for the new width.
     width = 500;
     resize.callback?.();
     act(() => frames.splice(0).forEach((frame) => frame(0)));
-    expect(tiles[2].style.getPropertyValue("--x")).toBe("0px");
-    expect(tiles[2].style.getPropertyValue("--y")).toBe("165.875px");
+    tiles
+      .map(size)
+      .forEach((t) => expect(t.h).toBeCloseTo((500 - 2 * 10) / 3.35));
+    expect(size(tiles[2]).x + size(tiles[2]).w).toBeCloseTo(500);
   });
 
-  it("sizes the wall to its set: one row for a few, narrow columns for phone shots", () => {
-    const phones = Array.from({ length: 8 }, (_, i) => ({
-      src: `/images/p${i}.jpg`,
-      width: 590,
-      height: 1280,
-    }));
-    const { unmount } = render(<ProjectGallery images={phones} title="App" />);
-    const wall = () => document.querySelector<HTMLElement>(".gallery-wall")!;
-    expect(wall().style.getPropertyValue("--cols")).toBe("5");
-    expect(document.querySelector(".gallery-tile img")).toHaveAttribute(
-      "sizes",
-      "(max-width: 879px) 50vw, 242px",
-    );
-    unmount();
-    render(<ProjectGallery images={phones.slice(0, 2)} title="Pair" />);
-    expect(wall().style.getPropertyValue("--cols")).toBe("2");
+  it("gives each image a size hint from its own shape", () => {
+    render(<ProjectGallery images={images.slice(0, 2)} title="Pair" />);
+    expect(
+      Array.from(document.querySelectorAll(".gallery-tile img")).map((img) =>
+        img.getAttribute("sizes"),
+      ),
+    ).toEqual([
+      "(max-width: 879px) 60vw, 576px",
+      "(max-width: 879px) 60vw, 270px",
+    ]);
   });
 
   it("opens the chosen image and restores focus after lightbox navigation", async () => {
@@ -393,6 +425,18 @@ describe("contact delivery states", () => {
       expect(screen.getByRole("status")).toHaveTextContent("has been sent"),
     );
     expect(fetcher).toHaveBeenCalledOnce();
+    // Formspree gets the fields plus a clear subject line for the inbox.
+    const [url, init] = fetcher.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ];
+    expect(url).toBe("https://formspree.io/f/abcdefgh");
+    expect(JSON.parse(String(init.body))).toMatchObject({
+      name: "Test Person",
+      email: "test@example.com",
+      topic: "Job opportunity",
+      _subject: "Portfolio: Job opportunity from Test Person",
+    });
     // The sent state replaces the form with a confirmation.
     expect(document.querySelector("form")).toBeNull();
   });

@@ -21,6 +21,10 @@ const issuerOf = (description: string) =>
     "",
   );
 
+/** Square marks get the most height, long wordmarks the least. */
+const logoShape = ({ width, height }: { width: number; height: number }) =>
+  width / height <= 1.6 ? "mark" : width / height <= 3 ? "compact" : "wordmark";
+
 const monogram = (issuer: string) => {
   const words = issuer.split(/\s+/).filter(Boolean);
   return words.length > 1
@@ -86,13 +90,7 @@ export function Credentials({
                   >
                     <span
                       className="cert-mark"
-                      data-logo={
-                        logo
-                          ? logo.width / logo.height > 1.6
-                            ? "wordmark"
-                            : "mark"
-                          : undefined
-                      }
+                      data-logo={logo ? logoShape(logo) : undefined}
                       aria-hidden="true"
                     >
                       {logo ? (

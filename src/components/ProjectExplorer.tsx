@@ -12,20 +12,30 @@ import {
   matchesProjectFilter,
   type ProjectFilter,
 } from "@/lib/projectFilters";
-import { columnWidth, columnsFor, placeGrid } from "@/lib/masonry";
-import { useActiveLens } from "@/components/ui/useActiveLens";
+import { columnWidth, columnsFor, placeGrid } from "@/lib/layout";
+import { useChipIndicators } from "@/components/ui/useChipIndicators";
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 const GAP = 18;
 
+function FilterLabel({ label, count }: { label: string; count: number }) {
+  return (
+    <>
+      {label}
+      <span aria-hidden="true">{count.toString().padStart(2, "0")}</span>
+    </>
+  );
+}
+
 /**
  * Cards are rendered on the server; this island owns filtering and layout.
- * The grid keeps standard rows (each row as tall as its tallest card), and
- * like the original site's Isotope grid, filtered-out cards scale and fade
- * away in place while the rest glide to their new spots. Without JavaScript
- * the cards fall back to a plain CSS grid.
+ * The grid keeps standard rows (each row as tall as its tallest card). When
+ * the filter changes, like the original site's Isotope grid but livelier:
+ * leaving cards blur and sink away, staying cards glide to their new spots
+ * in a quick cascade with a small lift, and arriving cards rise into place.
+ * Without JavaScript the cards fall back to a plain CSS grid.
  */
 export function ProjectExplorer({
   items,
@@ -36,11 +46,12 @@ export function ProjectExplorer({
   const grid = useRef<HTMLDivElement>(null);
   const filterBar = useRef<HTMLDivElement>(null);
   const wasHidden = useRef<Set<string>>(new Set());
+  const filters = availableProjectFilters(items);
   const visible = items.filter((item) =>
     matchesProjectFilter(item.filters, selected),
   );
 
-  const layout = useCallback(() => {
+  const layout = useCallback((reshuffle = false) => {
     const el = grid.current;
     if (!el) return;
     const width = el.clientWidth;
@@ -62,9 +73,24 @@ export function ProjectExplorer({
       GAP,
     );
     shown.forEach((s, i) => {
+      const x = `${placements[i].x}px`,
+        y = `${placements[i].y}px`;
+      const moved =
+        reshuffle &&
+        s.dataset.entering !== "true" &&
+        s.style.getPropertyValue("--x") !== "" &&
+        (s.style.getPropertyValue("--x") !== x ||
+          s.style.getPropertyValue("--y") !== y);
       s.style.height = `${placements[i].height}px`;
-      s.style.setProperty("--x", `${placements[i].x}px`);
-      s.style.setProperty("--y", `${placements[i].y}px`);
+      s.style.setProperty("--x", x);
+      s.style.setProperty("--y", y);
+      s.style.setProperty("--order", String(i));
+      if (moved) {
+        // Restart the lift even if this card moved a moment ago.
+        s.removeAttribute("data-moving");
+        void s.offsetWidth;
+        s.setAttribute("data-moving", "");
+      }
     });
     el.style.height = `${height}px`;
     if (!el.dataset.masonry) {
@@ -90,7 +116,7 @@ export function ProjectExplorer({
         wasHidden.current.has(s.dataset.slug ?? ""),
     );
     entering.forEach((s) => (s.dataset.entering = "true"));
-    layout();
+    layout(true);
     wasHidden.current = new Set(
       slots
         .filter((s) => s.dataset.hidden === "true")
@@ -112,7 +138,7 @@ export function ProjectExplorer({
     let frame = 0;
     const schedule = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(layout);
+      frame = requestAnimationFrame(() => layout());
     };
     void document.fonts?.ready.then(schedule);
     if (typeof ResizeObserver === "undefined")
@@ -130,8 +156,8 @@ export function ProjectExplorer({
     };
   }, [layout]);
 
-  // A glass lens rides on top of the chosen filter.
-  useActiveLens(filterBar, selected);
+  // The ink pill moves to a new choice; the glass lens follows the pointer.
+  useChipIndicators(filterBar, selected);
 
   return (
     <div className="project-explorer">
@@ -145,20 +171,25 @@ export function ProjectExplorer({
           aria-label="Filter projects"
           ref={filterBar}
         >
-          {availableProjectFilters(items).map((filter) => (
+          {filters.map((filter) => (
             <button
               key={filter.id}
               type="button"
+              className="chip"
               aria-pressed={selected === filter.id}
               aria-controls="project-results"
               onClick={() => setSelected(filter.id)}
             >
-              {filter.label}
-              <span aria-hidden="true">
-                {filter.count.toString().padStart(2, "0")}
-              </span>
+              <FilterLabel label={filter.label} count={filter.count} />
             </button>
           ))}
+          <div className="chip-ink" aria-hidden="true">
+            {filters.map((filter) => (
+              <span className="chip" key={filter.id}>
+                <FilterLabel label={filter.label} count={filter.count} />
+              </span>
+            ))}
+          </div>
           <span className="filter-lens" aria-hidden="true" />
         </div>
         <p className="project-count" role="status" aria-live="polite">

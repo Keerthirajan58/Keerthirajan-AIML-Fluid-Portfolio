@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState, type CSSProperties } from "react";
-import { useActiveLens } from "@/components/ui/useActiveLens";
+import { useChipIndicators } from "@/components/ui/useChipIndicators";
 
 export type SkillBubble = {
   name: string;
@@ -9,10 +9,15 @@ export type SkillBubble = {
   evidence: string[];
 };
 
+/** Areas get a colour each, in order (`--tone-1` … `--tone-5`). */
+const toneOf = (index: number) => (Math.max(0, index) % 5) + 1;
+
 /**
- * A compact, interactive skills panel: every skill is a bubble sized by
- * how often it appears in real projects and roles. Choosing an area brings
- * its bubbles forward; hovering one shows where it was used.
+ * A compact, interactive skills panel: every skill is a bubble sized by how
+ * often it appears in real projects and roles, with a dot in its area's
+ * colour. Choosing an area slides a pill in that colour onto the tab and
+ * brings its bubbles forward with a quick pop; hovering one shows where it
+ * was used.
  */
 export function SkillsCloud({
   categories,
@@ -22,12 +27,27 @@ export function SkillsCloud({
   skills: SkillBubble[];
 }) {
   const [active, setActive] = useState("all");
+  // Bumped on every change so the bubbles' pop replays.
+  const [wave, setWave] = useState(0);
   const tabs = useRef<HTMLDivElement>(null);
-  useActiveLens(tabs, active);
+  useChipIndicators(tabs, active);
+  const tabList = ["all", ...categories];
   const count = (c: string) =>
     c === "all"
       ? skills.length
       : skills.filter((s) => s.categories.includes(c)).length;
+  const isOn = (s: SkillBubble) =>
+    active === "all" || s.categories.includes(active);
+  const lit = skills.filter(isOn).map((s) => s.name);
+  const tabLabel = (c: string) => (
+    <>
+      {c !== "all" && (
+        <i className="tone-dot" data-tone={toneOf(categories.indexOf(c))} />
+      )}
+      {c === "all" ? "All" : c}
+      <span aria-hidden="true">{count(c)}</span>
+    </>
+  );
   return (
     <div className="skills-panel surface reveal">
       <div
@@ -35,35 +55,57 @@ export function SkillsCloud({
         role="group"
         aria-label="Highlight skills by area"
         ref={tabs}
+        data-tone={
+          active === "all" ? undefined : toneOf(categories.indexOf(active))
+        }
       >
-        {["all", ...categories].map((c) => (
+        {tabList.map((c) => (
           <button
             key={c}
             type="button"
+            className="chip"
             aria-pressed={active === c}
             aria-controls="skill-cloud"
-            onClick={() => setActive(c)}
+            onClick={() => {
+              if (c === active) return;
+              setActive(c);
+              setWave((w) => w + 1);
+            }}
           >
-            {c === "all" ? "All" : c}
-            <span aria-hidden="true">{count(c)}</span>
+            {tabLabel(c)}
           </button>
         ))}
+        <div className="chip-ink" aria-hidden="true">
+          {tabList.map((c) => (
+            <span className="chip" key={c}>
+              {tabLabel(c)}
+            </span>
+          ))}
+        </div>
         <span className="filter-lens" aria-hidden="true" />
       </div>
       <ul
         className="skill-cloud"
         id="skill-cloud"
         aria-label={active === "all" ? "All skills" : `${active} skills`}
+        data-wave={wave ? (wave % 2 ? "a" : "b") : undefined}
       >
         {skills.map((s, i) => {
-          const on = active === "all" || s.categories.includes(active);
+          const on = isOn(s);
           return (
             <li
               key={s.name}
               className="skill-bubble"
               data-size={Math.min(3, s.evidence.length)}
+              data-tone={toneOf(categories.indexOf(s.categories[0]))}
               data-dim={on ? undefined : "true"}
-              style={{ "--i": i } as CSSProperties}
+              data-lit={on && active !== "all" ? "true" : undefined}
+              style={
+                {
+                  "--i": i,
+                  "--k": Math.max(0, lit.indexOf(s.name)),
+                } as CSSProperties
+              }
             >
               {s.name}
               {s.evidence.length > 0 && (

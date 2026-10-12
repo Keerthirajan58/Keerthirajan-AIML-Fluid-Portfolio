@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -13,12 +14,22 @@ import {
   ArrowLeftIcon,
   ArrowUpRightIcon,
   AwardIcon,
+  BookIcon,
+  DevpostIcon,
+  GitHubIcon,
 } from "@/components/ui/icons";
 import { loadContent } from "@/content/load";
 export function generateStaticParams() {
   return caseStudySlugs.map((slug) => ({ slug }));
 }
 export const dynamicParams = true;
+
+/** Project links become real buttons: GitHub in ink, Devpost in its teal. */
+const linkStyles: Record<string, { label: string; icon: ReactNode }> = {
+  github: { label: "View on GitHub", icon: <GitHubIcon /> },
+  devpost: { label: "View on Devpost", icon: <DevpostIcon /> },
+  blog: { label: "Read the write-up", icon: <BookIcon /> },
+};
 export async function generateMetadata({
   params,
 }: {
@@ -81,25 +92,25 @@ export default async function ProjectPage({
                   : "May – August 2025")}
             </dd>
           </div>
-          {links.length > 0 && (
-            <div>
-              <dt>Links</dt>
-              <dd className="case-links">
-                {links.map(([label, href]) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {label === "blog" ? "Read more" : label}
-                    <ArrowUpRightIcon width={14} height={14} />
-                  </a>
-                ))}
-              </dd>
-            </div>
-          )}
         </dl>
+        {links.length > 0 && (
+          <div className="case-actions">
+            {links.map(([key, href]) => (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="case-action"
+                data-kind={key}
+              >
+                {linkStyles[key]?.icon}
+                {linkStyles[key]?.label ?? key}
+                <ArrowUpRightIcon width={14} height={14} />
+              </a>
+            ))}
+          </div>
+        )}
         <ul className="tag-list">
           {(p.caseStudy?.tech ?? p.tags).map((t) => (
             <li key={t}>{t}</li>

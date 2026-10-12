@@ -4,15 +4,23 @@ import { describe, expect, it } from "vitest";
 import {
   columnWidth,
   columnsFor,
-  galleryColumns,
+  galleryRowHeight,
   placeGrid,
-  placeMasonry,
-} from "@/lib/masonry";
+  placeJustified,
+  type Box,
+} from "@/lib/layout";
 import { SECTIONS, lossAt, lossPath } from "@/lib/sections";
 import { CERT_LOGOS, certLogo } from "@/lib/certLogos";
 import { getCertifications } from "@/lib/projects";
 
-describe("grid and masonry maths", () => {
+/** Groups boxes into rows by their top edge. */
+const rowsOf = (boxes: Box[]) => {
+  const rows = new Map<number, Box[]>();
+  for (const box of boxes) rows.set(box.y, [...(rows.get(box.y) ?? []), box]);
+  return [...rows.values()];
+};
+
+describe("work grid maths", () => {
   it("picks columns by width and splits the gaps evenly", () => {
     expect(columnsFor(1200)).toBe(3);
     expect(columnsFor(960)).toBe(3);
@@ -39,36 +47,66 @@ describe("grid and masonry maths", () => {
     ]);
     expect(placeGrid([], 3, 100, 18)).toEqual({ placements: [], height: 0 });
   });
+});
 
-  it("fills the shortest column, leftmost on ties, keeping reading order across the top", () => {
-    const { placements, height } = placeMasonry([100, 50, 80, 30], 2, 100, 10);
-    expect(placements).toEqual([
-      { x: 0, y: 0, column: 0 },
-      { x: 110, y: 0, column: 1 },
-      { x: 110, y: 60, column: 1 },
-      { x: 0, y: 110, column: 0 },
-    ]);
-    expect(height).toBe(140);
-    const even = placeMasonry([10, 10, 10, 10], 3, 50, 5).placements;
-    expect(even.map((p) => p.column)).toEqual([0, 1, 2, 0]);
-    expect(placeMasonry([], 3, 50, 5).height).toBe(0);
+describe("gallery maths: justified rows", () => {
+  it("keeps every image's shape and fills each row exactly", () => {
+    const ratios = [1.6, 0.75, 1];
+    const { boxes, height } = placeJustified(ratios, 1000, 300, 14);
+    const h = (1000 - 28) / 3.35;
+    expect(boxes.map((b) => b.y)).toEqual([0, 0, 0]);
+    boxes.forEach((b, i) => {
+      expect(b.height).toBeCloseTo(h);
+      expect(b.width / b.height).toBeCloseTo(ratios[i]);
+    });
+    expect(boxes[0].x).toBeCloseTo(0);
+    expect(boxes[1].x).toBeCloseTo(boxes[0].width + 14);
+    expect(boxes[2].x + boxes[2].width).toBeCloseTo(1000);
+    expect(height).toBeCloseTo(h);
   });
 
-  it("puts a short set in one row and gives phone screenshots narrower columns", () => {
-    const four = [0.75, 1.55, 1.33, 0.72];
-    const six = [1.68, 1.68, 1.68, 1.68, 1.68, 1.68];
-    const phones = [0.75, 1.33, ...Array(11).fill(0.46)];
-    expect(galleryColumns(1208, four)).toBe(4);
-    expect(galleryColumns(1208, [1.44, 1.78])).toBe(2);
-    expect(galleryColumns(1208, six)).toBe(3);
-    expect(galleryColumns(1208, phones)).toBe(5);
-    expect(galleryColumns(700, four)).toBe(2);
-    expect(galleryColumns(700, phones)).toBe(3);
-    expect(galleryColumns(390, phones)).toBe(2);
-    expect(galleryColumns(390, six)).toBe(2);
-    expect(galleryColumns(280, [1])).toBe(1);
-    expect(galleryColumns(280, four)).toBe(1);
-    expect(galleryColumns(1208, [])).toBe(1);
+  it("chooses balanced row breaks in reading order", () => {
+    // PitchPulse: a cover, a landscape shot and eleven phone screens.
+    const ratios = [0.75, 1.33, ...Array<number>(11).fill(0.46)];
+    const { boxes, height } = placeJustified(ratios, 1208, 300, 14);
+    const rows = rowsOf(boxes);
+    expect(rows.map((r) => r.length)).toEqual([5, 8]);
+    for (const row of rows) {
+      // One height per row, close to the target, spanning the full width.
+      row.forEach((b) => expect(b.height).toBeCloseTo(row[0].height));
+      expect(row[0].height).toBeGreaterThan(250);
+      expect(row[0].height).toBeLessThan(360);
+      expect(row[0].x).toBeCloseTo(0);
+      expect(row.at(-1)!.x + row.at(-1)!.width).toBeCloseTo(1208);
+    }
+    // Reading order: left to right, top to bottom.
+    boxes.slice(1).forEach((b, i) => {
+      const prev = boxes[i];
+      expect(b.y > prev.y || (b.y === prev.y && b.x > prev.x)).toBe(true);
+    });
+    expect(height).toBeCloseTo(rows[0][0].height + 14 + rows[1][0].height);
+  });
+
+  it("splits a set across more rows on a phone", () => {
+    const { boxes } = placeJustified([0.75, 1.55, 1.33, 0.72], 343, 150, 10);
+    expect(rowsOf(boxes).map((r) => r.length)).toEqual([2, 2]);
+  });
+
+  it("caps a lone wide image and centres it", () => {
+    const { boxes, height } = placeJustified([1.5], 1208, 300, 14);
+    expect(boxes).toEqual([{ x: 244, y: 0, width: 720, height: 480 }]);
+    expect(height).toBe(480);
+    expect(placeJustified([], 1208, 300, 14)).toEqual({
+      boxes: [],
+      height: 0,
+    });
+    expect(placeJustified([1], 0, 300, 14).boxes).toEqual([]);
+  });
+
+  it("targets taller rows on wider walls", () => {
+    expect(galleryRowHeight(1208)).toBe(300);
+    expect(galleryRowHeight(700)).toBe(220);
+    expect(galleryRowHeight(343)).toBe(150);
   });
 });
 
@@ -121,18 +159,12 @@ describe("certification logos", () => {
     return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
   };
 
-  it("shows each issuer's real logo, with initials only for API Academy", () => {
+  it("shows every issuer's real logo", () => {
     const certs = getCertifications();
-    const withoutLogo = certs.filter((c) => !certLogo(c.slug));
-    expect(withoutLogo.map((c) => c.slug)).toEqual([
-      "certification-api-designer",
-    ]);
+    expect(certs.filter((c) => !certLogo(c.slug))).toEqual([]);
     // Every mapped logo belongs to a real certification.
     expect(Object.keys(CERT_LOGOS).sort()).toEqual(
-      certs
-        .map((c) => c.slug)
-        .filter((slug) => slug !== "certification-api-designer")
-        .sort(),
+      certs.map((c) => c.slug).sort(),
     );
   });
 

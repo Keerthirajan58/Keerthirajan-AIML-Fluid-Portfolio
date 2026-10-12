@@ -59,12 +59,7 @@ export function ProjectCard({
   return (
     <article className="project-card surface" data-project={p.slug}>
       {route ? (
-        <Link
-          href={route}
-          className="project-image"
-
-          tabIndex={-1}
-        >
+        <Link href={route} className="project-image" tabIndex={-1}>
           {preview}
         </Link>
       ) : (
@@ -72,34 +67,28 @@ export function ProjectCard({
       )}
       <div className="project-content">
         <span className="project-category">{p.badge}</span>
-        <div className="project-title-row">
-          <h3>
-            {route ? (
-              <Link href={route}>{p.title}</Link>
-            ) : p.links.github ? (
-              <a
-                href={p.links.github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {p.title}
-              </a>
-            ) : (
-              p.title
-            )}
-          </h3>
-          {p.slug === "barterbrain" && (
-            <Link
-              href="/projects/barterbrain-nvc"
-              className="project-next-chapter"
-              aria-label="NVC finalist: BarterBrAIn — From hackathon to startup"
-            >
-              <SparkIcon />
-              NVC finalist
-              <ArrowUpRightIcon />
-            </Link>
+        {p.slug === "barterbrain" && (
+          <Link
+            href="/projects/barterbrain-nvc"
+            className="project-next-chapter"
+            aria-label="NVC finalist: BarterBrAIn — From hackathon to startup"
+          >
+            <SparkIcon />
+            NVC finalist
+            <ArrowUpRightIcon />
+          </Link>
+        )}
+        <h3>
+          {route ? (
+            <Link href={route}>{p.title}</Link>
+          ) : p.links.github ? (
+            <a href={p.links.github} target="_blank" rel="noopener noreferrer">
+              {p.title}
+            </a>
+          ) : (
+            p.title
           )}
-        </div>
+        </h3>
         <p>{p.description}</p>
         <ul className="tag-list">
           {p.tags.map((t) => (

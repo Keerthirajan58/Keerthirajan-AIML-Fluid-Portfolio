@@ -306,56 +306,20 @@ describe("theme switch", () => {
     );
   });
 
-  it("spreads the new theme from the toggle where view transitions exist", async () => {
-    const animate = vi.fn();
-    Object.defineProperty(document.documentElement, "animate", {
-      configurable: true,
-      value: animate,
-    });
-    const start = vi.fn((update: () => void) => {
-      update();
-      return { ready: Promise.resolve() };
-    });
-    Object.defineProperty(document, "startViewTransition", {
-      configurable: true,
-      value: start,
-    });
-    try {
-      render(<ThemeToggle />);
-      const toggle = screen.getByRole("button", { name: "Dark theme" });
-      toggle.getBoundingClientRect = () =>
-        ({ left: 100, top: 20, width: 40, height: 40 }) as DOMRect;
+  it("responds to every click at once, even mid-switch", () => {
+    render(<ThemeToggle />);
+    const toggle = screen.getByRole("button", { name: "Dark theme" });
+    // No animation gates the switch: each click flips the theme immediately
+    // (the stylesheet cross-fades the colours and can reverse mid-way).
+    for (const expected of ["dark", "light", "dark", "light", "dark"]) {
       fireEvent.click(toggle);
-      expect(start).toHaveBeenCalledOnce();
-      expect(document.documentElement.dataset.theme).toBe("dark");
-      await act(async () => {});
-      expect(animate).toHaveBeenCalledWith(
-        {
-          clipPath: [
-            expect.stringContaining("circle(0px at 120px 40px)"),
-            expect.any(String),
-          ],
-        },
-        expect.objectContaining({
-          pseudoElement: "::view-transition-new(root)",
-        }),
+      expect(document.documentElement.dataset.theme).toBe(expected);
+      expect(toggle).toHaveAttribute(
+        "aria-pressed",
+        String(expected === "dark"),
       );
-
-      // Reduced motion: an instant switch, no transition.
-      vi.mocked(window.matchMedia).mockImplementation(
-        (query: string) =>
-          ({
-            matches: query.includes("reduce"),
-            media: query,
-          }) as MediaQueryList,
-      );
-      fireEvent.click(toggle);
-      expect(start).toHaveBeenCalledOnce();
-      expect(document.documentElement.dataset.theme).toBe("light");
-    } finally {
-      delete (document as { startViewTransition?: unknown })
-        .startViewTransition;
     }
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
   });
 
   it("still switches when storage is unavailable", () => {

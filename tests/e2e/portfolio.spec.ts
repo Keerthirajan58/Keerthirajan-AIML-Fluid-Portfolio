@@ -7,8 +7,15 @@ import {
   matchesProjectFilter,
 } from "../../src/lib/projectFilters";
 
+// Owner rule: the suite never sends a real contact message. Any request to
+// Formspree is stopped unless a test answers it itself.
+test.beforeEach(async ({ page }) => {
+  await page.route("https://formspree.io/**", (route) => route.abort());
+});
+
 test("project filters keep order, re-flow into standard rows, and keep actions usable", async ({
   page,
+  isMobile,
 }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/#projects");
@@ -40,6 +47,17 @@ test("project filters keep order, re-flow into standard rows, and keep actions u
       .poll(() =>
         visible.evaluateAll((els) => {
           const boxes = els.map((el) => el.getBoundingClientRect());
+          // Every card sits inside the grid (positions applied exactly once).
+          const grid = els[0]
+            ?.closest(".project-grid")
+            ?.getBoundingClientRect();
+          if (
+            grid &&
+            boxes.some(
+              (b) => b.left < grid.left - 1 || b.right > grid.right + 1,
+            )
+          )
+            return "outside the grid";
           for (let i = 0; i < boxes.length; i++)
             for (let j = i + 1; j < boxes.length; j++) {
               const a = boxes[i],
@@ -65,21 +83,32 @@ test("project filters keep order, re-flow into standard rows, and keep actions u
         }),
       )
       .toBe("clear");
-    // The glass lens rides on top of the chosen chip.
-    const lens = filters.locator(".filter-lens");
+    // The ink pill sits on the chosen chip with the glass lens resting on it,
+    // and the pill's white copy of the labels lines up with the real chips.
+    const chosen = await button.evaluate(
+      (el) => `${(el as HTMLElement).offsetLeft}px`,
+    );
     expect(
-      await lens.evaluate(
-        (el) =>
-          el === el.parentElement!.lastElementChild &&
-          getComputedStyle(el).zIndex,
-      ),
-    ).toBe("2");
-    await expect
-      .poll(async () => {
-        const [a, b] = [await lens.boundingBox(), await button.boundingBox()];
-        return a && b ? Math.abs(a.x - b.x) + Math.abs(a.width - b.width) : 99;
-      })
-      .toBeLessThan(1.5);
+      await filters.evaluate((bar) => [
+        bar.style.getPropertyValue("--ix"),
+        bar.style.getPropertyValue("--lx"),
+      ]),
+    ).toEqual([chosen, chosen]);
+    expect(
+      await filters.evaluate((bar) => {
+        const chips = [...bar.querySelectorAll(":scope > button")];
+        const copies = [...bar.querySelectorAll(".chip-ink > .chip")];
+        return chips.every((chip, i) => {
+          const a = chip.getBoundingClientRect(),
+            b = copies[i].getBoundingClientRect();
+          return (
+            Math.abs(a.left - b.left) < 1 &&
+            Math.abs(a.top - b.top) < 1 &&
+            Math.abs(a.width - b.width) < 1
+          );
+        });
+      }),
+    ).toBe(true);
     const boundaries = await page.evaluate(() => ({
       work: document.getElementById("projects")!.getBoundingClientRect().bottom,
       skills: document.getElementById("skills")!.getBoundingClientRect().top,
@@ -90,6 +119,20 @@ test("project filters keep order, re-flow into standard rows, and keep actions u
         () => document.documentElement.scrollWidth <= window.innerWidth,
       ),
     ).toBe(true);
+  }
+  if (!isMobile) {
+    // Hover moves only the glass lens; the ink pill waits for a click.
+    const genai = filters.getByRole("button", { name: "GenAI", exact: true });
+    await genai.hover();
+    const left = await genai.evaluate(
+      (el) => `${(el as HTMLElement).offsetLeft}px`,
+    );
+    await expect
+      .poll(() => filters.evaluate((bar) => bar.style.getPropertyValue("--lx")))
+      .toBe(left);
+    expect(
+      await filters.evaluate((bar) => bar.style.getPropertyValue("--ix")),
+    ).not.toBe(left);
   }
   await filters
     .getByRole("button", { name: "Hackathons", exact: true })
@@ -151,22 +194,55 @@ test("header floats over content, nav glides to sections, and the timeline follo
     .evaluate((el) => el.scrollIntoView({ block: "center" }));
   await expect(page.locator("#role-2")).toHaveAttribute("data-active", "");
   await expect(page.locator("#role-0")).toHaveAttribute("data-reached", "");
-  // The pin rides the tip of the filling crimson line.
+  // Puts the middle of an element on the reading line (the viewport's
+  // middle, which the pin tracks); scrollIntoView would honour the header's
+  // scroll padding instead.
+  const toReadingLine = (selector: string) =>
+    page.evaluate((sel) => {
+      const box = document.querySelector(sel)!.getBoundingClientRect();
+      window.scrollTo(
+        0,
+        box.top + window.scrollY + box.height / 2 - window.innerHeight / 2,
+      );
+    }, selector);
+  // Between badges the pin rides the tip of the filling crimson line …
   const pin = page.locator(".timeline-cursor");
+  await toReadingLine("#role-1 .timeline-card");
+  await expect(pin).not.toHaveAttribute("data-docked");
   await expect
-    .poll(() => pin.evaluate((el) => Number(getComputedStyle(el).opacity)))
-    .toBe(1);
-  const gap = await page.evaluate(() => {
-    const journey = document.querySelector<HTMLElement>(".experience-journey")!;
-    const box = journey.getBoundingClientRect();
-    const progress = Number(journey.style.getPropertyValue("--progress"));
-    const tip = box.top + 10 + progress * (box.height - 20);
-    const pin = document
-      .querySelector(".timeline-cursor")!
-      .getBoundingClientRect();
-    return Math.abs(pin.top - tip);
-  });
-  expect(gap).toBeLessThan(2);
+    .poll(() =>
+      page.evaluate(() => {
+        const journey = document.querySelector<HTMLElement>(
+          ".experience-journey",
+        )!;
+        const box = journey.getBoundingClientRect();
+        const progress = Number(journey.style.getPropertyValue("--progress"));
+        const tip = box.top + 10 + progress * (box.height - 20);
+        const marker = document.querySelector(".timeline-cursor")!;
+        return (
+          Number(getComputedStyle(marker).opacity) === 1 &&
+          Math.abs(marker.getBoundingClientRect().top - tip) < 2
+        );
+      }),
+    )
+    .toBe(true);
+  // … and at a company badge it docks at the rim with an impact ripple,
+  // never over the logo.
+  const badge = page.locator("#role-2 .timeline-node");
+  await toReadingLine("#role-2 .timeline-node");
+  await expect(pin).toHaveAttribute("data-docked", "");
+  await expect(badge).toHaveAttribute("data-impact", "");
+  expect(
+    await page.evaluate(() => {
+      const tip = document
+        .querySelector(".timeline-cursor > span")!
+        .getBoundingClientRect().bottom;
+      const logo = document
+        .querySelector("#role-2 .timeline-node")!
+        .getBoundingClientRect().top;
+      return tip <= logo;
+    }),
+  ).toBe(true);
   const social = page
     .getByRole("link", { name: "LeetCode", exact: true })
     .first();
@@ -189,6 +265,8 @@ test("home retains identity, one education section and copyright", async ({
     }),
   ).toHaveCount(1);
   await expect(page.locator("footer")).toContainText("All rights reserved");
+  // The KS mark lives in the header only.
+  await expect(page.locator(".site-footer .wordmark")).toHaveCount(0);
   await expect(page.locator(".project-card")).toHaveCount(11);
   await page.locator("#contact").scrollIntoViewIfNeeded();
   const hello = page.getByRole("link", { name: /Say hello/ });
@@ -225,15 +303,40 @@ test("revised art direction keeps credentials visible and project actions integr
   await expect(page.locator(".more-projects")).toHaveCount(0);
   await expect(page.locator(".project-placeholder")).toHaveCount(5);
   await expect(page.locator(".timeline-item")).toHaveCount(3);
-  // Real issuer logos; only API Academy (no logo anywhere) keeps initials.
-  await expect(page.locator(".cert-mark[data-logo] img")).toHaveCount(8);
-  await expect(page.locator(".cert-mark:not([data-logo])")).toHaveText("AA");
-  // The contact photo is cropped in the file itself, never zoomed by CSS.
+  await expect(
+    page.getByRole("heading", { level: 2, name: "AIML / Software Engineer" }),
+  ).toBeVisible();
+  // Every issuer shows its real logo (GUVI and API Academy from the owner).
+  await expect(page.locator(".cert-mark[data-logo] img")).toHaveCount(9);
+  await expect(page.locator(".cert-mark:not([data-logo])")).toHaveCount(0);
+  // The contact photo is the owner's own crop: never zoomed by CSS, shown
+  // from its top (hair to chest).
   expect(
     await page
       .locator(".contact-avatar img")
-      .evaluate((el) => getComputedStyle(el).transform),
-  ).toBe("none");
+      .evaluate((el) => [
+        getComputedStyle(el).transform,
+        getComputedStyle(el).objectPosition,
+      ]),
+  ).toEqual(["none", "50% 0%"]);
+  // The NVC button sits up on BarterBrAIn's category line, above the title.
+  expect(
+    await page.locator('[data-project="barterbrain"]').evaluate((card) => {
+      const nvc = card
+        .querySelector(".project-next-chapter")!
+        .getBoundingClientRect();
+      const label = card
+        .querySelector(".project-category")!
+        .getBoundingClientRect();
+      const title = card.querySelector("h3")!.getBoundingClientRect();
+      return {
+        aboveTitle: nvc.bottom <= title.top + 2,
+        onLabelLine:
+          Math.abs(nvc.top + nvc.height / 2 - (label.top + label.height / 2)) <
+          6,
+      };
+    }),
+  ).toEqual({ aboveTitle: true, onLabelLine: true });
   await expect(
     page.locator(".project-image .project-achievement"),
   ).toContainText("Technica winner");
@@ -321,9 +424,10 @@ for (const slug of caseStudySlugs) {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 }
-test("gallery keeps image order in an adaptive masonry and supports an accessible lightbox", async ({
+test("gallery keeps image order in aligned justified rows and supports an accessible lightbox", async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/projects/siri-core-modeling");
   const tiles = page.locator(".gallery-tile");
   const src = await tiles
@@ -334,9 +438,34 @@ test("gallery keeps image order in an adaptive masonry and supports an accessibl
   expect(src[1]).toContain("slide-1");
   expect(src[2]).toContain("slide-2");
   await expect(page.locator(".gallery-wall")).toHaveAttribute(
-    "data-masonry",
+    "data-justified",
     "true",
   );
+  // Rows line up: one height per row, edge to edge across the wall.
+  expect(
+    await page.locator(".gallery-wall").evaluate((wall) => {
+      const edge = wall.getBoundingClientRect();
+      const rows = new Map<number, DOMRect[]>();
+      wall.querySelectorAll(".gallery-tile").forEach((tile) => {
+        const box = tile.getBoundingClientRect();
+        const key = Math.round(box.top);
+        rows.set(key, [...(rows.get(key) ?? []), box]);
+      });
+      for (const row of rows.values()) {
+        if (row.some((box) => Math.abs(box.height - row[0].height) > 1))
+          return "uneven row";
+        const left = Math.min(...row.map((b) => b.left)),
+          right = Math.max(...row.map((b) => b.right));
+        if (
+          row.length > 1 &&
+          (Math.abs(left - edge.left) > 1.5 ||
+            Math.abs(right - edge.right) > 1.5)
+        )
+          return "ragged row";
+      }
+      return "aligned";
+    }),
+  ).toBe("aligned");
   // Tiles keep each image's own shape and never overlap.
   const layout = await tiles.evaluateAll((els) => {
     const boxes = els.map((el) => el.getBoundingClientRect());
@@ -544,6 +673,11 @@ test("theme: light by default, dark on request, remembered, and cards stay solid
   await expect(html).toHaveAttribute("data-theme", "light");
   await page.reload();
   await expect(html).toHaveAttribute("data-theme", "light");
+  // Rapid clicks all register: nothing locks the switch while colours fade.
+  const quick = page.getByRole("button", { name: "Dark theme" }).first();
+  for (let i = 0; i < 3; i++) await quick.click();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+  await expect.poll(background).toBe("rgb(13, 12, 16)");
 });
 test("education: GW lands and stays readable before SVCE slides over it", async ({
   page,
@@ -570,8 +704,17 @@ test("education: GW lands and stays readable before SVCE slides over it", async 
   let [gw, svce] = await boxes();
   expect(gw.top).toBe(118);
   expect(svce.top).toBeGreaterThan(gw.bottom);
-  // A third of a screen later GW hasn't moved and is still uncovered.
-  await page.evaluate(() => window.scrollBy(0, window.innerHeight / 3));
+  // GW rests for a short beat (120–200px of scrolling, never a long wait):
+  // halfway through it, GW hasn't moved and is still uncovered.
+  const beat = await page.evaluate(() =>
+    parseFloat(
+      getComputedStyle(document.querySelectorAll(".education-slot")[1])
+        .marginTop,
+    ),
+  );
+  expect(beat).toBeGreaterThanOrEqual(120);
+  expect(beat).toBeLessThanOrEqual(200);
+  await page.evaluate((px) => window.scrollBy(0, px), beat / 2);
   [gw, svce] = await boxes();
   expect(gw.top).toBe(118);
   expect(svce.top).toBeGreaterThan(gw.bottom);
@@ -688,4 +831,102 @@ test("layout evidence at required widths with no horizontal overflow", async ({
       animations: "disabled",
     });
   }
+});
+test("case studies offer GitHub and Devpost as real buttons", async ({
+  page,
+}) => {
+  await page.goto("/projects/pitchpulse");
+  const github = page.getByRole("link", { name: "View on GitHub" });
+  const devpost = page.getByRole("link", { name: "View on Devpost" });
+  await expect(github).toBeVisible();
+  await expect(devpost).toBeVisible();
+  await expect(github).toHaveAttribute("target", "_blank");
+  expect(
+    await github.evaluate((el) => getComputedStyle(el).backgroundColor),
+  ).toBe("rgb(15, 16, 19)");
+  expect(
+    await devpost.evaluate((el) => getComputedStyle(el).backgroundColor),
+  ).toBe("rgb(0, 62, 84)");
+  // Focus and timeline stay as quiet facts beside them.
+  await expect(page.locator(".case-meta > div")).toHaveCount(2);
+});
+test("the contact popup delivers through Formspree and confirms (network mocked)", async ({
+  page,
+}) => {
+  let sent: unknown = null;
+  await page.route("https://formspree.io/f/mwlvqyoe", async (route) => {
+    sent = route.request().postDataJSON();
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: '{"ok":true}',
+    });
+  });
+  await page.goto("/");
+  await page.locator("#contact").scrollIntoViewIfNeeded();
+  await page.getByRole("link", { name: /Say hello/ }).click();
+  const dialog = page.getByRole("dialog", { name: "Tell me about it." });
+  await dialog.getByLabel("name").fill("Test Person");
+  await dialog.getByLabel("email").fill("test@example.com");
+  await dialog
+    .getByLabel("message")
+    .fill("Synthetic end-to-end message; the network is mocked.");
+  await dialog.getByRole("button", { name: /Send message/ }).click();
+  await expect(dialog.getByRole("status")).toContainText("has been sent");
+  expect(sent).toMatchObject({
+    name: "Test Person",
+    email: "test@example.com",
+    topic: "Job opportunity",
+    _subject: "Portfolio: Job opportunity from Test Person",
+  });
+});
+test("the About portrait slowly zooms while it is pinned", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const scaleAt = (fraction: number) =>
+    page.evaluate(
+      (f) =>
+        new Promise<number>((resolve) => {
+          const layout = document.querySelector<HTMLElement>(".about-layout")!;
+          const top = layout.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo(
+            0,
+            top + f * (layout.offsetHeight - window.innerHeight),
+          );
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() =>
+              resolve(
+                Number(
+                  getComputedStyle(document.querySelector(".portrait img")!)
+                    .scale,
+                ),
+              ),
+            ),
+          );
+        }),
+      fraction,
+    );
+  const early = await scaleAt(0.1);
+  const late = await scaleAt(0.9);
+  expect(late - early).toBeGreaterThan(0.1);
+});
+test("each skill area has its own colour and the pill takes it", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/#skills");
+  const tabs = page.getByRole("group", { name: "Highlight skills by area" });
+  await tabs.getByRole("button", { name: /GenAI & LLMs/ }).click();
+  await expect
+    .poll(() =>
+      tabs
+        .locator(".chip-ink")
+        .evaluate((el) => getComputedStyle(el).backgroundColor),
+    )
+    .toBe("rgb(106, 63, 209)");
+  await expect(page.locator(".skill-bubble[data-lit]").first()).toBeVisible();
 });

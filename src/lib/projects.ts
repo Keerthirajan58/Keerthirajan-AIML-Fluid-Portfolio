@@ -7,8 +7,8 @@ import {
 import { nvcProject } from "@/content/nvc";
 const order = [
   "siri-core-modeling",
-  "pitchpulse",
   "barterbrain",
+  "pitchpulse",
   "historical-event-narrator",
   "coding-problem-recommender",
   "face-cloaking",

@@ -141,6 +141,69 @@ describe("project discovery", () => {
     );
     expect(slot("a").style.height).toBe("360px");
     expect(grid.style.height).toBe("360px");
+    // Cards that travel get the lift and a place in the cascade; a card that
+    // stays put does not.
+    expect(slot("c")).toHaveAttribute("data-moving");
+    expect(slot("d")).toHaveAttribute("data-moving");
+    expect(slot("a")).not.toHaveAttribute("data-moving");
+    expect(
+      ["a", "c", "d"].map((k) => slot(k).style.getPropertyValue("--order")),
+    ).toEqual(["0", "1", "2"]);
+  });
+  it("slides the ink pill only on click while the glass lens follows the pointer", async () => {
+    const chips = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>(".project-filters > button"),
+      );
+    vi.spyOn(HTMLElement.prototype, "offsetLeft", "get").mockImplementation(
+      function (this: HTMLElement) {
+        return Math.max(0, chips().indexOf(this)) * 100;
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(90);
+    render(
+      <ProjectExplorer
+        items={[
+          { slug: "a", filters: ["aiml"], card: <p>a</p> },
+          { slug: "b", filters: ["web"], card: <p>b</p> },
+        ]}
+      />,
+    );
+    const bar = screen.getByRole("group", { name: "Filter projects" });
+    const marks = () => ({
+      ink: bar.style.getPropertyValue("--ix"),
+      lens: bar.style.getPropertyValue("--lx"),
+    });
+    const pointer = (type: string, el: Element, pointerType = "mouse") => {
+      const event = new Event(type, { bubbles: type !== "pointerleave" });
+      Object.assign(event, { pointerType });
+      fireEvent(el, event);
+    };
+    // "All work" is chosen: both marks rest on it.
+    expect(marks()).toEqual({ ink: "0px", lens: "0px" });
+    // Hovering another chip moves only the glass lens …
+    const web = screen.getByRole("button", { name: "Web" });
+    pointer("pointerover", web);
+    expect(marks()).toEqual({ ink: "0px", lens: "200px" });
+    // … which returns to the choice when the pointer leaves.
+    pointer("pointerleave", bar);
+    expect(marks()).toEqual({ ink: "0px", lens: "0px" });
+    // A click moves the ink pill.
+    await userEvent.click(web);
+    expect(marks()).toEqual({ ink: "200px", lens: "200px" });
+    // Touch never drags the lens around.
+    pointer(
+      "pointerover",
+      screen.getByRole("button", { name: "AIML" }),
+      "touch",
+    );
+    expect(marks().lens).toBe("200px");
+    // The white label under the pill is a decorative copy.
+    expect(bar.querySelector(".chip-ink")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(bar.querySelector(".chip-ink")).toHaveTextContent("Web");
   });
   it("keeps confidential project notes accessible without linking a dead legacy route", async () => {
     render(<Projects />);
@@ -207,6 +270,50 @@ describe("experience tracker", () => {
       "Built and evaluated AIML pipelines using PyTorch, Hugging Face Transformers, LoRA/PEFT",
     );
   });
+  it("docks the pin at a company badge with an impact ripple, then lets it go", () => {
+    const callbacks: FrameRequestCallback[] = [];
+    vi.stubGlobal(
+      "requestAnimationFrame",
+      vi.fn((callback: FrameRequestCallback) => callbacks.push(callback)),
+    );
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+    render(<Experience />);
+    const journey = document.querySelector<HTMLElement>(".experience-journey")!;
+    const pin = journey.querySelector<HTMLElement>(".timeline-cursor")!;
+    const badges = Array.from(
+      journey.querySelectorAll<HTMLElement>(".timeline-node"),
+    );
+    // A 1220px journey with 64px badges at 0, 400 and 800px; `top` scrolls.
+    let top = 0;
+    journey.getBoundingClientRect = () =>
+      ({ top, bottom: top + 1220, height: 1220 }) as DOMRect;
+    badges.forEach((badge, i) => {
+      badge.getBoundingClientRect = () =>
+        ({ top: top + i * 400, bottom: top + i * 400 + 64 }) as DOMRect;
+    });
+    const scrollTo = (next: number) => {
+      top = next;
+      fireEvent.scroll(window);
+      act(() => callbacks.splice(0).forEach((callback) => callback(0)));
+    };
+    // The reading line is at 384px (jsdom's window is 768px tall).
+    scrollTo(0);
+    expect(pin).not.toHaveAttribute("data-docked");
+    expect(badges.some((b) => b.hasAttribute("data-impact"))).toBe(false);
+    // The tip reaches the second badge: the pin waits at its rim, the badge
+    // ripples.
+    scrollTo(-20);
+    expect(pin).toHaveAttribute("data-docked");
+    expect(journey.style.getPropertyValue("--cursor-y")).toBe("394.0px");
+    expect(badges[1]).toHaveAttribute("data-impact");
+    expect(badges[0]).not.toHaveAttribute("data-impact");
+    // Past the badge, the pin rides the line again.
+    scrollTo(-120);
+    expect(pin).not.toHaveAttribute("data-docked");
+    expect(
+      parseFloat(journey.style.getPropertyValue("--cursor-y")),
+    ).toBeGreaterThan(470);
+  });
   it("supports a new company mark and an empty timeline without exceptions", () => {
     render(
       <>
@@ -230,6 +337,14 @@ describe("contact availability", () => {
     expect(document.querySelector("form")).toHaveAttribute(
       "action",
       "https://formspree.io/f/abcdefgh",
+    );
+  });
+  it("posts to the portfolio's own Formspree form by default", async () => {
+    render(<Contact />);
+    await userEvent.click(screen.getByRole("link", { name: /Say hello/ }));
+    expect(document.querySelector("form")).toHaveAttribute(
+      "action",
+      "https://formspree.io/f/mwlvqyoe",
     );
   });
   it("hands the drafted message to the mail app when no form service is set", async () => {

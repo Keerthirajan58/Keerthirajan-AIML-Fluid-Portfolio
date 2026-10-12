@@ -45,8 +45,8 @@ describe("content contracts", () => {
   it("has ordered, unique, complete case-study routes", () => {
     expect(getFeaturedProjects().map((p) => p.slug)).toEqual([
       "siri-core-modeling",
-      "pitchpulse",
       "barterbrain",
+      "pitchpulse",
       "historical-event-narrator",
       "coding-problem-recommender",
       "face-cloaking",

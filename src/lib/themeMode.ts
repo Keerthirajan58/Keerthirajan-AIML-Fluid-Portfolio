@@ -1,6 +1,8 @@
 /**
  * Light / dark theme. Light is the default identity; a visitor's choice is
  * remembered. The inline script runs before first paint so there is no flash.
+ * Switching is instant in the DOM; the stylesheet cross-fades the colours
+ * (registered custom properties), so rapid clicks always respond.
  */
 export type ThemeMode = "light" | "dark";
 
@@ -39,46 +41,4 @@ export function applyTheme(mode: ThemeMode) {
   }
   syncThemeColor(mode);
   window.dispatchEvent(new Event("ks-themechange"));
-}
-
-/**
- * Applies a theme with a soft circular reveal that spreads from `origin`
- * (the toggle). Browsers without view transitions, and visitors who prefer
- * reduced motion, get an instant switch.
- */
-export function switchTheme(
-  mode: ThemeMode,
-  origin?: { x: number; y: number },
-) {
-  const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  if (!("startViewTransition" in document) || still) {
-    applyTheme(mode);
-    return;
-  }
-  const transition = document.startViewTransition(() => applyTheme(mode));
-  if (!origin) return;
-  const { x, y } = origin;
-  const radius = Math.hypot(
-    Math.max(x, window.innerWidth - x),
-    Math.max(y, window.innerHeight - y),
-  );
-  transition.ready
-    .then(() => {
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${radius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 700,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-          pseudoElement: "::view-transition-new(root)",
-        },
-      );
-    })
-    .catch(() => {
-      /* Skipped transition: the theme has still been applied. */
-    });
 }

@@ -4,6 +4,7 @@ import {
   contactSchema,
   contactTopics,
   formEndpoint,
+  formSubject,
   mailtoHref,
 } from "@/lib/contact";
 import { ArrowUpRightIcon, CopyIcon, SendIcon } from "./ui/icons";
@@ -66,7 +67,11 @@ export function ContactForm({
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...parsed.data, topic }),
+        body: JSON.stringify({
+          ...parsed.data,
+          topic,
+          _subject: formSubject(parsed.data.name, topic),
+        }),
         signal: abort.current.signal,
       });
       if (!response.ok) throw new Error("Delivery failed");

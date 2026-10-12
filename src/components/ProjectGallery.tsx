@@ -9,21 +9,20 @@ import {
   type CSSProperties,
 } from "react";
 import { wrapIndex } from "@/lib/navigation";
-import { columnWidth, galleryColumns, placeMasonry } from "@/lib/masonry";
+import { galleryRowHeight, placeJustified } from "@/lib/layout";
 import { ExpandIcon } from "@/components/ui/icons";
 export type GalleryImage = { src: string; width: number; height: number };
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-const GAP = 14;
-
 /**
- * "A closer look": an adaptive masonry wall where every image keeps its own
- * shape (portrait phone shots stay portrait), in reading order across the
- * top; a short set shares one row. Any tile opens a full-size viewer; arrow keys step through it and
- * closing returns focus to the tile. Without JavaScript the wall falls back
- * to CSS columns.
+ * "A closer look": justified rows, like a photo book. Every image keeps its
+ * own shape (portrait phone shots stay portrait), images in a row share one
+ * height, and every row spans the full width, so the wall reads as one
+ * aligned block in reading order. Any tile opens a full-size viewer; arrow
+ * keys step through it and closing returns focus to the tile. Without
+ * JavaScript, flexbox gives nearly the same rows.
  */
 export function ProjectGallery({
   images,
@@ -37,28 +36,27 @@ export function ProjectGallery({
     opener = useRef<HTMLButtonElement | null>(null);
   const [lightbox, setLightbox] = useState(0);
   const ratios = images.map((img) => img.width / img.height);
-  // Columns on a full desktop wall (1208px): the no-JS fallback and `sizes`.
-  const desktopColumns = galleryColumns(1208, ratios);
 
   const layout = useCallback(() => {
     const el = wall.current;
     if (!el) return;
     const width = el.clientWidth;
     if (!width) return;
-    const shapes = images.map((img) => img.width / img.height);
-    const cols = galleryColumns(width, shapes);
-    const colW = columnWidth(width, cols, GAP);
-    // Heights follow from each image's known shape: no measuring needed.
-    const heights = shapes.map((r) => colW / r);
-    const { placements, height } = placeMasonry(heights, cols, colW, GAP);
+    // Sizes follow from each image's known shape: no measuring needed.
+    const { boxes, height } = placeJustified(
+      images.map((img) => img.width / img.height),
+      width,
+      galleryRowHeight(width),
+      width >= 560 ? 14 : 10,
+    );
     (Array.from(el.children) as HTMLElement[]).forEach((tile, i) => {
-      tile.style.width = `${colW}px`;
-      tile.style.height = `${heights[i]}px`;
-      tile.style.setProperty("--x", `${placements[i].x}px`);
-      tile.style.setProperty("--y", `${placements[i].y}px`);
+      tile.style.width = `${boxes[i].width}px`;
+      tile.style.height = `${boxes[i].height}px`;
+      tile.style.setProperty("--x", `${boxes[i].x}px`);
+      tile.style.setProperty("--y", `${boxes[i].y}px`);
     });
     el.style.height = `${height}px`;
-    el.dataset.masonry = "true";
+    el.dataset.justified = "true";
   }, [images]);
 
   useIsoLayoutEffect(() => layout(), [layout]);
@@ -85,11 +83,7 @@ export function ProjectGallery({
   const current = images[lightbox];
   return (
     <div className="gallery" role="region" aria-label={title + " gallery"}>
-      <div
-        className="gallery-wall"
-        ref={wall}
-        style={{ "--cols": desktopColumns } as CSSProperties}
-      >
+      <div className="gallery-wall" ref={wall}>
         {images.map((img, i) => (
           <button
             key={img.src}
@@ -108,7 +102,7 @@ export function ProjectGallery({
               alt={`${title}, image ${i + 1}`}
               width={img.width}
               height={img.height}
-              sizes={`(max-width: 879px) 50vw, ${Math.ceil(1208 / desktopColumns)}px`}
+              sizes={`(max-width: 879px) 60vw, ${Math.min(1208, Math.round(ratios[i] * 360))}px`}
               className="gallery-image"
             />
             <span className="gallery-zoom" aria-hidden="true">

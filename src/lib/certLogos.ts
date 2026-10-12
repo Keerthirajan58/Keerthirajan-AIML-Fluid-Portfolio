@@ -1,8 +1,8 @@
 /**
  * Issuer logos for the certification cards, keyed by certification slug.
  * Files live in public/images/brands/certs (provenance in
- * THIRD_PARTY_NOTICES.md). API Academy has no logo we could source, so that
- * card keeps its monogram.
+ * THIRD_PARTY_NOTICES.md). A certification without an entry shows its
+ * issuer's initials instead.
  */
 export type CertLogo = { src: string; width: number; height: number };
 
@@ -20,7 +20,8 @@ export const CERT_LOGOS: Record<string, CertLogo> = {
   "certification-web-development-ucdavis": logo("ucdavis", 561, 96),
   "certification-programming-foundations-duke": logo("duke", 239, 104),
   "certification-relational-db-sql": logo("coursera", 686, 96),
-  "certification-ai-event-guvi": logo("guvi", 120, 120),
+  "certification-api-designer": logo("api-academy", 484, 96),
+  "certification-ai-event-guvi": logo("guvi", 216, 96),
   "certification-programming-in-java-nptel": logo("nptel", 426, 96),
   "certification-php-mysql-udemy": logo("udemy", 257, 96),
 };

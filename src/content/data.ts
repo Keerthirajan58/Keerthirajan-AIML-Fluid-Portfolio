@@ -228,7 +228,7 @@ export const profile: Profile = {
     "I am a recent Master's in Computer Science graduate from The George Washington University, specializing in AIML and software engineering. My work sits at the intersection of machine learning systems, evaluation design, and practical full-stack development, with recent industry experience as an AIML Machine Learning Engineer intern on Apple's Siri Core Modeling team.",
     "I build data-driven products with a focus on reliable model behavior, clean engineering, and measurable user value. My recent work includes LLM evaluation workflows, transformer-based modeling, mobile applications, applied ML projects, and responsive web experiences.",
   ],
-  aboutHeadline: "AIML Engineer / Software Engineer",
+  aboutHeadline: "AIML / Software Engineer",
   aboutHighlights: [
     { icon: "bi-award", text: "SEAS Dean's Award" },
     { icon: "bi-apple", text: "Apple AIML Internship" },

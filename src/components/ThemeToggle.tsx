@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useSyncExternalStore } from "react";
 import {
+  applyTheme,
   readTheme,
   subscribeTheme,
-  switchTheme,
   syncThemeColor,
   type ThemeMode,
 } from "@/lib/themeMode";
@@ -25,13 +25,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       aria-pressed={dark}
       aria-label="Dark theme"
       title={dark ? "Switch to light theme" : "Switch to dark theme"}
-      onClick={(e) => {
-        const box = e.currentTarget.getBoundingClientRect();
-        switchTheme(dark ? "light" : "dark", {
-          x: box.left + box.width / 2,
-          y: box.top + box.height / 2,
-        });
-      }}
+      onClick={() => applyTheme(dark ? "light" : "dark")}
     >
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
         <g className="theme-sun">

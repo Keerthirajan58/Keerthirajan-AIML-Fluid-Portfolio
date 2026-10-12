@@ -21,7 +21,290 @@
 }
 
 /* Semantic tokens. Components use these, never raw colours, so the dark
-   theme is one block of overrides. */
+   theme is one block of overrides. Every theme colour is a registered
+   property, so switching themes cross-fades the whole page smoothly (and a
+   second click simply reverses it mid-way) without any snapshot. */
+@property --page {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-tint {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-edge {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-2 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-3 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --chip {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --field {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hairline {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --track {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hover {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hover-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --on-field {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --accent-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --accent-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --invert {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --invert-hover {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --on-invert {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --on-invert-muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --selection {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --header-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --lens-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --lens-bottom {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --award-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --award-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --rose-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --rose-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --navy-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --navy-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --rose-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --quote-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --quote-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --quote-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --placeholder-base {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bar {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --year-stroke {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --portrait-ring {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --sheen-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --sheen-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --backdrop {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bubble-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bubble-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bubble-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-ember {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-pointer {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --grain-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --tone-tint {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
 :root {
   color-scheme: light;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -34,7 +317,8 @@
 
   --page: #f1f2f4;
   --surface: #ffffff;
-  --surface-fill: linear-gradient(165deg, #ffffff 35%, #faf9fb);
+  --surface-top: #ffffff; /* card fill, top-left */
+  --surface-tint: #faf9fb; /* card fill, bottom-right */
   --surface-edge: rgb(15 16 19 / 0.06);
   --surface-2: #f5f6f8; /* chips and panels on a card */
   --surface-3: #eceef1; /* tracks and image wells */
@@ -46,42 +330,83 @@
   --hover: rgb(15 16 19 / 0.05);
   --hover-strong: rgb(15 16 19 / 0.1);
   --ink: #0f1013;
-  --text: #2b2e34; /* long-form copy, 13:1 on white */
-  --muted: #5b616b; /* secondary text, 6:1 on white */
-  --on-field: #474c55; /* secondary text on the field: 6:1 on its pinkest tint */
+  --text: #2b2e34; /* long-form copy: 13:1 on white, 12:1 on a dark card */
+  --muted: #5b616b; /* secondary text: 6:1 on white, 7:1 on a dark card */
+  --on-field: #474c55; /* secondary text straight on the field */
   --accent: #df212f;
-  --accent-text: #a8141e; /* crimson text, 7:1 on white */
+  --accent-text: #a8141e; /* crimson text, 7:1 on a card in both themes */
   --accent-wash: rgb(223 33 47 / 0.12);
-  --invert: #0f1013; /* ink buttons and active chips */
+  --invert: #0f1013; /* ink buttons and the chosen chip */
   --invert-hover: #23252b;
   --on-invert: #ffffff;
   --on-invert-muted: rgb(255 255 255 / 0.72);
   --selection: #f6cfcb;
   --header-bg: rgb(255 255 255 / 0.9);
-  --lens-fill: linear-gradient(180deg, #ffffff, #f2f3f6);
-  --lens-shadow:
-    inset 0 1px 0 #fff, 0 6px 16px -8px rgb(15 16 19 / 0.38),
-    0 0 0 1px rgb(15 16 19 / 0.05);
-  --award-bg: linear-gradient(135deg, #fffaf0, #fdf1d6);
-  --rose-bg: linear-gradient(135deg, #fff7f6, #fde9e6);
+  --lens-top: #ffffff;
+  --lens-bottom: #f2f3f6;
+  --award-a: #fffaf0;
+  --award-b: #fdf1d6;
+  --rose-a: #fff7f6;
+  --rose-b: #fde9e6;
   --navy-wash: #e7eef9;
   --navy-text: #1f3a6b;
   --rose-wash: #fdebea;
-  --quote-fill: linear-gradient(150deg, #ffffff, #fdf0ee 60%, #f4f1fa);
+  --quote-a: #ffffff;
+  --quote-b: #fdf0ee;
+  --quote-c: #f4f1fa;
   --placeholder-base: #f3f1f2;
   --bar: #c9cdd4;
   --year-stroke: rgb(15 16 19 / 0.22);
   --portrait-ring: rgb(255 255 255 / 0.55);
   --sheen-a: rgb(255 205 220 / 0.55);
   --sheen-b: rgb(205 220 255 / 0.35);
-  --recede: brightness(0.97);
   --backdrop: rgb(241 242 244 / 0.55);
+  --bubble-a: #ffffff;
+  --bubble-b: #fbfafc;
+  --bubble-c: #f3edf2;
+  --glow-a: rgb(246 207 203 / 0.95); /* blush / wine */
+  --glow-b: rgb(214 226 243 / 1); /* haze / midnight */
+  --glow-c: rgb(255 228 214 / 0.85); /* peach / amber */
+  --glow-ember: rgb(223 33 47 / 0.2);
+  --glow-pointer: rgb(223 33 47 / 0.1);
+  --grain-opacity: 0.05;
+  --grain-blend: multiply;
+  --tone-tint: 10%; /* how strongly a skill bubble takes its area's colour */
+  --recede: brightness(0.97);
+
+  /* Skill areas: one colour each (white text on every one is 5:1 or more). */
+  --tone-1: #c0192a; /* AI / ML */
+  --tone-2: #6a3fd1; /* GenAI & LLMs */
+  --tone-3: #1e5ad6; /* Backend & Cloud */
+  --tone-4: #0b7a70; /* Frontend & Mobile */
+  --tone-5: #b45309; /* Data & Evaluation */
+
+  /* Fills built from the colours above, so they cross-fade too. */
+  --surface-fill: linear-gradient(
+    165deg,
+    var(--surface-top) 35%,
+    var(--surface-tint)
+  );
+  --lens-fill: linear-gradient(180deg, var(--lens-top), var(--lens-bottom));
+  --award-bg: linear-gradient(135deg, var(--award-a), var(--award-b));
+  --rose-bg: linear-gradient(135deg, var(--rose-a), var(--rose-b));
+  --quote-fill: linear-gradient(
+    150deg,
+    var(--quote-a),
+    var(--quote-b) 60%,
+    var(--quote-c)
+  );
   --bubble-fill: radial-gradient(
     circle at 30% 22%,
-    #ffffff,
-    #fbfafc 45%,
-    #f3edf2
+    var(--bubble-a),
+    var(--bubble-b) 45%,
+    var(--bubble-c)
   );
+  --gold-fill: linear-gradient(135deg, #fbe7a1, #f2c14e 48%, #d99a1e);
+
+  --lens-shadow:
+    inset 0 1px 0 #fff, 0 6px 16px -8px rgb(15 16 19 / 0.38),
+    0 0 0 1px rgb(15 16 19 / 0.05);
   --bubble-shadow:
     inset 0 1px 0 #fff, inset 0 -8px 14px -10px rgb(150 175 220 / 0.55),
     0 8px 18px -12px rgb(15 16 19 / 0.35), 0 0 0 1px rgb(15 16 19 / 0.05);
@@ -96,14 +421,20 @@
   --shadow-button:
     inset 0 1px 0 rgb(255 255 255 / 0.18), 0 14px 30px -14px rgb(15 16 19 / 0.6);
   --shadow-dialog: 0 60px 140px -40px rgb(15 16 19 / 0.5);
-  --glow-a: rgb(246 207 203 / 0.95); /* blush */
-  --glow-b: rgb(214 226 243 / 1); /* haze */
-  --glow-c: rgb(255 228 214 / 0.85); /* peach */
-  --glow-ember: rgb(223 33 47 / 0.2);
-  --glow-pointer: rgb(223 33 47 / 0.1);
-  --grain-opacity: 0.05;
-  --grain-blend: multiply;
-  --gold-fill: linear-gradient(135deg, #fbe7a1, #f2c14e 48%, #d99a1e);
+
+  transition-property:
+    --page, --surface, --surface-top, --surface-tint, --surface-edge,
+    --surface-2, --surface-3, --chip, --field, --line, --hairline, --track,
+    --hover, --hover-strong, --ink, --text, --muted, --on-field, --accent,
+    --accent-text, --accent-wash, --invert, --invert-hover, --on-invert,
+    --on-invert-muted, --selection, --header-bg, --lens-top, --lens-bottom,
+    --award-a, --award-b, --rose-a, --rose-b, --navy-wash, --navy-text,
+    --rose-wash, --quote-a, --quote-b, --quote-c, --placeholder-base, --bar,
+    --year-stroke, --portrait-ring, --sheen-a, --sheen-b, --backdrop,
+    --bubble-a, --bubble-b, --bubble-c, --glow-a, --glow-b, --glow-c,
+    --glow-ember, --glow-pointer, --grain-opacity, --tone-tint;
+  transition-duration: 0.45s;
+  transition-timing-function: ease;
 }
 
 /* Clear Air at night: deep ink, wine and midnight light, warm white type. */
@@ -111,7 +442,8 @@
   color-scheme: dark;
   --page: #0d0c10;
   --surface: #18171c;
-  --surface-fill: linear-gradient(165deg, #1c1b21 35%, #16151a);
+  --surface-top: #1c1b21;
+  --surface-tint: #16151a;
   --surface-edge: rgb(255 255 255 / 0.07);
   --surface-2: #222027;
   --surface-3: #2a2830;
@@ -123,11 +455,11 @@
   --hover: rgb(255 255 255 / 0.07);
   --hover-strong: rgb(255 255 255 / 0.13);
   --ink: #f4f2ef;
-  --text: #d8d5da; /* 12:1 on a card */
-  --muted: #a7a3ac; /* 7:1 on a card */
+  --text: #d8d5da;
+  --muted: #a7a3ac;
   --on-field: #bab6be;
   --accent: #f0414d;
-  --accent-text: #ff7d85; /* 7:1 on a card */
+  --accent-text: #ff7d85;
   --accent-wash: rgb(240 65 77 / 0.18);
   --invert: #f4f2ef;
   --invert-hover: #ffffff;
@@ -135,30 +467,40 @@
   --on-invert-muted: rgb(15 16 19 / 0.62);
   --selection: rgb(240 65 77 / 0.4);
   --header-bg: rgb(27 26 32 / 0.9);
-  --lens-fill: linear-gradient(180deg, #34323a, #29272e);
-  --lens-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.1), 0 6px 16px -8px rgb(0 0 0 / 0.8),
-    0 0 0 1px rgb(255 255 255 / 0.06);
-  --award-bg: linear-gradient(135deg, #2b2312, #211a0d);
-  --rose-bg: linear-gradient(135deg, #2c1619, #201113);
+  --lens-top: #34323a;
+  --lens-bottom: #29272e;
+  --award-a: #2b2312;
+  --award-b: #211a0d;
+  --rose-a: #2c1619;
+  --rose-b: #201113;
   --navy-wash: #1b2537;
   --navy-text: #abc3ee;
   --rose-wash: #301719;
-  --quote-fill: linear-gradient(150deg, #1d1c22, #241618 60%, #1b1a25);
+  --quote-a: #1d1c22;
+  --quote-b: #241618;
+  --quote-c: #1b1a25;
   --placeholder-base: #1a1920;
   --bar: #4b4853;
   --year-stroke: rgb(255 255 255 / 0.24);
   --portrait-ring: rgb(255 255 255 / 0.07);
   --sheen-a: rgb(240 65 77 / 0.14);
   --sheen-b: rgb(110 140 230 / 0.12);
-  --recede: brightness(0.82);
   --backdrop: rgb(13 12 16 / 0.6);
-  --bubble-fill: radial-gradient(
-    circle at 30% 22%,
-    #2c2b32,
-    #212026 45%,
-    #1b1a20
-  );
+  --bubble-a: #2c2b32;
+  --bubble-b: #212026;
+  --bubble-c: #1b1a20;
+  --glow-a: rgb(150 36 58 / 0.5);
+  --glow-b: rgb(44 70 132 / 0.55);
+  --glow-c: rgb(160 88 44 / 0.3);
+  --glow-ember: rgb(240 65 77 / 0.3);
+  --glow-pointer: rgb(240 65 77 / 0.1);
+  --grain-opacity: 0.08;
+  --grain-blend: screen;
+  --tone-tint: 24%;
+  --recede: brightness(0.82);
+  --lens-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1), 0 6px 16px -8px rgb(0 0 0 / 0.8),
+    0 0 0 1px rgb(255 255 255 / 0.06);
   --bubble-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.08),
     inset 0 -8px 14px -10px rgb(110 140 230 / 0.35),
@@ -174,13 +516,6 @@
   --shadow-button:
     inset 0 1px 0 rgb(255 255 255 / 0.6), 0 14px 30px -14px rgb(0 0 0 / 0.8);
   --shadow-dialog: 0 60px 140px -40px rgb(0 0 0 / 0.85);
-  --glow-a: rgb(150 36 58 / 0.5); /* wine */
-  --glow-b: rgb(44 70 132 / 0.55); /* midnight */
-  --glow-c: rgb(160 88 44 / 0.3); /* amber */
-  --glow-ember: rgb(240 65 77 / 0.3);
-  --glow-pointer: rgb(240 65 77 / 0.1);
-  --grain-opacity: 0.08;
-  --grain-blend: screen;
 }
 
 /* ───────── Base ───────── */
@@ -276,12 +611,6 @@ dialog::backdrop {
 .contact-dialog:modal,
 .project-notes-dialog:modal {
   margin: auto;
-}
-/* Theme switch: the new theme spreads from the toggle (see switchTheme). */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
 }
 
 /* ───────── Primitives ───────── */
@@ -552,63 +881,94 @@ dialog::backdrop {
   color: #fff;
 }
 
-/* Filter chips shared by the work filters and skill tabs. The active chip
-   carries the ink fill; a glass lens rides on top of it and glides to each
-   new choice. */
+/* Chip groups: the work filters and the skill tabs. Two indicators ride on
+   top of the chips. The ink pill marks the choice and slides only when the
+   choice changes: it is a clipped copy of the chips, so the label under it
+   reads in white. The glass lens follows the pointer (or keyboard focus)
+   like the header's liquid lens and rests on the choice. */
 .project-filters,
 .skill-tabs {
+  --ink-fill: var(--invert);
+  --ink-text: var(--on-invert);
   position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
-.project-filters button,
-.skill-tabs button {
+.chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-height: 44px;
   padding: 0 16px;
-  border: 0;
   border-radius: 999px;
-  background: var(--chip);
-  box-shadow: var(--shadow-chip);
   font-size: 14px;
   font-weight: 500;
-  transition:
-    background 0.3s,
-    color 0.3s,
-    box-shadow 0.3s;
+  line-height: 1.2;
+  white-space: nowrap;
 }
-.project-filters button:hover,
-.skill-tabs button:hover {
-  background: var(--surface-2);
-}
-.project-filters button span,
-.skill-tabs button span {
-  color: var(--muted);
+.chip > span {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
-  transition: color 0.3s;
 }
-.project-filters button[aria-pressed="true"],
-.skill-tabs button[aria-pressed="true"] {
-  background: var(--invert);
-  box-shadow: 0 10px 24px -12px rgb(15 16 19 / 0.55);
-  color: var(--on-invert);
+.project-filters > button,
+.skill-tabs > button {
+  border: 0;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  color: var(--ink);
 }
-.project-filters button[aria-pressed="true"] span,
-.skill-tabs button[aria-pressed="true"] span {
-  color: var(--on-invert-muted);
+.project-filters > button > span,
+.skill-tabs > button > span {
+  color: var(--muted);
+}
+/* Before the indicators are measured, and without JavaScript, the chosen
+   chip carries its own fill. */
+.project-filters:not([data-ready]) > button[aria-pressed="true"],
+.skill-tabs:not([data-ready]) > button[aria-pressed="true"] {
+  background: var(--ink-fill);
+  color: var(--ink-text);
+}
+.project-filters:not([data-ready]) > button[aria-pressed="true"] > span,
+.skill-tabs:not([data-ready]) > button[aria-pressed="true"] > span {
+  color: inherit;
+  opacity: 0.72;
+}
+.chip-ink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: inherit;
+  gap: inherit;
+  background: var(--ink-fill);
+  color: var(--ink-text);
+  clip-path: inset(
+    var(--iy, 0px) calc(100% - var(--ix, 0px) - var(--iw, 0px))
+      calc(100% - var(--iy, 0px) - var(--ih, 0px)) var(--ix, 0px) round 999px
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+.chip-ink > .chip > span {
+  opacity: 0.72;
+}
+[data-ready] > .chip-ink {
+  opacity: 1;
+  transition:
+    clip-path 0.6s var(--spring),
+    background-color 0.45s ease,
+    color 0.45s ease;
 }
 .filter-lens {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 2;
-  width: var(--fw, 0);
-  height: var(--fh, 0);
-  transform: translate(var(--fx, 0), var(--fy, 0));
+  width: var(--lw, 0);
+  height: var(--lh, 0);
+  transform: translate(var(--lx, 0), var(--ly, 0));
   border-radius: 999px;
   background:
     radial-gradient(
@@ -625,13 +985,44 @@ dialog::backdrop {
   opacity: 0;
   pointer-events: none;
 }
-[data-lens-ready] > .filter-lens {
+[data-ready] > .filter-lens {
   opacity: 1;
   transition:
-    transform 0.55s var(--spring),
-    width 0.55s var(--spring),
+    transform 0.45s var(--spring),
+    width 0.45s var(--spring),
     height 0.3s var(--ease),
     opacity 0.3s;
+}
+/* Skill areas: a colour each, shown as a dot and as the sliding pill. */
+.tone-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--tone);
+}
+:is(.skill-tabs, .tone-dot, .skill-bubble)[data-tone="1"] {
+  --tone: var(--tone-1);
+}
+:is(.skill-tabs, .tone-dot, .skill-bubble)[data-tone="2"] {
+  --tone: var(--tone-2);
+}
+:is(.skill-tabs, .tone-dot, .skill-bubble)[data-tone="3"] {
+  --tone: var(--tone-3);
+}
+:is(.skill-tabs, .tone-dot, .skill-bubble)[data-tone="4"] {
+  --tone: var(--tone-4);
+}
+:is(.skill-tabs, .tone-dot, .skill-bubble)[data-tone="5"] {
+  --tone: var(--tone-5);
+}
+.skill-tabs[data-tone] {
+  --ink-fill: var(--tone);
+  --ink-text: #fff;
+}
+.chip-ink .tone-dot {
+  background: currentColor;
+  opacity: 0.85;
 }
 
 /* ───────── Living background ─────────
@@ -1706,7 +2097,7 @@ dialog::backdrop {
   .achievement-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, auto));
-    justify-content: start;
+    justify-content: center;
     gap: 5px;
   }
   .achievement-list li {
@@ -1753,13 +2144,15 @@ dialog::backdrop {
     height: 13px;
   }
 }
+/* Centred under the highlights, a touch smaller than a card heading. */
 .location-pill {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
-  gap: 14px;
-  margin-top: 14px;
-  padding: 10px 22px 10px 10px;
-  border-radius: 20px;
+  gap: 12px;
+  margin: 16px auto 0;
+  padding: 8px 18px 8px 8px;
+  border-radius: 18px;
   background: var(--rose-bg);
   box-shadow:
     inset 0 0 0 1px rgb(223 33 47 / 0.14),
@@ -1768,29 +2161,29 @@ dialog::backdrop {
 .location-icon {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #e8323f, #a8141e);
   color: #fff;
   box-shadow: 0 8px 18px -8px rgb(223 33 47 / 0.7);
 }
 .location-icon svg {
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
 }
 .location-pill strong {
   display: block;
-  font: 600 16px/1.2 var(--font-display);
+  font: 600 14.5px/1.2 var(--font-display);
   letter-spacing: -0.035em;
 }
 .location-pill small {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 4px;
+  margin-top: 3px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 .location-pill small .status-dot {
   width: 6px;
@@ -1923,8 +2316,8 @@ dialog::backdrop {
   width: 16px;
   height: 16px;
 }
-/* Stacked cards: GW lands and stays fully readable for a stretch of scroll
-   before SVCE slides up over it; then both leave together. */
+/* Stacked cards: GW lands and rests, fully readable, for a short beat of
+   scrolling before SVCE slides up over it; then both leave together. */
 @media (min-width: 860px) {
   .education-stack {
     gap: 0;
@@ -1934,11 +2327,11 @@ dialog::backdrop {
     top: calc(118px + var(--i, 0) * 26px);
   }
   .education-slot + .education-slot {
-    margin-top: 42vh;
+    margin-top: clamp(120px, 20vh, 200px);
   }
   .education-stack::after {
     content: "";
-    height: 18vh;
+    height: 10vh;
   }
 }
 @media (max-width: 859px) {
@@ -1989,13 +2382,14 @@ dialog::backdrop {
   transform: scaleY(var(--progress, 0));
 }
 /* The pin rides the tip of the filling line: a crimson marker pointing the
-   way down the career path, with a soft ping where it touches the line. Like
-   the line, it passes beneath each company badge. */
+   way down the career path, with a soft ping where it touches the line.
+   Reaching a company badge, it docks at the rim (never over the logo) while
+   the badge sends out an impact ripple, then pops back out below. */
 .timeline-cursor {
   position: absolute;
   top: 0;
   left: calc(var(--line-x) + 1px);
-  z-index: 0;
+  z-index: 2;
   width: 0;
   height: 0;
   transform: translateY(var(--cursor-y, 10px));
@@ -2014,6 +2408,16 @@ dialog::backdrop {
   box-shadow:
     0 0 0 2.5px var(--surface),
     -4px 6px 16px -4px rgb(223 33 47 / 0.7);
+  transition:
+    opacity 0.2s ease,
+    scale 0.5s var(--spring);
+}
+.timeline-cursor[data-docked] > span {
+  opacity: 0;
+  scale: 0.35;
+  transition:
+    opacity 0.18s ease,
+    scale 0.25s ease;
 }
 .timeline-cursor > span::after {
   content: "";
@@ -2032,8 +2436,11 @@ dialog::backdrop {
   border-radius: 50%;
   background: rgb(223 33 47 / 0.4);
 }
+.timeline-cursor[data-docked]::before {
+  opacity: 0;
+}
 @media (prefers-reduced-motion: no-preference) {
-  .timeline-cursor::before {
+  .timeline-cursor:not([data-docked])::before {
     animation: ping 1.8s ease-out infinite;
   }
 }
@@ -2091,6 +2498,48 @@ dialog::backdrop {
 }
 .timeline-item[data-active] .timeline-node {
   transform: scale(1.06);
+}
+/* Impact: two crimson shockwaves ripple out from the badge's rim (behind the
+   logo, never over it) and the badge gives a small bump. */
+.timeline-node::before,
+.timeline-node::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  z-index: -1;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-node[data-impact] {
+    animation: node-bump 0.6s var(--spring);
+  }
+  .timeline-node[data-impact]::before {
+    animation: impact-ring 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .timeline-node[data-impact]::after {
+    animation: impact-ring 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) 0.14s both;
+  }
+}
+@keyframes impact-ring {
+  0% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.75);
+  }
+}
+@keyframes node-bump {
+  30% {
+    scale: 1.14;
+  }
+  60% {
+    scale: 0.97;
+  }
 }
 .company-mark {
   display: grid;
@@ -2236,7 +2685,8 @@ dialog::backdrop {
 }
 /* Rows line up like a standard grid (each row as tall as its tallest card).
    With JavaScript the same rows are absolutely placed so filtering can
-   glide; without it, this CSS grid is the whole story. */
+   animate; without it, this CSS grid is the whole story. Positions use the
+   `translate` property so the scale effects never shift a card's spot. */
 .project-grid {
   position: relative;
   display: grid;
@@ -2245,6 +2695,9 @@ dialog::backdrop {
 }
 .project-grid[data-masonry] {
   display: block;
+}
+.project-grid[data-animate] {
+  transition: height 0.7s var(--glide);
 }
 .project-slot {
   display: flex;
@@ -2258,33 +2711,58 @@ dialog::backdrop {
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(var(--x, 0), var(--y, 0));
+  translate: var(--x, 0) var(--y, 0);
 }
+/* Filtered out: blurred, shrunk and sunk back, then hidden. */
 .project-slot[data-hidden] {
   visibility: hidden;
   opacity: 0;
-  scale: 0.86;
+  scale: 0.84;
+  filter: blur(8px);
+  transform: perspective(900px) rotateX(9deg) translateY(26px);
   pointer-events: none;
 }
+/* Staying cards glide to their new spots in a quick cascade. */
 .project-grid[data-animate] .project-slot {
   transition:
-    transform 0.75s var(--glide),
-    opacity 0.4s ease,
-    scale 0.45s var(--ease),
+    translate 0.8s var(--glide) calc(var(--order, 0) * 32ms),
+    opacity 0.45s ease,
+    scale 0.55s var(--spring),
+    filter 0.45s ease,
+    transform 0.6s var(--ease),
     visibility 0s;
 }
 .project-grid[data-animate] .project-slot[data-hidden] {
   transition:
-    transform 0.75s var(--glide),
+    translate 0.8s var(--glide),
     opacity 0.32s ease,
     scale 0.4s var(--ease),
+    filter 0.35s ease,
+    transform 0.4s var(--ease),
     visibility 0s linear 0.4s;
 }
+/* Arriving cards appear in their new spot and rise in, one after another. */
 .project-grid[data-animate] .project-slot[data-entering] {
   transition:
-    opacity 0.45s ease 0.2s,
-    scale 0.55s var(--spring) 0.2s,
+    opacity 0.5s ease calc(0.14s + var(--order, 0) * 45ms),
+    scale 0.65s var(--spring) calc(0.14s + var(--order, 0) * 45ms),
+    filter 0.5s ease calc(0.14s + var(--order, 0) * 45ms),
+    transform 0.65s var(--ease) calc(0.14s + var(--order, 0) * 45ms),
     visibility 0s;
+}
+/* A small lift while a card travels. */
+.project-slot[data-moving] {
+  z-index: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .project-grid[data-animate] .project-slot[data-moving]:not([data-hidden]) {
+    animation: card-hop 0.8s var(--glide) calc(var(--order, 0) * 32ms);
+  }
+}
+@keyframes card-hop {
+  45% {
+    scale: 1.035;
+  }
 }
 .project-card {
   display: flex;
@@ -2400,6 +2878,7 @@ dialog::backdrop {
   font-weight: 500;
 }
 .project-content {
+  position: relative;
   display: grid;
   flex: 1;
   align-content: start;
@@ -2412,12 +2891,6 @@ dialog::backdrop {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-.project-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
 }
 .project-content h3 {
   margin: 0;
@@ -2436,14 +2909,16 @@ dialog::backdrop {
   color: var(--text);
   font-size: 14.5px;
 }
-/* Sits level with the title's first line. */
+/* Up on the category line, top right, so titles keep the full width and
+   line up across the row. */
 .project-next-chapter {
+  position: absolute;
+  top: 8px;
+  right: 10px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  flex: none;
   min-height: 34px;
-  margin-top: -6px;
   padding: 0 12px;
   border-radius: 999px;
   background: linear-gradient(135deg, #d81f2c, #a8141e);
@@ -2589,9 +3064,27 @@ dialog::backdrop {
   font-size: 18px;
   font-weight: 600;
   box-shadow:
-    inset 0 -8px 14px -10px rgb(223 33 47 / 0.4),
-    0 10px 22px -12px rgb(223 33 47 / 0.45),
-    0 0 0 1.5px rgb(223 33 47 / 0.32);
+    inset 0 -8px 14px -10px color-mix(in srgb, var(--tone) 40%, transparent),
+    0 10px 22px -12px color-mix(in srgb, var(--tone) 45%, transparent),
+    0 0 0 1.5px color-mix(in srgb, var(--tone) 34%, transparent);
+}
+/* Each bubble carries its area's colour as a small dot. */
+.skill-bubble::before {
+  content: "";
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--tone);
+  vertical-align: 0.1em;
+}
+/* The chosen area's bubbles take on its colour. */
+.skill-bubble[data-lit] {
+  background: color-mix(in srgb, var(--tone) var(--tone-tint), var(--surface));
+  box-shadow:
+    inset 0 0 0 1.5px var(--tone),
+    0 10px 22px -14px color-mix(in srgb, var(--tone) 70%, transparent);
 }
 /* Other areas recede (flat, smaller) but their text stays readable. */
 .skill-bubble[data-dim] {
@@ -2642,10 +3135,46 @@ dialog::backdrop {
     transform: translate(-50%, 0);
   }
 }
+/* Switching areas sends a quick pop across the chosen bubbles, in order.
+   The two names alternate so the animation replays on every switch. */
+@media (prefers-reduced-motion: no-preference) {
+  .skill-cloud[data-wave="a"] .skill-bubble:not([data-dim]) {
+    --pop: pop-a;
+  }
+  .skill-cloud[data-wave="b"] .skill-bubble:not([data-dim]) {
+    --pop: pop-b;
+  }
+  .skill-bubble {
+    animation: var(--pop, none) 0.55s var(--spring) backwards;
+    animation-delay: calc(var(--k, 0) * 22ms);
+  }
+}
 @media (prefers-reduced-motion: no-preference) and (hover: hover) {
   .skill-bubble {
-    animation: bob 5.5s ease-in-out infinite alternate;
-    animation-delay: calc(var(--i) * -0.41s);
+    animation:
+      bob 5.5s ease-in-out infinite alternate,
+      var(--pop, none) 0.55s var(--spring) backwards;
+    animation-delay: calc(var(--i) * -0.41s), calc(var(--k, 0) * 22ms);
+  }
+}
+@keyframes pop-a {
+  0% {
+    opacity: 0.35;
+    scale: 0.72;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.08;
+  }
+}
+@keyframes pop-b {
+  0% {
+    opacity: 0.35;
+    scale: 0.72;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.08;
   }
 }
 @keyframes bob {
@@ -2827,6 +3356,9 @@ dialog::backdrop {
 }
 .cert-mark[data-logo="mark"] img {
   max-height: 38px;
+}
+.cert-mark[data-logo="compact"] img {
+  max-height: 34px;
 }
 .cert-mark:not([data-logo]) {
   background: radial-gradient(circle at 20% 15%, #fff, #f6cfcb 160%);
@@ -3066,11 +3598,12 @@ dialog::backdrop {
   gap: 12px;
   text-align: left;
 }
-/* The photo file is already a square head-and-shoulders crop. */
+/* The owner's own crop, used as is: the circle shows its top square (hair
+   to chest), with no zoom. */
 .contact-avatar {
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   flex: none;
   overflow: hidden;
   border-radius: 50%;
@@ -3083,6 +3616,7 @@ dialog::backdrop {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 0%;
 }
 .contact-email {
   font-weight: 600;
@@ -3339,7 +3873,7 @@ dialog::backdrop {
 .footer-inner p {
   margin: 0;
 }
-.footer-inner a:not(.wordmark) {
+.footer-inner a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -3348,8 +3882,8 @@ dialog::backdrop {
   text-decoration: none;
 }
 @media (min-width: 900px) {
-  /* Keep the footer clear of the training monitor. */
-  .footer-inner {
+  /* Keep the footer clear of the training monitor (home page only). */
+  body:has(.trainer) .footer-inner {
     padding-left: 270px;
   }
 }
@@ -3419,18 +3953,63 @@ dialog::backdrop {
   margin: 4px 0 0;
   font-weight: 500;
 }
-.case-links {
+/* Project links as real buttons: GitHub in ink, Devpost in its own teal,
+   a write-up as a light chip. */
+.case-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 16px;
+  gap: 10px;
 }
-.case-links a {
+.case-action {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-height: 32px;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  color: var(--ink);
+  font-size: 14.5px;
   font-weight: 600;
-  text-transform: capitalize;
+  text-decoration: none;
+  transition:
+    transform 0.25s var(--ease),
+    background 0.2s;
+}
+.case-action svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+.case-action svg:last-child {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
+.case-action:hover {
+  transform: translateY(-2px);
+}
+.case-action[data-kind="github"] {
+  background: var(--invert);
+  box-shadow: var(--shadow-button);
+  color: var(--on-invert);
+}
+.case-action[data-kind="github"]:hover {
+  background: var(--invert-hover);
+}
+.case-action[data-kind="devpost"] {
+  background: #003e54;
+  box-shadow: 0 14px 30px -14px rgb(0 62 84 / 0.75);
+  color: #fff;
+}
+.case-action[data-kind="devpost"]:hover {
+  background: #005b78;
+}
+:root[data-theme="dark"] .case-action[data-kind="devpost"] {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.16),
+    0 14px 30px -14px rgb(0 0 0 / 0.8);
 }
 .related-mini {
   display: inline-flex;
@@ -3531,26 +4110,30 @@ dialog::backdrop {
   }
 }
 
-/* "A closer look": an adaptive masonry wall. Every tile keeps its image's
-   own shape; JavaScript places tiles in reading order (shortest column
-   first). Without it, CSS columns give the same look. */
+/* "A closer look": justified rows, like a photo book. Every tile keeps its
+   image's own shape, tiles in a row share one height, and every row spans
+   the full width, so the wall reads as one aligned block. JavaScript picks
+   balanced row breaks; without it, flexbox gives nearly the same rows. */
 .gallery-wall {
-  columns: var(--cols, 3);
-  column-gap: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.gallery-wall::after {
+  content: "";
+  flex-grow: 1000000;
 }
 .gallery-tile {
   position: relative;
   display: block;
-  width: 100%;
+  flex: var(--ratio, 1.5) 1 calc(var(--ratio, 1.5) * 240px);
   aspect-ratio: var(--ratio, 1.5);
-  margin: 0 0 14px;
   padding: 0;
   overflow: hidden;
   border: 0;
   border-radius: 18px;
   background: var(--surface-3);
   box-shadow: var(--shadow-card);
-  break-inside: avoid;
   cursor: zoom-in;
 }
 /* The edge sits over the image as an overlay: a real border would make
@@ -3563,16 +4146,27 @@ dialog::backdrop {
   box-shadow: inset 0 0 0 1px var(--surface-edge);
   pointer-events: none;
 }
-.gallery-wall[data-masonry] {
+.gallery-wall[data-justified] {
   position: relative;
-  columns: auto;
+  display: block;
 }
-.gallery-wall[data-masonry] .gallery-tile {
+.gallery-wall[data-justified]::after {
+  display: none;
+}
+.gallery-wall[data-justified] .gallery-tile {
   position: absolute;
   top: 0;
   left: 0;
-  margin: 0;
   transform: translate(var(--x, 0), var(--y, 0));
+}
+@media (max-width: 559px) {
+  .gallery-wall {
+    gap: 10px;
+  }
+  .gallery-tile {
+    flex-basis: calc(var(--ratio, 1.5) * 130px);
+    border-radius: 14px;
+  }
 }
 .gallery-image {
   display: block;
@@ -3610,11 +4204,6 @@ dialog::backdrop {
   .gallery-zoom {
     opacity: 1;
     transform: none;
-  }
-}
-@media (max-width: 879px) {
-  .gallery-wall {
-    columns: 2;
   }
 }
 .lightbox {
@@ -3676,14 +4265,22 @@ dialog::backdrop {
       animation-timeline: view();
       animation-range: entry 0% entry 70%;
     }
-    /* The pinned portrait slowly zooms while About scrolls past it. */
     .about-layout {
       view-timeline: --about block;
     }
+    /* The portrait slowly zooms toward the face as you read: across the
+       stretch where it is pinned on desktop, as it passes on phones. */
     .portrait img {
+      transform-origin: 50% 32%;
       animation: portrait-zoom linear both;
-      animation-timeline: --about;
+      animation-timeline: view();
       animation-range: cover 0% cover 100%;
+    }
+    @media (min-width: 860px) {
+      .portrait img {
+        animation-timeline: --about;
+        animation-range: contain 0% contain 100%;
+      }
     }
   }
 }
@@ -3718,10 +4315,10 @@ dialog::backdrop {
 }
 @keyframes portrait-zoom {
   from {
-    scale: 1.02;
+    scale: 1;
   }
   to {
-    scale: 1.2;
+    scale: 1.18;
   }
 }
 @keyframes edu-recede {

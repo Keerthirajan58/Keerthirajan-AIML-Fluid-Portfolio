@@ -16,6 +16,17 @@ export const contactSchema = z.object({
       z.maxLength(5000, "Keep your message under 5,000 characters."),
     ),
 });
+/**
+ * The portfolio's Formspree form. Not a secret: a form ID is visible in every
+ * page that posts to it. `NEXT_PUBLIC_FORMSPREE_FORM_ID` can override it.
+ */
+export const FORMSPREE_FORM_ID = "mwlvqyoe";
+
+/** Subject line of the email Formspree delivers. */
+export function formSubject(name: string, topic?: string) {
+  return `Portfolio: ${topic || "New message"} from ${name}`;
+}
+
 export function formEndpoint(id?: string) {
   return id && /^[a-zA-Z0-9]{6,32}$/.test(id)
     ? "https://formspree.io/f/" + id
