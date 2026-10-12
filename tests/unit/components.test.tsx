@@ -425,6 +425,11 @@ describe("contact delivery states", () => {
     await fill();
     await userEvent.click(screen.getByRole("button", { name: /Send message/ }));
     expect(screen.getByRole("button", { name: /Sending/ })).toBeDisabled();
+    // While sending, the plane flies and a shimmer sweeps the button.
+    expect(screen.getByRole("button", { name: /Sending/ })).toHaveAttribute(
+      "data-sending",
+      "true",
+    );
     resolve(new Response("{}", { status: 200 }));
     await waitFor(() =>
       expect(screen.getByRole("status")).toHaveTextContent("has been sent"),
@@ -467,6 +472,39 @@ describe("contact delivery states", () => {
       expect(screen.getByLabelText("name")).toHaveValue("Test Person");
     },
   );
+  it("moves a glass lens over topics and ripples from where Send is pressed", async () => {
+    vi.spyOn(HTMLElement.prototype, "offsetLeft", "get").mockImplementation(
+      function (this: HTMLElement) {
+        const labels = [...document.querySelectorAll(".topic-options > label")];
+        return Math.max(0, labels.indexOf(this)) * 100;
+      },
+    );
+    render(<ContactForm formId="abcdefgh" email="test@example.com" />);
+    const options = document.querySelector<HTMLElement>(".topic-options")!;
+    const marks = () => [
+      options.style.getPropertyValue("--ix"),
+      options.style.getPropertyValue("--lx"),
+    ];
+    // The first topic is chosen; the lens rests on it.
+    expect(marks()).toEqual(["0px", "0px"]);
+    const over = new Event("pointerover", { bubbles: true });
+    Object.assign(over, { pointerType: "mouse" });
+    fireEvent(screen.getByLabelText("Just saying hi"), over);
+    expect(marks()).toEqual(["0px", "200px"]);
+    await userEvent.click(screen.getByLabelText("Collaboration"));
+    expect(screen.getByLabelText("Collaboration")).toBeChecked();
+    expect(marks()).toEqual(["100px", "100px"]);
+    // Pressing Send starts a ripple at the press point.
+    const send = screen.getByRole("button", { name: /Send message/ });
+    send.getBoundingClientRect = () =>
+      ({ left: 10, top: 20, width: 180, height: 52 }) as DOMRect;
+    const down = new Event("pointerdown", { bubbles: true });
+    Object.assign(down, { clientX: 40, clientY: 46 });
+    fireEvent(send, down);
+    expect(send).toHaveAttribute("data-pressed");
+    expect(send.style.getPropertyValue("--px")).toBe("30px");
+    expect(send.style.getPropertyValue("--py")).toBe("26px");
+  });
   it("never submits honeypot traffic", async () => {
     const fetcher = vi.fn();
     vi.stubGlobal("fetch", fetcher);

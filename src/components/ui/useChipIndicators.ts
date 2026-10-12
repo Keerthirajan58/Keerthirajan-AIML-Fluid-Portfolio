@@ -4,9 +4,19 @@ import { useEffect, useLayoutEffect, type RefObject } from "react";
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
+type ChipOptions = {
+  /** Tag of the chip elements (direct children of the group). */
+  chip?: string;
+  /** Finds the chosen chip; defaults to the pressed button. */
+  chosen?: (group: HTMLElement) => HTMLElement | null;
+};
+
+const pressedButton = (group: HTMLElement) =>
+  group.querySelector<HTMLElement>(':scope > button[aria-pressed="true"]');
+
 /**
- * Two indicators for a group of chip buttons, positioned through CSS
- * variables on the group so the stylesheet can animate them:
+ * Two indicators for a group of chips, positioned through CSS variables on
+ * the group so the stylesheet can animate them:
  *
  * - the ink pill (`--ix --iy --iw --ih`) marks the chosen chip and moves only
  *   when the choice changes;
@@ -17,6 +27,10 @@ const useIsoLayoutEffect =
 export function useChipIndicators(
   ref: RefObject<HTMLElement | null>,
   selected: unknown,
+  {
+    chip: chipTag = "button",
+    chosen: findChosen = pressedButton,
+  }: ChipOptions = {},
 ) {
   useIsoLayoutEffect(() => {
     const group = ref.current;
@@ -29,9 +43,7 @@ export function useChipIndicators(
       group.style.setProperty(`--${prefix}h`, `${chip.offsetHeight}px`);
     };
     const place = () => {
-      const chosen = group.querySelector<HTMLElement>(
-        ':scope > button[aria-pressed="true"]',
-      );
+      const chosen = findChosen(group);
       if (!chosen) return;
       write("i", chosen);
       write("l", hovered ?? chosen);
@@ -41,7 +53,7 @@ export function useChipIndicators(
         });
     };
     const chipFrom = (target: EventTarget | null) => {
-      const chip = target instanceof Element ? target.closest("button") : null;
+      const chip = target instanceof Element ? target.closest(chipTag) : null;
       return chip && chip.parentElement === group
         ? (chip as HTMLElement)
         : null;
@@ -88,5 +100,5 @@ export function useChipIndicators(
       group.removeEventListener("focusout", rest);
       observer?.disconnect();
     };
-  }, [ref, selected]);
+  }, [ref, selected, chipTag, findChosen]);
 }

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useChipIndicators } from "./ui/useChipIndicators";
 import {
   contactSchema,
   contactTopics,
@@ -10,6 +11,10 @@ import {
 import { ArrowUpRightIcon, CopyIcon, SendIcon } from "./ui/icons";
 
 type Status = "idle" | "sending" | "success" | "error" | "handoff";
+
+/** The chosen topic's chip: the label around the checked radio. */
+const checkedTopic = (group: HTMLElement) =>
+  group.querySelector("input:checked")?.closest("label") ?? null;
 
 export function ContactForm({
   formId,
@@ -27,7 +32,11 @@ export function ContactForm({
     abort = useRef<AbortController | null>(null);
   const [status, setStatus] = useState<Status>("idle"),
     [errors, setErrors] = useState<Record<string, string>>({}),
-    [copied, setCopied] = useState(false);
+    [copied, setCopied] = useState(false),
+    [topic, setTopic] = useState<string>(contactTopics[0]);
+  // The same glass lens as the skill tabs follows the pointer over topics.
+  const picker = useRef<HTMLDivElement>(null);
+  useChipIndicators(picker, topic, { chip: "label", chosen: checkedTopic });
   useEffect(() => () => abort.current?.abort(), []);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -100,17 +109,22 @@ export function ContactForm({
     >
       <fieldset className="topic-picker">
         <legend>What&apos;s it about?</legend>
-        {contactTopics.map((t, i) => (
-          <label key={t}>
-            <input
-              type="radio"
-              name="topic"
-              value={t}
-              defaultChecked={i === 0}
-            />
-            <span>{t}</span>
-          </label>
-        ))}
+        {/* Its own box: a fieldset's legend would offset the glass lens. */}
+        <div className="topic-options" ref={picker}>
+          {contactTopics.map((t) => (
+            <label key={t}>
+              <input
+                type="radio"
+                name="topic"
+                value={t}
+                checked={topic === t}
+                onChange={() => setTopic(t)}
+              />
+              <span>{t}</span>
+            </label>
+          ))}
+          <span className="filter-lens" aria-hidden="true" />
+        </div>
       </fieldset>
       <div className="form-row">
         {(["name", "email"] as const).map((field) => (
@@ -166,8 +180,24 @@ export function ContactForm({
       <div className="form-actions">
         <button
           type="submit"
-          className="button button-primary"
+          className="button button-primary send-button"
           disabled={status === "sending"}
+          data-sending={status === "sending" || undefined}
+          onPointerDown={(e) => {
+            // A ripple spreads from where the button is pressed.
+            const box = e.currentTarget.getBoundingClientRect();
+            e.currentTarget.style.setProperty(
+              "--px",
+              `${e.clientX - box.left}px`,
+            );
+            e.currentTarget.style.setProperty(
+              "--py",
+              `${e.clientY - box.top}px`,
+            );
+            e.currentTarget.removeAttribute("data-pressed");
+            void e.currentTarget.offsetWidth;
+            e.currentTarget.setAttribute("data-pressed", "");
+          }}
         >
           {status === "sending" ? "Sending…" : "Send message"}
           <SendIcon />

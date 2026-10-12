@@ -344,7 +344,8 @@ test("revised art direction keeps credentials visible and project actions integr
         getComputedStyle(el).objectPosition,
       ]),
   ).toEqual(["none", "50% 0%"]);
-  // The NVC button sits up on BarterBrAIn's category line, above the title.
+  // The NVC button sits at the card's top right, between the category line
+  // and the title, and never touches the title text.
   expect(
     await page.locator('[data-project="barterbrain"]').evaluate((card) => {
       const nvc = card
@@ -353,15 +354,17 @@ test("revised art direction keeps credentials visible and project actions integr
       const label = card
         .querySelector(".project-category")!
         .getBoundingClientRect();
-      const title = card.querySelector("h3")!.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(card.querySelector("h3")!);
+      const title = range.getBoundingClientRect();
+      const centre = nvc.top + nvc.height / 2;
       return {
-        aboveTitle: nvc.bottom <= title.top + 2,
-        onLabelLine:
-          Math.abs(nvc.top + nvc.height / 2 - (label.top + label.height / 2)) <
-          6,
+        betweenLines:
+          centre > label.top + label.height / 2 && centre < title.bottom,
+        clearOfTitle: nvc.left > title.right,
       };
     }),
-  ).toEqual({ aboveTitle: true, onLabelLine: true });
+  ).toEqual({ betweenLines: true, clearOfTitle: true });
   await expect(
     page.locator(".project-image .project-achievement"),
   ).toContainText("Technica winner");

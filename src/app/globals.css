@@ -2144,7 +2144,7 @@ dialog::backdrop {
   width: fit-content;
   align-items: center;
   gap: 10px;
-  margin: 14px auto 0;
+  margin: 24px auto 0;
   padding: 6px 14px 6px 6px;
   border-radius: 15px;
   background: var(--rose-bg);
@@ -2494,98 +2494,121 @@ dialog::backdrop {
 .timeline-item[data-active] .timeline-node {
   transform: scale(1.06);
 }
-/* Impact: where the pin touches the badge's rim, a small firework of fine
-   gold and crimson sparks streaks outward and upward with a warm flash,
-   then fades. It stays above the badge (never over the logo), and the
-   badge gives a gentle bump. */
+/* Impact: when the pin touches a badge, a ring of tiny gold, crimson and
+   rose-gold confetti lifts off all around the badge's rim, drifting
+   outward with a slight swirl while a soft gold halo glows and fades.
+   Everything stays outside the badge (never over the logo). */
+.timeline-node {
+  --spark-from: 36px;
+  --spark-to: 52px;
+}
 .timeline-node::before,
 .timeline-node::after {
   content: "";
   position: absolute;
-  left: 50%;
   z-index: -1;
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
 }
-/* Sparks: alternating gold and crimson rays, cut to a ring so each one is a
-   short streak, and kept to the upper side of the touch point. */
 .timeline-node::before {
-  top: -30px;
-  width: 48px;
-  height: 48px;
-  margin-left: -24px;
-  background: repeating-conic-gradient(
-    from -90deg,
-    #ffd36e 0deg 4deg,
-    transparent 4deg 11.25deg,
-    #ff4b57 11.25deg 15.25deg,
-    transparent 15.25deg 22.5deg
-  );
-  -webkit-mask: radial-gradient(
-    circle closest-side,
-    transparent 48%,
-    #000 54%,
-    #000 88%,
-    transparent 96%
-  );
-  mask: radial-gradient(
-    circle closest-side,
-    transparent 48%,
-    #000 54%,
-    #000 88%,
-    transparent 96%
-  );
-  clip-path: inset(0 0 38% 0);
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
 }
 .timeline-node::after {
-  top: -19px;
-  width: 26px;
-  height: 26px;
-  margin-left: -13px;
-  background: radial-gradient(
-    circle,
-    #fff6d8 0%,
-    #ffcf6b 28%,
-    rgb(223 33 47 / 0.5) 55%,
-    transparent 72%
-  );
+  inset: -3px;
+  box-shadow: 0 0 18px 3px rgb(242 193 78 / 0.55);
 }
 @media (prefers-reduced-motion: no-preference) {
   .timeline-node[data-impact] {
     animation: node-bump 0.55s var(--spring);
   }
   .timeline-node[data-impact]::before {
-    animation: spark-burst 0.7s cubic-bezier(0.16, 0.8, 0.3, 1) both;
+    animation: confetti 0.95s cubic-bezier(0.2, 0.75, 0.3, 1) both;
   }
   .timeline-node[data-impact]::after {
-    animation: spark-flash 0.55s ease-out both;
+    animation: halo 0.8s ease-out both;
   }
 }
-@keyframes spark-burst {
+@keyframes confetti {
   0% {
     opacity: 0;
-    scale: 0.35;
+    rotate: 0deg;
+    box-shadow:
+      calc(var(--spark-from) * 1) 0px 0 0px #f2c14e,
+      calc(var(--spark-from) * 0.924) calc(var(--spark-from) * 0.383) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * 0.707) calc(var(--spark-from) * 0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * 0.383) calc(var(--spark-from) * 0.924) 0 -0.5px
+        #d99a1e,
+      0px calc(var(--spark-from) * 1) 0 0px #f2c14e,
+      calc(var(--spark-from) * -0.383) calc(var(--spark-from) * 0.924) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * -0.707) calc(var(--spark-from) * 0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * -0.924) calc(var(--spark-from) * 0.383) 0 -0.5px
+        #d99a1e,
+      calc(var(--spark-from) * -1) 0px 0 0px #f2c14e,
+      calc(var(--spark-from) * -0.924) calc(var(--spark-from) * -0.383) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * -0.707) calc(var(--spark-from) * -0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * -0.383) calc(var(--spark-from) * -0.924) 0 -0.5px
+        #d99a1e,
+      0px calc(var(--spark-from) * -1) 0 0px #f2c14e,
+      calc(var(--spark-from) * 0.383) calc(var(--spark-from) * -0.924) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * 0.707) calc(var(--spark-from) * -0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * 0.924) calc(var(--spark-from) * -0.383) 0 -0.5px
+        #d99a1e;
   }
-  18% {
+  15% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    scale: 1.15;
+    rotate: 24deg;
+    box-shadow:
+      calc(var(--spark-to) * 1) 0px 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * 0.924)
+        calc(calc(var(--spark-to) * 0.86) * 0.383) 0 -2px #e0303f,
+      calc(var(--spark-to) * 0.707) calc(var(--spark-to) * 0.707) 0 -2px #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * 0.383)
+        calc(calc(var(--spark-to) * 0.86) * 0.924) 0 -2px #d99a1e,
+      0px calc(var(--spark-to) * 1) 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * -0.383)
+        calc(calc(var(--spark-to) * 0.86) * 0.924) 0 -2px #e0303f,
+      calc(var(--spark-to) * -0.707) calc(var(--spark-to) * 0.707) 0 -2px
+        #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * -0.924)
+        calc(calc(var(--spark-to) * 0.86) * 0.383) 0 -2px #d99a1e,
+      calc(var(--spark-to) * -1) 0px 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * -0.924)
+        calc(calc(var(--spark-to) * 0.86) * -0.383) 0 -2px #e0303f,
+      calc(var(--spark-to) * -0.707) calc(var(--spark-to) * -0.707) 0 -2px
+        #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * -0.383)
+        calc(calc(var(--spark-to) * 0.86) * -0.924) 0 -2px #d99a1e,
+      0px calc(var(--spark-to) * -1) 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * 0.383)
+        calc(calc(var(--spark-to) * 0.86) * -0.924) 0 -2px #e0303f,
+      calc(var(--spark-to) * 0.707) calc(var(--spark-to) * -0.707) 0 -2px
+        #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * 0.924)
+        calc(calc(var(--spark-to) * 0.86) * -0.383) 0 -2px #d99a1e;
   }
 }
-@keyframes spark-flash {
-  0% {
-    opacity: 0;
-    scale: 0.2;
-  }
-  25% {
+@keyframes halo {
+  30% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    scale: 1.25;
   }
 }
 @keyframes node-bump {
@@ -2682,6 +2705,10 @@ dialog::backdrop {
   background: linear-gradient(transparent 64%, var(--accent-wash) 0);
 }
 @media (max-width: 759px) {
+  .timeline-node {
+    --spark-from: 28px;
+    --spark-to: 40px;
+  }
   .experience-journey {
     --rail: 0px;
     --line-x: 23px;
@@ -2965,7 +2992,7 @@ dialog::backdrop {
    line up across the row. */
 .project-next-chapter {
   position: absolute;
-  top: 14px;
+  top: 26px;
   right: 10px;
   display: inline-flex;
   align-items: center;
@@ -3787,15 +3814,59 @@ dialog::backdrop {
   color: rgb(255 255 255 / 0.92);
   font-size: 14px;
 }
+/* Close: a soap-bubble orb like the logo, its iridescent rim swirling on
+   hover. */
 .contact-dialog-head .icon-button {
-  background: rgb(255 255 255 / 0.16);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28);
+  position: relative;
+  background: radial-gradient(
+    circle at 30% 26%,
+    rgb(255 255 255 / 0.9) 0 7%,
+    rgb(255 255 255 / 0.26) 18%,
+    rgb(255 255 255 / 0.06) 55%,
+    rgb(255 255 255 / 0.16) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.3),
+    inset 0 -8px 14px -8px rgb(255 205 230 / 0.55),
+    inset 7px 0 12px -10px rgb(170 210 255 / 0.65),
+    0 10px 22px -10px rgb(0 0 0 / 0.5);
   color: #fff;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  transition:
+    scale 0.45s var(--spring),
+    transform 0.2s;
+}
+.contact-dialog-head .icon-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 20deg,
+    #ffd1e8,
+    #b9d9ff,
+    #fff1b3,
+    #ffc4dc,
+    #c4f1ff,
+    #ffd1e8
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.8;
+  transition: rotate 0.9s var(--ease);
+  pointer-events: none;
 }
 .contact-dialog-head .icon-button:hover {
-  background: rgb(255 255 255 / 0.26);
+  scale: 1.08;
+}
+.contact-dialog-head .icon-button:hover::before {
+  rotate: 160deg;
 }
 .contact-dialog-body {
   padding: clamp(20px, 3.4vw, 30px) clamp(22px, 4vw, 36px)
@@ -3806,10 +3877,16 @@ dialog::backdrop {
   gap: 16px;
   text-align: left;
 }
-.topic-picker {
+/* Topics: the same glass lens as the skill tabs follows the pointer and
+   rests on the chosen topic. */
+.topic-options {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+.topic-picker {
+  display: block;
   margin: 0;
   padding: 0;
   border: 0;
@@ -3823,6 +3900,7 @@ dialog::backdrop {
 }
 .topic-picker label {
   position: relative;
+  display: inline-flex;
 }
 .topic-picker input {
   position: absolute;
@@ -3898,6 +3976,104 @@ dialog::backdrop {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 18px;
+}
+/* Send: a ripple spreads from the press point, the plane nudges on hover
+   and, while sending, flies off and returns under a shimmer. */
+.send-button {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.send-button:active {
+  transform: scale(0.96);
+}
+.send-button:disabled {
+  opacity: 1;
+}
+.send-button svg {
+  transition: translate 0.35s var(--spring);
+}
+.send-button:hover svg {
+  translate: 3px -3px;
+}
+.send-button::after {
+  content: "";
+  position: absolute;
+  top: var(--py, 50%);
+  left: var(--px, 50%);
+  z-index: -1;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--on-invert) 42%, transparent) 0%,
+    color-mix(in srgb, var(--on-invert) 18%, transparent) 45%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+.send-button[data-sending]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    color-mix(in srgb, var(--on-invert) 26%, transparent) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .send-button[data-pressed]::after {
+    animation: ripple 0.65s ease-out;
+  }
+  .send-button[data-sending] svg {
+    animation: send-fly 1s ease-in-out infinite;
+  }
+  .send-button[data-sending]::before {
+    animation: shimmer 1.2s ease-in-out infinite;
+  }
+}
+@keyframes ripple {
+  from {
+    opacity: 1;
+    scale: 0.6;
+  }
+  to {
+    opacity: 0;
+    scale: 14;
+  }
+}
+@keyframes send-fly {
+  0% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  45% {
+    opacity: 0;
+    translate: 16px -16px;
+  }
+  46% {
+    opacity: 0;
+    translate: -16px 16px;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes shimmer {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 100% 0;
+  }
 }
 .form-error {
   margin: 4px 0 0;
