@@ -3,7 +3,8 @@ import { useEffect, useRef, type ReactNode } from "react";
 
 /**
  * Drives the experience timeline: the crimson line fills with reading
- * progress, and the role crossing the middle of the screen becomes active.
+ * progress, a pin rides its tip, and the role crossing the middle of the
+ * screen becomes active.
  * Writes attributes/CSS variables directly, so scrolling never re-renders.
  */
 export function ExperienceJourney({ children }: { children: ReactNode }) {
@@ -42,6 +43,11 @@ export function ExperienceJourney({ children }: { children: ReactNode }) {
         Math.max(0, (readingLine - box.top) / Math.max(1, box.height)),
       );
       el.style.setProperty("--progress", progress.toFixed(4));
+      // The pin rides the tip of the line (which runs 10px in from each end).
+      el.style.setProperty(
+        "--cursor-y",
+        `${(10 + progress * Math.max(0, box.height - 20)).toFixed(1)}px`,
+      );
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -58,6 +64,9 @@ export function ExperienceJourney({ children }: { children: ReactNode }) {
   return (
     <div className="experience-journey" ref={root}>
       {children}
+      <span className="timeline-cursor" aria-hidden="true">
+        <span />
+      </span>
     </div>
   );
 }

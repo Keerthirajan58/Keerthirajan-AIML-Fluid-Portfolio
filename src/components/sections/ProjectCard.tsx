@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProjectEntry, LeadershipProjectEntry } from "@/content/data";
-import type { ImageDimensions } from "@/lib/imageSize";
 import {
   ArrowUpRightIcon,
   AwardIcon,
@@ -13,13 +12,10 @@ import { ProjectNotes } from "@/components/ProjectNotes";
 export function ProjectCard({
   project: p,
   index,
-  media,
   leadership,
 }: {
   project: ProjectEntry;
   index: number;
-  /** Intrinsic size of the cover, so the frame keeps the photo's own shape. */
-  media: ImageDimensions;
   leadership?: LeadershipProjectEntry;
 }) {
   const route = p.gallery ? `/projects/${p.slug}` : undefined;
@@ -60,22 +56,19 @@ export function ProjectCard({
       )}
     </>
   );
-  const frame = { aspectRatio: `${media.width} / ${media.height}` };
   return (
-    <article className="project-card glass" data-project={p.slug}>
+    <article className="project-card surface" data-project={p.slug}>
       {route ? (
         <Link
           href={route}
           className="project-image"
-          style={frame}
+
           tabIndex={-1}
         >
           {preview}
         </Link>
       ) : (
-        <div className="project-image" style={frame}>
-          {preview}
-        </div>
+        <div className="project-image">{preview}</div>
       )}
       <div className="project-content">
         <span className="project-category">{p.badge}</span>

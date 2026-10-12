@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { ContactForm } from "./ContactForm";
 
-/** The "Say hello" popup: a glass card over a blurred page. */
+/** The "Say hello" popup: a solid card over a blurred page. */
 export default function ContactDialog({
   email,
   formId,

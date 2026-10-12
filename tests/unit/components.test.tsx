@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import {
+  act,
   render,
   screen,
   fireEvent,
@@ -226,51 +227,104 @@ describe("navigation controls", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 });
-describe("ordered gallery", () => {
+describe("case-study gallery", () => {
   const images = [
     { src: "/images/a.jpg", width: 1600, height: 1000 },
     { src: "/images/b.jpg", width: 900, height: 1200 },
     { src: "/images/c.jpg", width: 1200, height: 1200 },
   ];
-  it("preserves DOM order, handles next/previous/keyboard and thumbnails", async () => {
+  /** jsdom has no layout: give the wall a width the test controls. */
+  const wallWidth = (width: () => number) =>
+    vi
+      .spyOn(Element.prototype, "clientWidth", "get")
+      .mockImplementation(function (this: Element) {
+        return this.classList.contains("gallery-wall") ? width() : 0;
+      });
+
+  it("lays every image out in reading order at its own shape", () => {
+    let width = 1000;
+    wallWidth(() => width);
+    const resize: { callback?: () => void } = {};
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(callback: () => void) {
+          resize.callback = callback;
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
+    const frames: FrameRequestCallback[] = [];
+    vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) =>
+      frames.push(cb),
+    );
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
     render(<ProjectGallery images={images} title="Demo" />);
-    const slides = document.querySelectorAll(".gallery-slide img");
-    expect(Array.from(slides).map((el) => el.getAttribute("src"))).toEqual(
-      images.map((i) => i.src),
+    const wall = document.querySelector<HTMLElement>(".gallery-wall")!;
+    const tiles = Array.from(
+      wall.querySelectorAll<HTMLElement>(".gallery-tile"),
     );
-    // Each slide keeps its own photo shape.
     expect(
-      (
-        document.querySelectorAll(".gallery-slide")[1] as HTMLElement
-      ).style.getPropertyValue("--ratio"),
-    ).toBe("0.7500");
-    await userEvent.click(screen.getByRole("button", { name: "Next image" }));
-    expect(
-      screen.getByRole("button", { name: "Show image 2" }),
-    ).toHaveAttribute("aria-pressed", "true");
-    await userEvent.click(
-      screen.getByRole("button", { name: "Previous image" }),
-    );
-    fireEvent.keyDown(screen.getByLabelText("Project images"), {
-      key: "ArrowLeft",
-    });
-    expect(
-      screen.getByRole("button", { name: "Show image 3" }),
-    ).toHaveAttribute("aria-pressed", "true");
-    await userEvent.click(screen.getByRole("button", { name: "Show image 1" }));
-    expect(
-      screen.getByRole("button", { name: "Show image 1" }),
-    ).toHaveAttribute("aria-pressed", "true");
+      tiles.map((t) => t.querySelector("img")!.getAttribute("src")),
+    ).toEqual(images.map((i) => i.src));
+    // Portrait stays portrait: each tile carries its image's own shape.
+    expect(tiles.map((t) => t.style.getPropertyValue("--ratio"))).toEqual([
+      "1.6000",
+      "0.7500",
+      "1.0000",
+    ]);
+    // 1000px wide: three columns of (1000 - 2 × 14) / 3 = 324px, in order.
+    expect(wall).toHaveAttribute("data-masonry", "true");
+    expect(tiles.map((t) => t.style.getPropertyValue("--x"))).toEqual([
+      "0px",
+      "338px",
+      "676px",
+    ]);
+    expect(tiles[1].style.width).toBe("324px");
+    // Each tile is sized from its image's shape: 324 / 0.75.
+    expect(tiles[1].style.height).toBe("432px");
+    expect(wall.style.height).toBe("432px");
+    // On a phone-width wall the third tile tucks under the shorter first column.
+    width = 500;
+    resize.callback?.();
+    act(() => frames.splice(0).forEach((frame) => frame(0)));
+    expect(tiles[2].style.getPropertyValue("--x")).toBe("0px");
+    expect(tiles[2].style.getPropertyValue("--y")).toBe("165.875px");
   });
+
+  it("sizes the wall to its set: one row for a few, narrow columns for phone shots", () => {
+    const phones = Array.from({ length: 8 }, (_, i) => ({
+      src: `/images/p${i}.jpg`,
+      width: 590,
+      height: 1280,
+    }));
+    const { unmount } = render(<ProjectGallery images={phones} title="App" />);
+    const wall = () => document.querySelector<HTMLElement>(".gallery-wall")!;
+    expect(wall().style.getPropertyValue("--cols")).toBe("5");
+    expect(document.querySelector(".gallery-tile img")).toHaveAttribute(
+      "sizes",
+      "(max-width: 879px) 50vw, 242px",
+    );
+    unmount();
+    render(<ProjectGallery images={phones.slice(0, 2)} title="Pair" />);
+    expect(wall().style.getPropertyValue("--cols")).toBe("2");
+  });
+
   it("opens the chosen image and restores focus after lightbox navigation", async () => {
     render(<ProjectGallery images={images} title="Demo" />);
-    const opener = screen.getByRole("button", { name: "Open image 2" });
+    const opener = screen.getByRole("button", { name: "Open image 2 of 3" });
     await userEvent.click(opener);
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).getByRole("img")).toHaveAttribute(
       "src",
       images[1].src,
     );
+    expect(within(dialog).getByRole("img")).toHaveAttribute(
+      "alt",
+      "Demo, image 2",
+    );
+    expect(dialog).toHaveTextContent("2 / 3");
     await userEvent.click(
       within(dialog).getByRole("button", { name: "Next full image" }),
     );
@@ -278,19 +332,25 @@ describe("ordered gallery", () => {
       "src",
       images[2].src,
     );
+    fireEvent.keyDown(dialog, { key: "ArrowRight" });
+    expect(within(dialog).getByRole("img")).toHaveAttribute(
+      "src",
+      images[0].src,
+    );
     fireEvent.keyDown(dialog, { key: "ArrowLeft" });
     await userEvent.click(
       within(dialog).getByRole("button", { name: "Previous full image" }),
     );
     expect(within(dialog).getByRole("img")).toHaveAttribute(
       "src",
-      images[0].src,
+      images[1].src,
     );
     await userEvent.click(
       within(dialog).getByRole("button", { name: "Close image viewer" }),
     );
     expect(opener).toHaveFocus();
   });
+
   it("renders no controls for empty media", () => {
     const { container } = render(<ProjectGallery images={[]} title="Empty" />);
     expect(container).toBeEmptyDOMElement();

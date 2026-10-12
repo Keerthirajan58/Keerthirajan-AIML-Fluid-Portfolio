@@ -290,3 +290,17 @@ export function CopyIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function ExpandIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path
+        d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

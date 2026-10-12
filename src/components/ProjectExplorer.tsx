@@ -12,6 +12,7 @@ import {
   matchesProjectFilter,
   type ProjectFilter,
 } from "@/lib/projectFilters";
+import { columnWidth, columnsFor, placeGrid } from "@/lib/masonry";
 import { useActiveLens } from "@/components/ui/useActiveLens";
 
 const useIsoLayoutEffect =
@@ -20,10 +21,11 @@ const useIsoLayoutEffect =
 const GAP = 18;
 
 /**
- * Cards are rendered on the server; this island owns filtering and the
- * masonry layout. Like the original site's Isotope grid, filtered-out cards
- * scale and fade away in place while the rest glide to their new spots.
- * Without JavaScript the cards fall back to a plain CSS grid.
+ * Cards are rendered on the server; this island owns filtering and layout.
+ * The grid keeps standard rows (each row as tall as its tallest card), and
+ * like the original site's Isotope grid, filtered-out cards scale and fade
+ * away in place while the rest glide to their new spots. Without JavaScript
+ * the cards fall back to a plain CSS grid.
  */
 export function ProjectExplorer({
   items,
@@ -44,21 +46,27 @@ export function ProjectExplorer({
     const width = el.clientWidth;
     if (!width) return;
     const slots = Array.from(el.children) as HTMLElement[];
-    const cols = width >= 960 ? 3 : width >= 600 ? 2 : 1;
-    const colWidth = (width - GAP * (cols - 1)) / cols;
-    // Write all widths first, then read all heights: one reflow, not eleven.
-    slots.forEach((s) => (s.style.width = `${colWidth}px`));
-    const heights = slots.map((s) => s.offsetHeight);
-    const columns = new Array(cols).fill(0);
-    slots.forEach((s, i) => {
-      if (s.dataset.hidden === "true") return;
-      let c = 0;
-      for (let k = 1; k < cols; k++) if (columns[k] < columns[c] - 1) c = k;
-      s.style.setProperty("--x", `${c * (colWidth + GAP)}px`);
-      s.style.setProperty("--y", `${columns[c]}px`);
-      columns[c] += heights[i] + GAP;
+    const shown = slots.filter((s) => s.dataset.hidden !== "true");
+    const cols = columnsFor(width);
+    const colW = columnWidth(width, cols, GAP);
+    // Write widths and clear heights first, then read every natural height:
+    // one reflow for the whole grid, not one per card.
+    shown.forEach((s) => {
+      s.style.width = `${colW}px`;
+      s.style.height = "";
     });
-    el.style.height = `${Math.max(0, Math.max(...columns) - GAP)}px`;
+    const { placements, height } = placeGrid(
+      shown.map((s) => s.offsetHeight),
+      cols,
+      colW,
+      GAP,
+    );
+    shown.forEach((s, i) => {
+      s.style.height = `${placements[i].height}px`;
+      s.style.setProperty("--x", `${placements[i].x}px`);
+      s.style.setProperty("--y", `${placements[i].y}px`);
+    });
+    el.style.height = `${height}px`;
     if (!el.dataset.masonry) {
       el.dataset.masonry = "true";
       // Enable transitions only after the first placement, so nothing flies in.
@@ -96,24 +104,33 @@ export function ProjectExplorer({
     return () => cancelAnimationFrame(frame);
   }, [selected, layout]);
 
-  // Card heights can change (fonts, image decode, resize): keep the grid true.
+  // Width changes and late web fonts change card heights: keep rows true.
+  // (Card images use a fixed frame, so image loads never move anything.)
   useEffect(() => {
     const el = grid.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
+    if (!el) return;
     let frame = 0;
-    const observer = new ResizeObserver(() => {
+    const schedule = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(layout);
+    };
+    void document.fonts?.ready.then(schedule);
+    if (typeof ResizeObserver === "undefined")
+      return () => cancelAnimationFrame(frame);
+    let width = el.clientWidth;
+    const observer = new ResizeObserver(() => {
+      if (el.clientWidth === width) return;
+      width = el.clientWidth;
+      schedule();
     });
     observer.observe(el);
-    Array.from(el.children).forEach((s) => observer.observe(s));
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
     };
   }, [layout]);
 
-  // The glass pill under the active filter springs to each new choice.
+  // A glass lens rides on top of the chosen filter.
   useActiveLens(filterBar, selected);
 
   return (
@@ -128,7 +145,6 @@ export function ProjectExplorer({
           aria-label="Filter projects"
           ref={filterBar}
         >
-          <span className="filter-lens" aria-hidden="true" />
           {availableProjectFilters(items).map((filter) => (
             <button
               key={filter.id}
@@ -143,6 +159,7 @@ export function ProjectExplorer({
               </span>
             </button>
           ))}
+          <span className="filter-lens" aria-hidden="true" />
         </div>
         <p className="project-count" role="status" aria-live="polite">
           {visible.length} {visible.length === 1 ? "project" : "projects"}

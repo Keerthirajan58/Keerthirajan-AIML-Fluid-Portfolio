@@ -36,7 +36,7 @@ export function Experience({
               <div className="timeline-node" aria-hidden="true">
                 <CompanyMark company={job.company} />
               </div>
-              <article className="timeline-card glass reveal">
+              <article className="timeline-card surface reveal">
                 <header className="timeline-head">
                   <div>
                     <h3>{job.role}</h3>

@@ -22,9 +22,6 @@ export default defineConfig({
         "src/app/page.tsx",
         "src/app/projects/**",
         "src/app/opengraph-image.tsx",
-        // Canvas renderer: exercised in real browsers by Playwright; its maths
-        // (src/lib/landscape) is unit-tested.
-        "src/components/scene/landscapeEngine.ts",
       ],
       reporter: ["text", "html", "json", "json-summary", "lcov"],
       thresholds: { lines: 80, statements: 80, functions: 80, branches: 70 },

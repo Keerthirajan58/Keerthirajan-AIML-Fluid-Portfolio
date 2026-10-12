@@ -13,6 +13,7 @@ import { scrollToSection } from "@/lib/smoothScroll";
 import { contact as defaultContact, type ContactInfo } from "@/content/data";
 import { ArrowUpRightIcon } from "./ui/icons";
 import { BrandMark } from "./ui/BrandMark";
+import { ThemeToggle } from "./ThemeToggle";
 export function SiteHeader({
   contact = defaultContact,
 }: {
@@ -142,6 +143,7 @@ export function SiteHeader({
             </Link>
           ))}
         </nav>
+        <ThemeToggle />
         <a className="header-resume" href={contact.resumeUrl}>
           Résumé <ArrowUpRightIcon width={15} height={15} />
         </a>
@@ -178,13 +180,16 @@ export function SiteHeader({
           <span className="wordmark">
             <BrandMark idPrefix="ks-menu" />
           </span>
-          <button
-            className="icon-button"
-            aria-label="Close menu"
-            onClick={close}
-          >
-            ×
-          </button>
+          <div className="menu-actions">
+            <ThemeToggle />
+            <button
+              className="icon-button"
+              aria-label="Close menu"
+              onClick={close}
+            >
+              ×
+            </button>
+          </div>
         </div>
         <nav aria-label="Mobile">
           {navigation.map((n) => (

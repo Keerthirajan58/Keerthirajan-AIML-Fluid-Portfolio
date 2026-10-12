@@ -10,7 +10,7 @@ export type SkillBubble = {
 };
 
 /**
- * A compact, interactive skills panel: every skill is a glass bubble sized by
+ * A compact, interactive skills panel: every skill is a bubble sized by
  * how often it appears in real projects and roles. Choosing an area brings
  * its bubbles forward; hovering one shows where it was used.
  */
@@ -29,14 +29,13 @@ export function SkillsCloud({
       ? skills.length
       : skills.filter((s) => s.categories.includes(c)).length;
   return (
-    <div className="skills-panel glass reveal">
+    <div className="skills-panel surface reveal">
       <div
         className="skill-tabs"
         role="group"
         aria-label="Highlight skills by area"
         ref={tabs}
       >
-        <span className="filter-lens" aria-hidden="true" />
         {["all", ...categories].map((c) => (
           <button
             key={c}
@@ -49,6 +48,7 @@ export function SkillsCloud({
             <span aria-hidden="true">{count(c)}</span>
           </button>
         ))}
+        <span className="filter-lens" aria-hidden="true" />
       </div>
       <ul
         className="skill-cloud"

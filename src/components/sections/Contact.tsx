@@ -45,7 +45,7 @@ export function Contact({
             View résumé <ArrowUpRightIcon />
           </a>
         </div>
-        <div className="contact-card glass">
+        <div className="contact-card surface">
           <div className="contact-person">
             <span className="contact-avatar">
               <Image

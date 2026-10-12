@@ -2,13 +2,14 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { profile, contact } from "@/content/data";
 import { getSiteUrl } from "@/lib/site";
-import { colors } from "@/lib/theme";
+import { THEME_COLORS, themeScript } from "@/lib/themeMode";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { MotionFoundation } from "@/components/motion/MotionFoundation";
 import { Atmosphere } from "@/components/scene/Atmosphere";
 import { RouteArrival } from "@/components/motion/RouteArrival";
 import { AnchorGlide } from "@/components/motion/AnchorGlide";
+import { TrainingMonitor } from "@/components/TrainingMonitor";
 import { loadContent } from "@/content/load";
 import "./globals.css";
 
@@ -48,8 +49,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light",
-  themeColor: colors.air,
+  colorScheme: "light dark",
+  themeColor: THEME_COLORS.light,
 };
 
 export default async function RootLayout({
@@ -61,8 +62,15 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="light"
       className={`${unbounded.variable} ${inter.variable} h-full antialiased`}
+      // The theme script below may switch data-theme before React hydrates.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Applies a remembered dark theme before first paint (no flash). */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="flex min-h-full flex-col">
         <MotionFoundation />
         <AnchorGlide />
@@ -79,6 +87,7 @@ export default async function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        <TrainingMonitor />
       </body>
     </html>
   );

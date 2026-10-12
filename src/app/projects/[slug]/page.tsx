@@ -127,7 +127,7 @@ export default async function ProjectPage({
         )}
       </header>
       <div className="case-sheet shell">
-        <div className="case-body glass">
+        <div className="case-body surface">
           {sections.map((s) => (
             <section key={s.heading} className="reveal">
               <h2>{s.heading}</h2>

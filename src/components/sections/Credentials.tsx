@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { getCertifications, getPublications } from "@/lib/projects";
+import { certLogo } from "@/lib/certLogos";
 import { Section } from "@/components/ui/Section";
 import { BookIcon, ArrowUpRightIcon } from "@/components/ui/icons";
 import { DepthCard } from "@/components/ui/DepthCard";
@@ -44,7 +46,7 @@ export function Credentials({
             {getPublications(content.projects).map((p) => {
               const { date, year, venue } = describe(p.description);
               return (
-                <DepthCard className="publication glass reveal" key={p.slug}>
+                <DepthCard className="publication surface reveal" key={p.slug}>
                   <div className="paper-art" aria-hidden="true">
                     <span className="paper-year">{year}</span>
                     <span className="paper-sheet">
@@ -72,17 +74,38 @@ export function Credentials({
           <ul className="cert-grid">
             {getCertifications(content.projects).map((p, i) => {
               const issuer = issuerOf(p.description);
+              const logo = certLogo(p.slug);
               return (
                 <li key={p.slug} className="reveal">
                   <a
-                    className="cert-card glass"
+                    className="cert-card surface"
                     href={p.links.credential}
                     target="_blank"
                     rel="noopener noreferrer"
                     data-tone={i % 4}
                   >
-                    <span className="cert-mark" aria-hidden="true">
-                      {monogram(issuer)}
+                    <span
+                      className="cert-mark"
+                      data-logo={
+                        logo
+                          ? logo.width / logo.height > 1.6
+                            ? "wordmark"
+                            : "mark"
+                          : undefined
+                      }
+                      aria-hidden="true"
+                    >
+                      {logo ? (
+                        <Image
+                          src={logo.src}
+                          width={logo.width}
+                          height={logo.height}
+                          alt=""
+                          unoptimized
+                        />
+                      ) : (
+                        monogram(issuer)
+                      )}
                     </span>
                     <span className="cert-title">{p.title}</span>
                     <span className="cert-issuer">{issuer}</span>

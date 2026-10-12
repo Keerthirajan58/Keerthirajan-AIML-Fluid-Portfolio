@@ -13,11 +13,6 @@ const runtime = vi.hoisted(() => ({
   scrollTo: vi.fn(),
   destroy: vi.fn(),
   lenisOptions: vi.fn(),
-  engineOptions: vi.fn(),
-  setLandscape: vi.fn(),
-  setPaused: vi.fn(),
-  setPointer: vi.fn(),
-  destroy2: vi.fn(),
 }));
 vi.mock("@/components/motion/useMotionEnabled", () => ({
   useMotionEnabled: () => runtime.enabled,
@@ -30,19 +25,6 @@ vi.mock("lenis", () => ({
     constructor(options: unknown) {
       runtime.lenisOptions(options);
     }
-  },
-}));
-vi.mock("@/components/scene/landscapeEngine", () => ({
-  LandscapeEngine: class {
-    constructor(options: unknown) {
-      runtime.engineOptions(options);
-    }
-    setLandscape = runtime.setLandscape;
-    setPaused = runtime.setPaused;
-    setPointer = runtime.setPointer;
-    setVisible = vi.fn();
-    resize = vi.fn();
-    destroy = runtime.destroy2;
   },
 }));
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
@@ -138,8 +120,8 @@ it("never loads motion or decorative cursor when disabled", () => {
   expect(container.querySelector(".atmosphere")).not.toHaveAttribute(
     "data-live",
   );
-  // A still landscape needs no pause control.
-  expect(container.querySelector(".trainer-pause")).toBeNull();
+  // The background alone never renders controls; pausing lives in the monitor.
+  expect(container.querySelector("button")).toBeNull();
 });
 it("keeps Lenis wheel-only and handles same-page links with focus, then cleans up", () => {
   runtime.scrollTo.mockImplementation(
@@ -234,47 +216,6 @@ it("skips route animation under reduced motion and drops home epochs elsewhere",
   );
   expect(container.querySelector(".atmosphere .glow-pointer")).not.toBeNull();
   expect(container.querySelector(".trainer-epochs")).toBeNull();
-});
-it("paints the light field at once and defers the landscape until idle", async () => {
-  vi.useFakeTimers();
-  const { container, unmount } = render(<Atmosphere />);
-  expect(container.querySelectorAll(".atmosphere .glow")).toHaveLength(4);
-  expect(container.querySelectorAll(".atmosphere canvas")).toHaveLength(3);
-  expect(runtime.engineOptions).not.toHaveBeenCalled();
-  await act(async () => {
-    vi.advanceTimersByTime(1300);
-    await vi.dynamicImportSettled();
-  });
-  expect(runtime.engineOptions).toHaveBeenCalledWith(
-    expect.objectContaining({ animated: true }),
-  );
-  expect(runtime.setLandscape).toHaveBeenCalledWith("himmelblau");
-  unmount();
-  expect(runtime.destroy2).toHaveBeenCalled();
-  expect(vi.getTimerCount()).toBe(0);
-});
-it("lets visitors pause the background and jump between epochs", async () => {
-  vi.useFakeTimers();
-  render(<Atmosphere />);
-  await act(async () => {
-    vi.advanceTimersByTime(1300);
-    await vi.dynamicImportSettled();
-  });
-  vi.useRealTimers();
-  const pause = screen.getByRole("button", {
-    name: "Pause background animation",
-  });
-  fireEvent.click(pause);
-  expect(
-    screen.getByRole("button", { name: "Resume background animation" }),
-  ).toHaveAttribute("aria-pressed", "true");
-  expect(runtime.setPaused).toHaveBeenLastCalledWith(true);
-  const epochs = screen.getByRole("navigation", { name: "Epochs" });
-  expect(epochs.querySelectorAll("a")).toHaveLength(8);
-  expect(screen.getByRole("link", { name: "Epoch 1: Intro" })).toHaveAttribute(
-    "aria-current",
-    "step",
-  );
 });
 it("eases the pointer glow toward a fine pointer and ignores touch", () => {
   const frames: FrameRequestCallback[] = [];

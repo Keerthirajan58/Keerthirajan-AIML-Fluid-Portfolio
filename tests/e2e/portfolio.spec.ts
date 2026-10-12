@@ -7,7 +7,7 @@ import {
   matchesProjectFilter,
 } from "../../src/lib/projectFilters";
 
-test("project filters keep order, animate into a non-overlapping masonry, and keep actions usable", async ({
+test("project filters keep order, re-flow into standard rows, and keep actions usable", async ({
   page,
 }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -34,7 +34,8 @@ test("project filters keep order, animate into a non-overlapping masonry, and ke
         els.map((el) => el.getAttribute("data-project")),
       ),
     ).toEqual(expected.map((p) => p.slug));
-    // Masonry: photos keep their own shape, and once settled no cards overlap.
+    // Standard rows: once settled no cards overlap, every card in a row
+    // shares its top and height, and every cover uses the same frame.
     await expect
       .poll(() =>
         visible.evaluateAll((els) => {
@@ -48,11 +49,37 @@ test("project filters keep order, animate into a non-overlapping masonry, and ke
                 Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1
               )
                 return `${i} overlaps ${j}`;
+              if (
+                Math.abs(a.top - b.top) < 1 &&
+                Math.abs(a.height - b.height) > 1
+              )
+                return `${i} and ${j} share a row but not a height`;
             }
-          return "clear";
+          const frames = els.map((el) => {
+            const r = el
+              .querySelector(".project-image")!
+              .getBoundingClientRect();
+            return (r.width / r.height).toFixed(2);
+          });
+          return new Set(frames).size === 1 ? "clear" : `frames ${frames}`;
         }),
       )
       .toBe("clear");
+    // The glass lens rides on top of the chosen chip.
+    const lens = filters.locator(".filter-lens");
+    expect(
+      await lens.evaluate(
+        (el) =>
+          el === el.parentElement!.lastElementChild &&
+          getComputedStyle(el).zIndex,
+      ),
+    ).toBe("2");
+    await expect
+      .poll(async () => {
+        const [a, b] = [await lens.boundingBox(), await button.boundingBox()];
+        return a && b ? Math.abs(a.x - b.x) + Math.abs(a.width - b.width) : 99;
+      })
+      .toBeLessThan(1.5);
     const boundaries = await page.evaluate(() => ({
       work: document.getElementById("projects")!.getBoundingClientRect().bottom,
       skills: document.getElementById("skills")!.getBoundingClientRect().top,
@@ -124,6 +151,22 @@ test("header floats over content, nav glides to sections, and the timeline follo
     .evaluate((el) => el.scrollIntoView({ block: "center" }));
   await expect(page.locator("#role-2")).toHaveAttribute("data-active", "");
   await expect(page.locator("#role-0")).toHaveAttribute("data-reached", "");
+  // The pin rides the tip of the filling crimson line.
+  const pin = page.locator(".timeline-cursor");
+  await expect
+    .poll(() => pin.evaluate((el) => Number(getComputedStyle(el).opacity)))
+    .toBe(1);
+  const gap = await page.evaluate(() => {
+    const journey = document.querySelector<HTMLElement>(".experience-journey")!;
+    const box = journey.getBoundingClientRect();
+    const progress = Number(journey.style.getPropertyValue("--progress"));
+    const tip = box.top + 10 + progress * (box.height - 20);
+    const pin = document
+      .querySelector(".timeline-cursor")!
+      .getBoundingClientRect();
+    return Math.abs(pin.top - tip);
+  });
+  expect(gap).toBeLessThan(2);
   const social = page
     .getByRole("link", { name: "LeetCode", exact: true })
     .first();
@@ -182,6 +225,15 @@ test("revised art direction keeps credentials visible and project actions integr
   await expect(page.locator(".more-projects")).toHaveCount(0);
   await expect(page.locator(".project-placeholder")).toHaveCount(5);
   await expect(page.locator(".timeline-item")).toHaveCount(3);
+  // Real issuer logos; only API Academy (no logo anywhere) keeps initials.
+  await expect(page.locator(".cert-mark[data-logo] img")).toHaveCount(8);
+  await expect(page.locator(".cert-mark:not([data-logo])")).toHaveText("AA");
+  // The contact photo is cropped in the file itself, never zoomed by CSS.
+  expect(
+    await page
+      .locator(".contact-avatar img")
+      .evaluate((el) => getComputedStyle(el).transform),
+  ).toBe("none");
   await expect(
     page.locator(".project-image .project-achievement"),
   ).toContainText("Technica winner");
@@ -260,7 +312,7 @@ for (const slug of caseStudySlugs) {
     const response = await page.goto("/projects/" + slug);
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.locator(".gallery-slide").first()).toBeAttached();
+    await expect(page.locator(".gallery-tile").first()).toBeAttached();
     await page.getByRole("link", { name: "Back to work" }).first().click();
     await expect(page).toHaveURL(/\/#projects$/);
     await expect(page.locator("#projects")).toBeInViewport();
@@ -269,30 +321,59 @@ for (const slug of caseStudySlugs) {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 }
-test("gallery maintains image order and supports an accessible lightbox", async ({
+test("gallery keeps image order in an adaptive masonry and supports an accessible lightbox", async ({
   page,
 }) => {
   await page.goto("/projects/siri-core-modeling");
-  const src = await page
-    .locator(".gallery-slide img")
+  const tiles = page.locator(".gallery-tile");
+  const src = await tiles
+    .locator("img")
     .evaluateAll((imgs) =>
       imgs.map((el) => decodeURIComponent(el.getAttribute("src") ?? "")),
     );
   expect(src[1]).toContain("slide-1");
   expect(src[2]).toContain("slide-2");
-  await page.getByRole("button", { name: "Show image 2", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Show image 2", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Open image 2", exact: true }).click();
+  await expect(page.locator(".gallery-wall")).toHaveAttribute(
+    "data-masonry",
+    "true",
+  );
+  // Tiles keep each image's own shape and never overlap.
+  const layout = await tiles.evaluateAll((els) => {
+    const boxes = els.map((el) => el.getBoundingClientRect());
+    for (let i = 0; i < boxes.length; i++)
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i],
+          b = boxes[j];
+        if (
+          Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
+          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1
+        )
+          return `${i} overlaps ${j}`;
+      }
+    return els
+      .map((el, i) => {
+        const img = el.querySelector("img")!;
+        const shape =
+          Number(img.getAttribute("width")) /
+          Number(img.getAttribute("height"));
+        return Math.abs(boxes[i].width / boxes[i].height - shape) < 0.02;
+      })
+      .every(Boolean)
+      ? "true to shape"
+      : "distorted";
+  });
+  expect(layout).toBe("true to shape");
+  const opener = page.getByRole("button", {
+    name: "Open image 2 of 4",
+    exact: true,
+  });
+  await opener.click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("dialog")).toContainText("3 / 4");
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Open image 2", exact: true }),
-  ).toBeFocused();
+  await expect(opener).toBeFocused();
 });
 test("direct anchors remain visible with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -320,7 +401,7 @@ test("no-JavaScript content, links and gallery remain usable", async ({
   await expect(notes).toHaveAttribute("open", "");
   await page.goto(baseURL + "/projects/barterbrain-nvc");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator(".gallery-slide img")).toHaveCount(4);
+  await expect(page.locator(".gallery-tile img")).toHaveCount(4);
   await context.close();
 });
 test("mobile menu supports Escape and anchor selection", async ({
@@ -352,15 +433,24 @@ test("unknown routes fail safely without a broken redirect", async ({
   await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
 });
 
-test("living background boots, follows the pointer, can be paused, and route transitions fail open", async ({
+test("living background re-lights each section, follows the pointer, can be paused, and route transitions fail open", async ({
   page,
   isMobile,
 }, testInfo) => {
   test.skip(isMobile);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
-  await expect(page.locator('.atmosphere[data-live="true"]')).toBeAttached();
-  await expect(page.locator(".atmosphere canvas")).toHaveCount(3);
+  const field = page.locator(".atmosphere");
+  await expect(field).toHaveAttribute("data-live", "true");
+  await expect(field).toHaveAttribute("data-scene", "hero");
+  // Pure CSS light: no canvas, no WebGL.
+  await expect(page.locator(".atmosphere canvas")).toHaveCount(0);
+  const drift = () =>
+    page.locator(".glow-a").evaluate((el) => {
+      const style = getComputedStyle(el);
+      return `${style.animationName} ${style.animationPlayState}`;
+    });
+  expect(await drift()).toBe("drift-a running");
   const glow = page.locator(".glow-pointer");
   const before = await glow.evaluate((el) => getComputedStyle(el).transform);
   await page.mouse.move(120, 160);
@@ -368,26 +458,36 @@ test("living background boots, follows the pointer, can be paused, and route tra
   await expect
     .poll(() => glow.evaluate((el) => getComputedStyle(el).transform))
     .not.toBe(before);
-  // The monitor reports a real loss once the landscape renderer is running.
+  // Plain words, no optimiser jargon.
   const monitor = page.getByRole("complementary", { name: "Training monitor" });
   await expect(monitor).toBeVisible();
-  await expect
-    .poll(() => monitor.locator(".trainer-loss strong").textContent(), {
-      timeout: 10000,
-    })
-    .not.toBe("…");
+  await expect(monitor).toContainText("Epoch 1 of 8");
+  await expect(monitor).toContainText("and falling");
+  await expect(monitor).not.toContainText(
+    /rosenbrock|camel|himmelblau|landscape/i,
+  );
+  await page
+    .locator("#experience")
+    .evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await expect(field).toHaveAttribute("data-scene", "experience");
+  await expect(monitor).toContainText("Epoch 3 of 8");
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(field).toHaveAttribute("data-scene", "contact");
+  await expect(monitor).toContainText("Converged. Let's talk.");
   await monitor
-    .getByRole("button", { name: "Pause background animation" })
+    .getByRole("button", { name: "Pause background motion" })
     .click();
   await expect(
-    monitor.getByRole("button", { name: "Resume background animation" }),
+    monitor.getByRole("button", { name: "Resume background motion" }),
   ).toHaveAttribute("aria-pressed", "true");
+  expect(await drift()).toBe("drift-a paused");
   await page.screenshot({
-    path: testInfo.outputPath("hero-live.png"),
+    path: testInfo.outputPath("contact-live.png"),
     animations: "disabled",
   });
   await expect(page.locator(".cursor-halo")).toHaveCount(0);
   await page.evaluate(() => {
+    window.scrollTo(0, 0);
     HTMLElement.prototype.animate = () => {
       throw new Error("Synthetic animation failure");
     };
@@ -397,10 +497,108 @@ test("living background boots, follows the pointer, can be paused, and route tra
   await expect(
     page.getByRole("heading", { level: 1, name: "PitchPulse" }),
   ).toBeVisible();
+  await expect(field).toHaveAttribute("data-scene", "page");
 });
-test("WCAG automated scan on homepage and project", async ({ page }) => {
-  for (const path of ["/", "/projects/barterbrain-nvc"]) {
+test("theme: light by default, dark on request, remembered, and cards stay solid", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const html = page.locator("html");
+  await expect(html).toHaveAttribute("data-theme", "light");
+  const background = () =>
+    page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(await background()).toBe("rgb(241, 242, 244)");
+  const toggle = page.getByRole("button", { name: "Dark theme" }).first();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await toggle.click();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+  await expect.poll(background).toBe("rgb(13, 12, 16)");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    "content",
+    "#0D0C10",
+  );
+  await page.reload();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+  await expect(
+    page.getByRole("button", { name: "Dark theme" }).first(),
+  ).toHaveAttribute("aria-pressed", "true");
+  // Cards are opaque in both themes (no see-through glass).
+  for (const card of [
+    ".about-story",
+    ".education-card",
+    ".timeline-card",
+    ".project-card",
+  ]) {
+    const fill = await page
+      .locator(card)
+      .first()
+      .evaluate((el) => {
+        const style = getComputedStyle(el);
+        return style.backgroundImage + " " + style.backgroundColor;
+      });
+    expect(fill, card).toContain("linear-gradient");
+    expect(fill, card).not.toMatch(/rgba\([^)]*, 0\.\d+\)/);
+  }
+  await page.getByRole("button", { name: "Dark theme" }).first().click();
+  await expect(html).toHaveAttribute("data-theme", "light");
+  await page.reload();
+  await expect(html).toHaveAttribute("data-theme", "light");
+});
+test("education: GW lands and stays readable before SVCE slides over it", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const boxes = () =>
+    page.locator(".education-slot").evaluateAll((els) =>
+      els.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top), bottom: Math.round(r.bottom) };
+      }),
+    );
+  // Bring GW to its resting line.
+  await page.evaluate(() => {
+    const stack = document.querySelector(".education-stack")!;
+    window.scrollTo(
+      0,
+      stack.getBoundingClientRect().top + window.scrollY - 118,
+    );
+  });
+  let [gw, svce] = await boxes();
+  expect(gw.top).toBe(118);
+  expect(svce.top).toBeGreaterThan(gw.bottom);
+  // A third of a screen later GW hasn't moved and is still uncovered.
+  await page.evaluate(() => window.scrollBy(0, window.innerHeight / 3));
+  [gw, svce] = await boxes();
+  expect(gw.top).toBe(118);
+  expect(svce.top).toBeGreaterThan(gw.bottom);
+  // Then SVCE slides up and rests just below GW's top edge, both pinned.
+  await page.evaluate(() => {
+    const next = document.querySelectorAll(".education-slot")[1];
+    window.scrollBy(0, next.getBoundingClientRect().top - 144 + 40);
+  });
+  [gw, svce] = await boxes();
+  expect(gw.top).toBe(118);
+  expect(svce.top).toBe(144);
+});
+test("WCAG automated scan on homepage and project, in both themes", async ({
+  page,
+}) => {
+  for (const [path, theme] of [
+    ["/", "light"],
+    ["/projects/barterbrain-nvc", "light"],
+    ["/", "dark"],
+    ["/projects/barterbrain-nvc", "dark"],
+  ]) {
+    await page.addInitScript(
+      (mode) => localStorage.setItem("ks-theme", mode),
+      theme,
+    );
     await page.goto(path);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     await page.waitForTimeout(2500);
     const result = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])

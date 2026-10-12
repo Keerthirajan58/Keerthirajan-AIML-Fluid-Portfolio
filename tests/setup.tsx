@@ -42,15 +42,18 @@ vi.mock("next/image", () => ({
     fill,
     priority,
     preload,
+    unoptimized,
     ...props
   }: ImgHTMLAttributes<HTMLImageElement> & {
     fill?: boolean;
     priority?: boolean;
     preload?: boolean;
+    unoptimized?: boolean;
   }) => {
     void fill;
     void priority;
     void preload;
+    void unoptimized;
     // The image loader is integration-tested in the actual Next server.
     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return <img {...props} />;

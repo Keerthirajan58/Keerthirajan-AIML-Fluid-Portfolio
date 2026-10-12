@@ -92,6 +92,56 @@ describe("project discovery", () => {
     expect(button).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("status")).toHaveTextContent("1 project");
   });
+  it("lines cards up in standard rows and re-flows them after filtering", async () => {
+    // jsdom has no layout: a 1000px grid and fixed natural card heights.
+    const natural: Record<string, number> = { a: 300, b: 420, c: 360, d: 280 };
+    vi.spyOn(Element.prototype, "clientWidth", "get").mockImplementation(
+      function (this: Element) {
+        return this.classList.contains("project-grid") ? 1000 : 0;
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(
+      function (this: HTMLElement) {
+        return natural[this.dataset.slug ?? ""] ?? 0;
+      },
+    );
+    render(
+      <ProjectExplorer
+        items={["a", "b", "c", "d"].map((slug) => ({
+          slug,
+          filters: slug === "b" ? ["web"] : ["aiml"],
+          card: <p>{slug}</p>,
+        }))}
+      />,
+    );
+    const grid = document.querySelector<HTMLElement>(".project-grid")!;
+    const slot = (slug: string) =>
+      document.querySelector<HTMLElement>(
+        `.project-slot[data-slug="${slug}"]`,
+      )!;
+    // Three columns of (1000 - 2 × 18) / 3px; row one takes b's 420px.
+    expect(grid).toHaveAttribute("data-masonry", "true");
+    for (const slug of ["a", "b", "c"]) {
+      expect(slot(slug).style.height).toBe("420px");
+      expect(slot(slug).style.getPropertyValue("--y")).toBe("0px");
+    }
+    expect(slot("b").style.getPropertyValue("--x")).toBe(
+      `${(1000 - 36) / 3 + 18}px`,
+    );
+    expect(slot("d").style.height).toBe("280px");
+    expect(slot("d").style.getPropertyValue("--y")).toBe("438px");
+    expect(grid.style.height).toBe("718px");
+
+    await userEvent.click(screen.getByRole("button", { name: /AIML/ }));
+    // b leaves; a, c and d close ranks in one row as tall as c.
+    expect(slot("b")).toHaveAttribute("data-hidden", "true");
+    expect(slot("d").style.getPropertyValue("--y")).toBe("0px");
+    expect(slot("d").style.getPropertyValue("--x")).toBe(
+      `${((1000 - 36) / 3 + 18) * 2}px`,
+    );
+    expect(slot("a").style.height).toBe("360px");
+    expect(grid.style.height).toBe("360px");
+  });
   it("keeps confidential project notes accessible without linking a dead legacy route", async () => {
     render(<Projects />);
     await userEvent.click(
