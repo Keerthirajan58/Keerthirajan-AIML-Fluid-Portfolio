@@ -15,16 +15,12 @@ export default defineConfig({
     ],
     coverage: {
       provider: "v8",
+      // Everything under src counts, routes included (they're unit-tested
+      // too); only type-only modules have nothing to execute.
       include: ["src/**/*.{ts,tsx}"],
-      exclude: [
-        "src/types/**",
-        "src/app/layout.tsx",
-        "src/app/page.tsx",
-        "src/app/projects/**",
-        "src/app/opengraph-image.tsx",
-      ],
+      exclude: ["src/content/types.ts"],
       reporter: ["text", "html", "json", "json-summary", "lcov"],
-      thresholds: { lines: 80, statements: 80, functions: 80, branches: 70 },
+      thresholds: { lines: 99, statements: 99, functions: 99, branches: 99 },
     },
   },
 });

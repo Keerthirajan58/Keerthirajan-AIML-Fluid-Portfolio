@@ -1,0 +1,345 @@
+/* ───────── About ───────── */
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+.about-media {
+  position: sticky;
+  top: 108px;
+}
+.portrait {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  max-height: calc(100svh - 150px);
+  overflow: hidden;
+  border-radius: var(--radius-sheet);
+  background: var(--surface-2);
+  box-shadow:
+    0 0 0 6px var(--portrait-ring),
+    0 40px 80px -40px rgb(15 16 19 / 0.45);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
+  background: linear-gradient(180deg, transparent 60%, rgb(15 16 19 / 0.18));
+  pointer-events: none;
+}
+.about-flow {
+  display: grid;
+  gap: clamp(48px, 6vw, 88px);
+}
+.about-story {
+  position: relative;
+  container: story / inline-size;
+  padding: clamp(24px, 3vw, 40px);
+  border-radius: var(--radius-sheet);
+}
+/* Each story card carries its own colours as a faint wash: blush and peach
+   for the About story, GW navy and buff, SVCE blue and saffron. */
+/* Story cards: a faint wash of the card's own two colours (set per card). */
+.tinted.surface {
+  background: linear-gradient(
+    150deg,
+    var(--tint-from) 0%,
+    var(--surface-top) 47%,
+    var(--surface-top) 60%,
+    var(--tint-to) 100%
+  );
+}
+.about-story {
+  --tint-from: var(--tint-rose);
+  --tint-to: var(--tint-peach);
+}
+.about-story > p {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: clamp(16px, 1.2vw, 17.5px);
+  line-height: 1.8;
+  text-align: justify;
+  hyphens: auto;
+  text-wrap: auto;
+}
+.achievement-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.achievement-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 15px 5px 5px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* All three highlights share one line whenever the card is wide enough;
+   the longest label wraps inside its chip before the row ever breaks. */
+@container story (min-width: 440px) {
+  .achievement-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, auto));
+    justify-content: center;
+    gap: 5px;
+  }
+  .achievement-list li {
+    gap: 7px;
+    padding: 4px 11px 4px 4px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+  .achievement-list .chip-icon {
+    width: 25px;
+    height: 25px;
+  }
+  .achievement-list .chip-icon svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+/* Narrow cards (phones): the same single row, as three compact tiles. */
+@container story (max-width: 439.98px) {
+  .achievement-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .achievement-list li {
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 6px 9px;
+    border-radius: 16px;
+    font-size: 11.5px;
+    line-height: 1.25;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .achievement-list .chip-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .achievement-list .chip-icon svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+/* Centred under the highlights, compact. */
+.location-pill {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  margin: 24px auto 0;
+  padding: 6px 14px 6px 6px;
+  border-radius: 15px;
+  background: var(--rose-bg);
+  box-shadow:
+    inset 0 0 0 1px rgb(223 33 47 / 0.14),
+    0 12px 26px -18px rgb(223 33 47 / 0.55);
+}
+.location-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e8323f, #a8141e);
+  color: #fff;
+  box-shadow: 0 8px 18px -8px rgb(223 33 47 / 0.7);
+}
+.location-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.location-pill strong {
+  display: block;
+  font: 600 13px/1.2 var(--font-display);
+  letter-spacing: -0.035em;
+}
+.location-pill small {
+  display: flex;
+  line-height: 1.3;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.location-pill small .status-dot {
+  width: 6px;
+  height: 6px;
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.education-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 22px;
+}
+.education-header h3 {
+  margin: 0;
+  font: 600 clamp(22px, 2.3vw, 30px) / 1.1 var(--font-display);
+  letter-spacing: -0.045em;
+}
+.education-header span {
+  color: var(--on-field);
+}
+.education-stack {
+  display: grid;
+  gap: 18px;
+}
+.education-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: clamp(22px, 2.6vw, 32px);
+  border-radius: var(--radius-card);
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-dates {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.school-monogram {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: #0f1013;
+  font: 700 17px var(--font-display);
+  letter-spacing: -0.04em;
+}
+.school-monogram[data-tone="navy"] {
+  background: linear-gradient(135deg, #1f3a6b, #0e2142);
+  color: #e6d8a8;
+  box-shadow: 0 10px 22px -12px rgb(31 58 107 / 0.7);
+}
+.school-monogram img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.education-card h4 {
+  margin: 4px 0 0;
+  font: 600 19px/1.3 var(--font-display);
+  letter-spacing: -0.035em;
+}
+.institution {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+.education-card ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.education-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--text);
+  font-size: 14.5px;
+}
+.award-row {
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--award-bg);
+  box-shadow: inset 0 0 0 1px rgb(217 154 30 / 0.25);
+}
+.award-row strong {
+  display: block;
+  color: var(--ink);
+}
+.education-medallion,
+.education-activity-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+.education-activity-icon {
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.education-activity-icon[data-tone="navy"] {
+  background: var(--navy-wash);
+  color: var(--navy-text);
+  box-shadow: none;
+}
+.education-activity-icon[data-tone="crimson"] {
+  background: var(--rose-wash);
+  color: var(--accent-text);
+  box-shadow: none;
+}
+.education-medallion svg,
+.education-activity-icon svg {
+  width: 16px;
+  height: 16px;
+}
+/* Stacked cards: GW lands and rests, fully readable, for a short beat of
+   scrolling before SVCE slides up over it; then both leave together. */
+@media (min-width: 860px) {
+  .education-stack {
+    gap: 0;
+  }
+  .education-slot {
+    position: sticky;
+    top: calc(118px + var(--i, 0) * 26px);
+  }
+  .education-slot + .education-slot {
+    margin-top: clamp(120px, 20vh, 200px);
+  }
+  .education-stack::after {
+    content: "";
+    height: 10vh;
+  }
+}
+@media (max-width: 859px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .about-media {
+    position: static;
+  }
+  .portrait {
+    aspect-ratio: 1;
+    max-height: 520px;
+  }
+  .about-story > p {
+    text-align: left;
+  }
+}

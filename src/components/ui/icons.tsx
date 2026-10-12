@@ -1,5 +1,6 @@
 /** Minimal inline SVG icon set. All inherit `currentColor` and take a class. */
-import { type SVGProps } from "react";
+import type { SVGProps } from "react";
+import type { IconName } from "@/content/types";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -73,21 +74,6 @@ export function LeetCodeIcon(props: IconProps) {
   );
 }
 
-export function CertificateIcon(props: IconProps) {
-  return (
-    <svg
-      {...base(props)}
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 20H4V3h16v9M8 7h8M8 11h4" />
-      <circle cx="17" cy="16" r="3" />
-      <path d="m15 18-1 4 3-1 3 1-1-4" />
-    </svg>
-  );
-}
 export function BookIcon(props: IconProps) {
   return (
     <svg
@@ -98,19 +84,6 @@ export function BookIcon(props: IconProps) {
       strokeLinejoin="round"
     >
       <path d="M12 6C8 3 4 4 2 5v14c3-1 7-1 10 1 3-2 7-2 10-1V5c-2-1-6-2-10 1v14M6 8l3 1M6 12l3 1m6-4 3-1m-3 5 3-1" />
-    </svg>
-  );
-}
-export function CodeIcon(props: IconProps) {
-  return (
-    <svg
-      {...base(props)}
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m7 7-5 5 5 5m10-10 5 5-5 5M14 4l-4 16" />
     </svg>
   );
 }
@@ -141,41 +114,6 @@ export function PeopleIcon(props: IconProps) {
   );
 }
 
-export function MailIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <rect
-        x="3"
-        y="5"
-        width="18"
-        height="14"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <path
-        d="m4 7 8 6 8-6"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export function PhoneIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <path
-        d="M4 5c0-.55.45-1 1-1h2.2c.46 0 .86.31.97.76l.9 3.6a1 1 0 0 1-.28.95l-1.6 1.6a13 13 0 0 0 5.9 5.9l1.6-1.6a1 1 0 0 1 .95-.28l3.6.9c.45.11.76.51.76.97V19c0 .55-.45 1-1 1A16 16 0 0 1 4 5Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function MapPinIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
@@ -186,20 +124,6 @@ export function MapPinIcon(props: IconProps) {
         strokeLinejoin="round"
       />
       <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
-}
-
-export function DownloadIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <path
-        d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
     </svg>
   );
 }
@@ -312,4 +236,21 @@ export function DevpostIcon(props: IconProps) {
       <path d="M6.002 1.61L0 12.004 6.002 22.39h11.996L24 12.004 17.998 1.61zm1.593 4.084h3.947c3.605 0 6.276 1.695 6.276 6.31 0 4.436-3.21 6.302-6.456 6.302H7.595zm2.517 2.449v7.714h1.241c2.646 0 3.862-1.55 3.862-3.861.009-2.569-1.096-3.853-3.767-3.853Z" />
     </svg>
   );
+}
+
+/** The icons content can name (`IconName`); every name needs one here. */
+const named: Record<IconName, (props: IconProps) => React.JSX.Element> = {
+  apple: AppleIcon,
+  award: AwardIcon,
+  graduation: GraduationIcon,
+  briefcase: BriefcaseIcon,
+  people: PeopleIcon,
+  pin: MapPinIcon,
+  book: BookIcon,
+  spark: SparkIcon,
+};
+
+export function Icon({ name, ...props }: IconProps & { name: IconName }) {
+  const Named = named[name];
+  return <Named {...props} />;
 }

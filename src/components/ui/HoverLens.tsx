@@ -13,9 +13,9 @@ import { useEffect, useRef } from "react";
 export function HoverLens({ items }: { items: string }) {
   const lens = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    const el = lens.current;
-    const group = el?.parentElement;
-    if (!el || !group) return;
+    // The lens always renders inside the group it serves.
+    const el = lens.current!;
+    const group = el.parentElement!;
     let current: HTMLElement | null = null,
       frame = 0,
       leave = 0;

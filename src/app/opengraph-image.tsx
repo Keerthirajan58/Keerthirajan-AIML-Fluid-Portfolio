@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { profile } from "@/content/data";
+import { profile } from "@/content/profile";
 import { colors } from "@/lib/theme";
 
 export const alt = profile.pageTitle;

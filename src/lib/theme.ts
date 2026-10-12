@@ -1,5 +1,5 @@
 /**
- * JS-readable mirror of the Clear Air tokens in `src/app/globals.css` (`@theme`).
+ * JS-readable mirror of the Clear Air tokens in `src/styles/foundation/tokens.css` (`@theme`).
  * Used where CSS custom properties are unavailable: the OG image, the
  * viewport theme colour, and generated icons. Keep in sync by hand.
  */

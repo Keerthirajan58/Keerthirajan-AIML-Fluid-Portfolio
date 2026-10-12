@@ -1,0 +1,266 @@
+/* ───────── Hero ───────── */
+.hero {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 100svh;
+  padding-block: calc(env(safe-area-inset-top, 0px) + 112px)
+    clamp(64px, 9vh, 112px);
+  text-align: center;
+}
+.hero-inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+.hero-name {
+  margin: 28px 0 0;
+  font: 600 clamp(36px, 10.2vw, 112px) / 0.98 var(--font-display);
+  letter-spacing: -0.055em;
+}
+.hero-name span {
+  display: block;
+}
+.hero-intro {
+  margin: 26px 0 0;
+  font-size: clamp(18px, 1.7vw, 23px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.hero-description {
+  max-width: 62ch;
+  text-wrap: balance;
+  margin: 10px 0 0;
+  color: var(--on-field);
+  font-size: clamp(15.5px, 1.3vw, 18px);
+}
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 15px 5px 5px;
+  border-radius: 999px;
+  background: var(--chip);
+  box-shadow:
+    0 10px 24px -18px rgb(15 16 19 / 0.4),
+    0 0 0 1px var(--surface-edge);
+  font-size: 14px;
+  font-weight: 500;
+}
+.fact-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.fact-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.fact-school {
+  color: var(--navy-text);
+}
+.fact-place {
+  color: var(--accent);
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+.hero-actions .social-links {
+  margin-left: 4px;
+}
+@media (max-width: 520px) {
+  .hero {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 96px);
+  }
+  .hero-name {
+    margin-top: 22px;
+    letter-spacing: -0.05em;
+  }
+  .hero-actions .button {
+    flex: 1 1 auto;
+  }
+  .hero-facts {
+    gap: 6px;
+  }
+  .hero-facts li {
+    gap: 8px;
+    padding-right: 12px;
+    font-size: 13px;
+  }
+  .fact-icon {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* Token stream: the hero line decodes like a model generating it. */
+.token-stream {
+  position: relative;
+}
+.tok {
+  position: relative;
+  display: inline-block;
+  padding: 0 0.06em;
+  border-radius: 6px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.tok-probs {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 5;
+  display: grid;
+  gap: 6px;
+  width: 214px;
+  padding: 12px 14px 10px;
+  border: 1px solid var(--surface-edge);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 22px 50px -20px rgb(15 16 19 / 0.45);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: left;
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  transition:
+    opacity 0.2s,
+    transform 0.25s var(--ease);
+  pointer-events: none;
+}
+.tok-probs-title,
+.tok-probs-note {
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tok-probs-note {
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 500;
+}
+.tok-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3px 8px;
+}
+.tok-row span:nth-child(2) {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tok-row[data-pick] span:first-child {
+  font-weight: 600;
+}
+.tok-bar {
+  grid-column: 1 / -1;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--surface-3);
+}
+.tok-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bar);
+}
+.tok-row[data-pick] .tok-bar i {
+  background: linear-gradient(90deg, var(--accent), #f05a3c);
+}
+/* Hover-only extras must not exist on touch layouts (they widen the page). */
+@media (hover: none) {
+  .tok-probs,
+  .skill-evidence {
+    display: none;
+  }
+}
+@media (hover: hover) {
+  .tok:hover {
+    background: var(--accent-wash);
+    color: var(--ink);
+  }
+  .tok:hover .tok-probs {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Typed out one character per step. The caret sits just after the newest
+     character (a step longer after a word, where the space is typed), then
+     blinks after the last one and goes, so it never runs ahead of the text. */
+  .token-stream {
+    --type-start: 0.35s;
+    --type-step: 22ms;
+  }
+  .tok-char {
+    position: relative;
+    animation: type-in 1ms backwards;
+    animation-delay: calc(var(--type-start) + var(--c) * var(--type-step));
+  }
+  .tok-char::after {
+    content: "";
+    position: absolute;
+    top: 0.08em;
+    right: -3px;
+    width: 2px;
+    height: 1.05em;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    animation: tok-cursor var(--type-step) steps(1)
+      calc(var(--type-start) + var(--c) * var(--type-step));
+  }
+  .tok-char:last-child::after {
+    animation-duration: calc(2 * var(--type-step));
+  }
+  .tok:last-of-type .tok-char:last-child::after {
+    animation: caret-blink 0.9s linear
+      calc(var(--type-start) + var(--c) * var(--type-step)) 4;
+  }
+}
+@keyframes type-in {
+  from,
+  to {
+    opacity: 0;
+  }
+}
+@keyframes tok-cursor {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+@keyframes caret-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0;
+  }
+}

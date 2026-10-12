@@ -1,0 +1,402 @@
+/* ───────── Experience timeline ───────── */
+.experience-journey {
+  --rail: clamp(118px, 12.5vw, 176px);
+  --line-x: calc(var(--rail) + 22px + 31px);
+  position: relative;
+}
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.timeline::before,
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: var(--line-x);
+  width: 2px;
+  border-radius: 2px;
+  background: var(--track);
+}
+.timeline::after {
+  background: linear-gradient(var(--accent), #ff6f6f);
+  box-shadow: 0 0 14px rgb(223 33 47 / 0.45);
+  transform-origin: top;
+  transform: scaleY(var(--progress, 0));
+}
+/* The pin rides the tip of the filling line: a crimson marker pointing the
+   way down the career path, with a soft ping where it touches the line.
+   Reaching a company badge, it docks at the rim (never over the logo) while
+   the badge sends out an impact ripple, then pops back out below. */
+.timeline-cursor {
+  position: absolute;
+  top: 0;
+  left: calc(var(--line-x) + 1px);
+  z-index: 2;
+  width: 0;
+  height: 0;
+  transform: translateY(var(--cursor-y, 10px));
+  opacity: clamp(0, calc(var(--progress, 0) * 30), 1);
+  pointer-events: none;
+}
+.timeline-cursor > span {
+  position: absolute;
+  left: -11px;
+  top: -26.5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50% 50% 50% 0;
+  rotate: -45deg;
+  background: linear-gradient(135deg, #ff5e68, var(--accent) 55%, #b3121f);
+  box-shadow:
+    0 0 0 2.5px var(--surface),
+    -4px 6px 16px -4px rgb(223 33 47 / 0.7);
+  transition:
+    opacity 0.2s ease,
+    scale 0.5s var(--spring);
+}
+.timeline-cursor[data-docked] > span {
+  opacity: 0;
+  scale: 0.35;
+  transition:
+    opacity 0.18s ease,
+    scale 0.25s ease;
+}
+.timeline-cursor > span::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+.timeline-cursor::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgb(223 33 47 / 0.4);
+}
+.timeline-cursor[data-docked]::before {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-cursor:not([data-docked])::before {
+    animation: ping 1.8s ease-out infinite;
+  }
+}
+@keyframes ping {
+  to {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+.timeline-item {
+  display: grid;
+  grid-template-columns: var(--rail) 64px minmax(0, 1fr);
+  align-items: start;
+  gap: 0 22px;
+  scroll-margin-top: 110px;
+}
+.timeline-when {
+  padding-top: 8px;
+  text-align: right;
+}
+.timeline-year {
+  color: transparent;
+  font: 700 clamp(32px, 3.3vw, 46px) / 1 var(--font-display);
+  letter-spacing: -0.06em;
+  -webkit-text-stroke: 1.2px var(--year-stroke);
+  transition:
+    color 0.5s var(--ease),
+    -webkit-text-stroke-color 0.5s;
+}
+.timeline-item[data-active] .timeline-year {
+  color: var(--ink);
+  -webkit-text-stroke-color: transparent;
+}
+.timeline-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 6px var(--page),
+    0 10px 24px -14px rgb(15 16 19 / 0.4);
+  transition:
+    box-shadow 0.5s var(--ease),
+    transform 0.5s var(--spring);
+}
+.timeline-item[data-reached] .timeline-node {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 0 8px var(--accent-wash),
+    0 12px 26px -12px rgb(223 33 47 / 0.6);
+}
+.timeline-item[data-active] .timeline-node {
+  transform: scale(1.06);
+}
+/* Impact: when the pin touches a badge, a ring of tiny gold, crimson and
+   rose-gold confetti lifts off all around the badge's rim, drifting
+   outward with a slight swirl while a soft gold halo glows and fades.
+   Everything stays outside the badge (never over the logo). */
+.timeline-node {
+  --spark-from: 36px;
+  --spark-to: 52px;
+}
+.timeline-node::before,
+.timeline-node::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.timeline-node::before {
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+}
+.timeline-node::after {
+  inset: -3px;
+  box-shadow: 0 0 18px 3px rgb(242 193 78 / 0.55);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-node[data-impact] {
+    animation: node-bump 0.55s var(--spring);
+  }
+  .timeline-node[data-impact]::before {
+    animation: confetti 0.95s cubic-bezier(0.2, 0.75, 0.3, 1) both;
+  }
+  .timeline-node[data-impact]::after {
+    animation: halo 0.8s ease-out both;
+  }
+}
+@keyframes confetti {
+  0% {
+    opacity: 0;
+    rotate: 0deg;
+    box-shadow:
+      calc(var(--spark-from) * 1) 0px 0 0px #f2c14e,
+      calc(var(--spark-from) * 0.924) calc(var(--spark-from) * 0.383) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * 0.707) calc(var(--spark-from) * 0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * 0.383) calc(var(--spark-from) * 0.924) 0 -0.5px
+        #d99a1e,
+      0px calc(var(--spark-from) * 1) 0 0px #f2c14e,
+      calc(var(--spark-from) * -0.383) calc(var(--spark-from) * 0.924) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * -0.707) calc(var(--spark-from) * 0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * -0.924) calc(var(--spark-from) * 0.383) 0 -0.5px
+        #d99a1e,
+      calc(var(--spark-from) * -1) 0px 0 0px #f2c14e,
+      calc(var(--spark-from) * -0.924) calc(var(--spark-from) * -0.383) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * -0.707) calc(var(--spark-from) * -0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * -0.383) calc(var(--spark-from) * -0.924) 0 -0.5px
+        #d99a1e,
+      0px calc(var(--spark-from) * -1) 0 0px #f2c14e,
+      calc(var(--spark-from) * 0.383) calc(var(--spark-from) * -0.924) 0 -0.5px
+        #e0303f,
+      calc(var(--spark-from) * 0.707) calc(var(--spark-from) * -0.707) 0 0px
+        #f5a3a0,
+      calc(var(--spark-from) * 0.924) calc(var(--spark-from) * -0.383) 0 -0.5px
+        #d99a1e;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    rotate: 24deg;
+    box-shadow:
+      calc(var(--spark-to) * 1) 0px 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * 0.924)
+        calc(calc(var(--spark-to) * 0.86) * 0.383) 0 -2px #e0303f,
+      calc(var(--spark-to) * 0.707) calc(var(--spark-to) * 0.707) 0 -2px #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * 0.383)
+        calc(calc(var(--spark-to) * 0.86) * 0.924) 0 -2px #d99a1e,
+      0px calc(var(--spark-to) * 1) 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * -0.383)
+        calc(calc(var(--spark-to) * 0.86) * 0.924) 0 -2px #e0303f,
+      calc(var(--spark-to) * -0.707) calc(var(--spark-to) * 0.707) 0 -2px
+        #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * -0.924)
+        calc(calc(var(--spark-to) * 0.86) * 0.383) 0 -2px #d99a1e,
+      calc(var(--spark-to) * -1) 0px 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * -0.924)
+        calc(calc(var(--spark-to) * 0.86) * -0.383) 0 -2px #e0303f,
+      calc(var(--spark-to) * -0.707) calc(var(--spark-to) * -0.707) 0 -2px
+        #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * -0.383)
+        calc(calc(var(--spark-to) * 0.86) * -0.924) 0 -2px #d99a1e,
+      0px calc(var(--spark-to) * -1) 0 -2px #f2c14e,
+      calc(calc(var(--spark-to) * 0.86) * 0.383)
+        calc(calc(var(--spark-to) * 0.86) * -0.924) 0 -2px #e0303f,
+      calc(var(--spark-to) * 0.707) calc(var(--spark-to) * -0.707) 0 -2px
+        #f5a3a0,
+      calc(calc(var(--spark-to) * 0.86) * 0.924)
+        calc(calc(var(--spark-to) * 0.86) * -0.383) 0 -2px #d99a1e;
+  }
+}
+@keyframes halo {
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes node-bump {
+  35% {
+    scale: 1.08;
+  }
+}
+.company-mark {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  flex: none;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  color: #0f1013;
+}
+.timeline-node .company-mark {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+}
+.company-mark svg {
+  width: 24px;
+  height: 24px;
+}
+.company-mark img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.timeline-card {
+  padding: clamp(20px, 2.6vw, 32px);
+  border-radius: var(--radius-card);
+  transition: box-shadow 0.5s var(--ease);
+}
+.timeline-item[data-active] .timeline-card {
+  box-shadow: var(--shadow-lift);
+}
+.timeline-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hairline);
+}
+.timeline-head h3 {
+  margin: 0;
+  font: 600 clamp(19px, 1.9vw, 24px) / 1.2 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.job-org {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.job-org strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.job-org span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.job-org svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
+.job-dates {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.timeline-card .result-list {
+  font-size: 15.5px;
+}
+.timeline-card .result-list strong {
+  color: var(--ink);
+  font-weight: 600;
+  background: linear-gradient(transparent 64%, var(--accent-wash) 0);
+}
+@media (max-width: 759px) {
+  .timeline-node {
+    --spark-from: 28px;
+    --spark-to: 40px;
+  }
+  .experience-journey {
+    --rail: 0px;
+    --line-x: 23px;
+  }
+  .timeline {
+    gap: 22px;
+  }
+  .timeline-item {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 8px 14px;
+  }
+  .timeline-when {
+    grid-column: 2;
+    grid-row: 1;
+    padding-top: 2px;
+    text-align: left;
+  }
+  .timeline-year {
+    font-size: 30px;
+  }
+  .timeline-node {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 48px;
+    height: 48px;
+  }
+  .timeline-node .company-mark {
+    width: 40px;
+    height: 40px;
+  }
+  .timeline-node .company-mark img {
+    width: 30px;
+    height: 30px;
+  }
+  .timeline-card {
+    grid-column: 2;
+  }
+}

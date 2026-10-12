@@ -1,0 +1,94 @@
+/* ───────── Base ───────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-top: 96px;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
+}
+/* Same-page links glide via AnchorGlide (JS); Lenis smooths the desktop wheel. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+html.lenis {
+  scroll-behavior: auto;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+a,
+button {
+  touch-action: manipulation;
+}
+a {
+  color: inherit;
+  text-underline-offset: 0.22em;
+}
+button,
+summary {
+  cursor: pointer;
+}
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+img {
+  max-width: 100%;
+}
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+section:focus,
+main:focus,
+li:focus {
+  outline: none;
+}
+::selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+dialog {
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+}
+dialog::backdrop {
+  background: var(--backdrop);
+  backdrop-filter: blur(8px);
+}
+/* Tailwind's reset zeroes margins, which un-centres modal dialogs. */
+.contact-dialog:modal,
+.project-notes-dialog:modal {
+  margin: auto;
+}

@@ -1,0 +1,480 @@
+/* ───────── Primitives ───────── */
+.shell {
+  width: min(100%, 1320px);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 56px);
+}
+/* Cards are solid and light, with a faint tint that blends into the field. */
+.surface {
+  background: var(--surface-fill);
+  border: 1px solid var(--surface-edge);
+  box-shadow: var(--shadow-card);
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 600 12px/1.3 var(--font-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  font: 600 15px/1 var(--font-body);
+  text-decoration: none;
+  transition:
+    background 0.2s,
+    box-shadow 0.25s,
+    transform 0.25s var(--ease);
+}
+.button svg {
+  width: 16px;
+  height: 16px;
+}
+.button:hover {
+  transform: translateY(-1px);
+}
+.button:active {
+  transform: scale(0.98);
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.button-primary {
+  background: var(--invert);
+  color: var(--on-invert);
+  box-shadow: var(--shadow-button);
+}
+.button-primary:hover {
+  background: var(--invert-hover);
+}
+.button-secondary {
+  background: var(--chip);
+  color: var(--ink);
+  box-shadow: var(--shadow-chip);
+}
+.button-secondary:hover {
+  background: var(--surface);
+}
+.magnetic-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--hover);
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.icon-button:hover {
+  background: var(--hover-strong);
+}
+.icon-button:active {
+  transform: scale(0.94);
+}
+.icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.text-button:hover {
+  text-decoration: underline;
+}
+.text-button svg {
+  width: 15px;
+  height: 15px;
+}
+.arrow-forward {
+  rotate: 180deg;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-wash);
+}
+.availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--chip);
+  box-shadow: var(--shadow-float);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.chip-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--invert);
+  color: var(--on-invert);
+}
+.chip-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.chip-icon[data-tone="gold"],
+.education-medallion {
+  background: var(--gold-fill);
+  color: #3d2a00;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    0 4px 12px -4px rgb(217 154 30 / 0.65);
+}
+.chip-icon[data-tone="navy"] {
+  background: linear-gradient(135deg, #4a70b5, #1f3a6b);
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgb(31 58 107 / 0.55);
+}
+.tag-list,
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tag-list li,
+.chip-list li {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.result-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+}
+.result-list li {
+  padding-left: 4px;
+  color: var(--text);
+}
+.result-list li::marker {
+  color: var(--accent);
+}
+.social-links {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.social-link {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.25s var(--ease);
+}
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+.social-linkedin {
+  color: #0a66c2;
+}
+.social-github {
+  color: var(--ink);
+}
+.social-leetcode {
+  color: #c77700;
+}
+:root[data-theme="dark"] .social-linkedin {
+  color: #5aa2ec;
+}
+:root[data-theme="dark"] .social-leetcode {
+  color: #f0a43a;
+}
+.social-link:hover {
+  transform: translateY(-2px);
+  color: #fff;
+}
+.social-linkedin:hover {
+  background: #0a66c2;
+  color: #fff;
+}
+.social-github:hover {
+  background: var(--invert);
+  color: var(--on-invert);
+}
+.social-leetcode:hover {
+  background: #c77700;
+  color: #fff;
+}
+
+/* Chip groups: the work filters and the skill tabs. Two indicators ride on
+   top of the chips. The ink pill marks the choice and slides only when the
+   choice changes: it is a clipped copy of the chips, so the label under it
+   reads in white. The glass lens follows the pointer (or keyboard focus)
+   like the header's liquid lens and rests on the choice. */
+.project-filters,
+.skill-tabs {
+  --ink-fill: var(--invert);
+  --ink-text: var(--on-invert);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.chip > span {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.project-filters > button,
+.skill-tabs > button {
+  border: 0;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  color: var(--ink);
+}
+.project-filters > button > span,
+.skill-tabs > button > span {
+  color: var(--muted);
+}
+/* Before the indicators are measured, and without JavaScript, the chosen
+   chip carries its own fill. */
+.project-filters:not([data-ready]) > button[aria-pressed="true"],
+.skill-tabs:not([data-ready]) > button[aria-pressed="true"] {
+  background: var(--ink-fill);
+  color: var(--ink-text);
+}
+.project-filters:not([data-ready]) > button[aria-pressed="true"] > span,
+.skill-tabs:not([data-ready]) > button[aria-pressed="true"] > span {
+  color: inherit;
+  opacity: 0.72;
+}
+.chip-ink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: inherit;
+  gap: inherit;
+  background: var(--ink-fill);
+  color: var(--ink-text);
+  clip-path: inset(
+    var(--iy, 0px) calc(100% - var(--ix, 0px) - var(--iw, 0px))
+      calc(100% - var(--iy, 0px) - var(--ih, 0px)) var(--ix, 0px) round 999px
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+.chip-ink > .chip > span {
+  opacity: 0.72;
+}
+[data-ready] > .chip-ink {
+  opacity: 1;
+  transition:
+    clip-path 0.6s var(--spring),
+    background-color 0.45s ease,
+    color 0.45s ease;
+}
+.filter-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: var(--lw, 0);
+  height: var(--lh, 0);
+  transform: translate(var(--lx, 0), var(--ly, 0));
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      120% 70% at 50% 0%,
+      rgb(255 255 255 / 0.5),
+      rgb(255 255 255 / 0) 62%
+    ),
+    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.02));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.75),
+    inset 0 0 0 1px rgb(255 255 255 / 0.3),
+    inset 0 -2px 6px -2px rgb(255 255 255 / 0.25),
+    0 10px 22px -10px rgb(15 16 19 / 0.45);
+  opacity: 0;
+  pointer-events: none;
+}
+/* The same glass lens for ordinary buttons and chips (HoverLens): hidden by
+   default, it appears on the hovered item, edge to edge like the filters'
+   lens, glides between neighbours and magnifies the item's content a little. */
+.hover-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: var(--hw, 0);
+  height: var(--hh, 0);
+  border-radius: var(--hr, 999px);
+  transform: translate(var(--hx, 0), var(--hy, 0));
+  background:
+    radial-gradient(
+      120% 70% at 50% 0%,
+      rgb(255 255 255 / 0.45),
+      rgb(255 255 255 / 0) 62%
+    ),
+    linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(190 205 235 / 0.1));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.85),
+    inset 0 0 0 1px rgb(255 255 255 / 0.4),
+    inset 0 -8px 14px -10px rgb(130 160 215 / 0.5),
+    0 12px 24px -12px rgb(15 16 19 / 0.4);
+  opacity: 0;
+  scale: 0.9;
+  pointer-events: none;
+  transition:
+    transform 0.45s var(--spring),
+    width 0.45s var(--spring),
+    height 0.35s var(--ease),
+    border-radius 0.35s var(--ease),
+    opacity 0.25s ease,
+    scale 0.4s var(--spring);
+}
+:root[data-theme="dark"] .hover-lens {
+  background:
+    radial-gradient(
+      120% 70% at 50% 0%,
+      rgb(255 255 255 / 0.22),
+      rgb(255 255 255 / 0) 62%
+    ),
+    linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(150 175 230 / 0.06));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 0 0 1px rgb(255 255 255 / 0.16),
+    inset 0 -8px 14px -10px rgb(110 140 230 / 0.45),
+    0 12px 24px -12px rgb(0 0 0 / 0.7);
+}
+.hover-lens[data-on] {
+  opacity: 1;
+  scale: 1;
+}
+.hover-lens[data-snap] {
+  transition:
+    opacity 0.25s ease,
+    scale 0.4s var(--spring);
+}
+/* The words and icons inside a lensed item: one group, laid out exactly as
+   the item lays out its children, so it can grow slightly under the glass. */
+.lens-content {
+  display: inherit;
+  flex-direction: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+  gap: inherit;
+  transition: scale 0.4s var(--spring);
+}
+.social-link > svg {
+  transition: scale 0.4s var(--spring);
+}
+[data-lensed] .lens-content,
+.social-link[data-lensed] > svg {
+  scale: 1.05;
+}
+[data-ready] > .filter-lens {
+  opacity: 1;
+  transition:
+    transform 0.45s var(--spring),
+    width 0.45s var(--spring),
+    height 0.3s var(--ease),
+    opacity 0.3s;
+}
+/* Skill areas: each tab is filled with its area's colour (white text is 5:1
+   or more on every one); the chosen tab gets the ink pill like the work
+   filters. Bubbles carry their area's colour as a dot. */
+:is(.skill-tabs > button, .skill-bubble)[data-tone="1"] {
+  --tone: var(--tone-1);
+}
+:is(.skill-tabs > button, .skill-bubble)[data-tone="2"] {
+  --tone: var(--tone-2);
+}
+:is(.skill-tabs > button, .skill-bubble)[data-tone="3"] {
+  --tone: var(--tone-3);
+}
+:is(.skill-tabs > button, .skill-bubble)[data-tone="4"] {
+  --tone: var(--tone-4);
+}
+:is(.skill-tabs > button, .skill-bubble)[data-tone="5"] {
+  --tone: var(--tone-5);
+}
+.skill-tabs > button[data-tone] {
+  background: var(--tone);
+  color: #fff;
+}
+.skill-tabs > button[data-tone] > span {
+  color: #fff;
+}

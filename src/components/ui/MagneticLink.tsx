@@ -38,7 +38,7 @@ export function MagneticLink({
         <LazyMotion features={loadFeatures} strict>
           <m.span
             className="magnetic-content"
-            animate={enabled ? offset : { x: 0, y: 0 }}
+            animate={offset}
             transition={{
               type: "spring",
               stiffness: 280,

@@ -1,0 +1,172 @@
+/* ───────── Skills: bubble panel ───────── */
+.skills-panel {
+  display: grid;
+  gap: 24px;
+  padding: clamp(18px, 2.6vw, 32px);
+  border-radius: var(--radius-sheet);
+}
+.skill-tabs {
+  justify-content: center;
+}
+.skill-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+.skill-bubble {
+  position: relative;
+  padding: 0.55em 1.05em;
+  border-radius: 999px;
+  background: var(--bubble-fill);
+  box-shadow: var(--bubble-shadow);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  transition:
+    background 0.4s,
+    box-shadow 0.4s,
+    color 0.4s,
+    scale 0.4s var(--spring);
+}
+.skill-bubble[data-size="1"] {
+  font-size: 15px;
+}
+.skill-bubble[data-size="2"] {
+  padding: 0.62em 1.2em;
+  font-size: 16.5px;
+  font-weight: 600;
+}
+.skill-bubble[data-size="3"] {
+  padding: 0.66em 1.3em;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow:
+    inset 0 -8px 14px -10px color-mix(in srgb, var(--tone) 40%, transparent),
+    0 10px 22px -12px color-mix(in srgb, var(--tone) 45%, transparent),
+    0 0 0 1.5px color-mix(in srgb, var(--tone) 34%, transparent);
+}
+/* Each bubble carries its area's colour as a small dot. */
+.skill-bubble::before {
+  content: "";
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--tone);
+  vertical-align: 0.1em;
+}
+/* The chosen area's bubbles take on its colour. */
+.skill-bubble[data-lit] {
+  background: color-mix(in srgb, var(--tone) var(--tone-tint), var(--surface));
+  box-shadow:
+    inset 0 0 0 1.5px var(--tone),
+    0 10px 22px -14px color-mix(in srgb, var(--tone) 70%, transparent);
+}
+/* Other areas recede (flat, smaller) but their text stays readable. */
+.skill-bubble[data-dim] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  color: var(--muted);
+  scale: 0.92;
+}
+.skill-evidence {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 3;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  max-width: 240px;
+  padding: 10px 12px;
+  border: 1px solid var(--surface-edge);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 18px 40px -18px rgb(15 16 19 / 0.45);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  transition:
+    opacity 0.2s,
+    transform 0.25s var(--ease);
+  pointer-events: none;
+}
+.skill-evidence b {
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+@media (hover: hover) {
+  .skill-bubble:hover {
+    z-index: 3;
+    scale: 1.08;
+  }
+  .skill-bubble:hover .skill-evidence {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+/* Switching areas sends a quick pop across the chosen bubbles, in order.
+   The two names alternate so the animation replays on every switch. */
+@media (prefers-reduced-motion: no-preference) {
+  .skill-cloud[data-wave="a"] .skill-bubble:not([data-dim]) {
+    --pop: pop-a;
+  }
+  .skill-cloud[data-wave="b"] .skill-bubble:not([data-dim]) {
+    --pop: pop-b;
+  }
+  .skill-bubble {
+    animation: var(--pop, none) 0.55s var(--spring) backwards;
+    animation-delay: calc(var(--k, 0) * 22ms);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .skill-bubble {
+    animation:
+      bob 5.5s ease-in-out infinite alternate,
+      var(--pop, none) 0.55s var(--spring) backwards;
+    animation-delay: calc(var(--i) * -0.41s), calc(var(--k, 0) * 22ms);
+  }
+}
+@keyframes pop-a {
+  0% {
+    opacity: 0.35;
+    scale: 0.72;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.08;
+  }
+}
+@keyframes pop-b {
+  0% {
+    opacity: 0.35;
+    scale: 0.72;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.08;
+  }
+}
+@keyframes bob {
+  to {
+    translate: 0 -5px;
+  }
+}
+.skills-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}

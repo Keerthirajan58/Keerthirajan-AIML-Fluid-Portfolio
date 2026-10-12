@@ -1,8 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, type RefObject } from "react";
-
-const useIsoLayoutEffect =
-  typeof window === "undefined" ? useEffect : useLayoutEffect;
+import { useLayoutEffect, type RefObject } from "react";
 
 type ChipOptions = {
   /** Tag of the chip elements (direct children of the group). */
@@ -32,7 +29,7 @@ export function useChipIndicators(
     chosen: findChosen = pressedButton,
   }: ChipOptions = {},
 ) {
-  useIsoLayoutEffect(() => {
+  useLayoutEffect(() => {
     const group = ref.current;
     if (!group) return;
     let hovered: HTMLElement | null = null;

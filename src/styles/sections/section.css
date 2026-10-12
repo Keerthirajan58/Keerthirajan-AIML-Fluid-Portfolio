@@ -1,0 +1,80 @@
+/* ───────── Sections ───────── */
+.section {
+  padding-top: var(--section-space);
+  scroll-margin-top: 72px;
+}
+.section-heading {
+  display: grid;
+  gap: 14px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+.section-heading .eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.section-heading h2 {
+  margin: 0;
+  font: 600 clamp(30px, 4.4vw, 60px) / 1.02 var(--font-display);
+  letter-spacing: -0.05em;
+}
+.section-lede {
+  max-width: 60ch;
+  margin: 4px 0 0;
+  color: var(--on-field);
+  font-size: clamp(16px, 1.3vw, 18px);
+}
+.sub-title {
+  margin: 0 0 18px;
+  font: 600 clamp(20px, 2vw, 26px) / 1.15 var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+/* Hover depth: tilt, iridescent sheen and a crimson edge that follow the cursor. */
+.depth-card {
+  position: relative;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg));
+  transition: transform 0.5s var(--ease);
+}
+.depth-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 50%),
+    var(--sheen-a),
+    var(--sheen-b) 45%,
+    transparent 72%
+  );
+  opacity: var(--shine, 0);
+  transition: opacity 0.45s;
+  pointer-events: none;
+}
+.depth-edge {
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(223 33 47 / 0.7),
+    rgb(223 33 47 / 0.12) 45%,
+    transparent 70%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: var(--shine, 0);
+  transition: opacity 0.45s;
+  pointer-events: none;
+}

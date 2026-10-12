@@ -1,0 +1,556 @@
+@theme {
+  --color-air: #f1f2f4;
+  --color-sheet: #ffffff;
+  --color-panel: #f5f6f8;
+  --color-line: #e5e7eb;
+  --color-ink: #0f1013;
+  --color-slate: #5b616b;
+  --color-crimson: #df212f;
+  --color-blush: #f6cfcb;
+  --color-haze: #d6e2f3;
+  --color-peach: #ffe4d6;
+  --font-display: var(--font-unbounded), "Arial Black", system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* Semantic tokens. Components use these, never raw colours, so the dark
+   theme is one block of overrides. Every theme colour is a registered
+   property, so switching themes cross-fades the whole page smoothly (and a
+   second click simply reverses it mid-way) without any snapshot. */
+@property --page {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-tint {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-edge {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-2 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --surface-3 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --chip {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --field {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hairline {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --track {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hover {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hover-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --on-field {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --accent-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --accent-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --invert {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --invert-hover {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --on-invert {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --on-invert-muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --selection {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --header-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --lens-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --lens-bottom {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --award-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --award-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --rose-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --rose-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --navy-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --navy-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --rose-wash {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --quote-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --quote-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --quote-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --placeholder-base {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bar {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --year-stroke {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --portrait-ring {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --sheen-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --sheen-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --backdrop {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bubble-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bubble-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --bubble-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-ember {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --glow-pointer {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --tint-rose {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --tint-peach {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --tint-navy {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --tint-gold {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --tint-sky {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --tint-saffron {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --grain-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --tone-tint {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+:root {
+  color-scheme: light;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --glide: cubic-bezier(0.65, 0, 0.2, 1);
+  --spring: cubic-bezier(0.34, 1.45, 0.55, 1);
+  --radius-sheet: clamp(26px, 3vw, 40px);
+  --radius-card: clamp(20px, 2vw, 28px);
+  --radius-media: 18px;
+  --section-space: clamp(84px, 10vw, 150px);
+
+  --page: #f1f2f4;
+  --surface: #ffffff;
+  --surface-top: #ffffff; /* card fill, top-left */
+  --surface-tint: #faf9fb; /* card fill, bottom-right */
+  --surface-edge: rgb(15 16 19 / 0.06);
+  --surface-2: #f5f6f8; /* chips and panels on a card */
+  --surface-3: #eceef1; /* tracks and image wells */
+  --chip: #ffffff; /* chips straight on the field */
+  --field: #ffffff; /* form inputs */
+  --line: #e5e7eb;
+  --hairline: rgb(15 16 19 / 0.08);
+  --track: rgb(15 16 19 / 0.12);
+  --hover: rgb(15 16 19 / 0.05);
+  --hover-strong: rgb(15 16 19 / 0.1);
+  --ink: #0f1013;
+  --text: #2b2e34; /* long-form copy: 13:1 on white, 12:1 on a dark card */
+  --muted: #5b616b; /* secondary text: 6:1 on white, 7:1 on a dark card */
+  --on-field: #474c55; /* secondary text straight on the field */
+  --accent: #df212f;
+  --accent-text: #a8141e; /* crimson text, 7:1 on a card in both themes */
+  --accent-wash: rgb(223 33 47 / 0.12);
+  --invert: #0f1013; /* ink buttons and the chosen chip */
+  --invert-hover: #23252b;
+  --on-invert: #ffffff;
+  --on-invert-muted: rgb(255 255 255 / 0.72);
+  --selection: #f6cfcb;
+  --header-bg: rgb(255 255 255 / 0.9);
+  --lens-top: #ffffff;
+  --lens-bottom: #f2f3f6;
+  --award-a: #fffaf0;
+  --award-b: #fdf1d6;
+  --rose-a: #fff7f6;
+  --rose-b: #fde9e6;
+  --navy-wash: #e7eef9;
+  --navy-text: #1f3a6b;
+  --rose-wash: #fdebea;
+  --quote-a: #ffffff;
+  --quote-b: #fdf0ee;
+  --quote-c: #f4f1fa;
+  --placeholder-base: #f3f1f2;
+  --bar: #c9cdd4;
+  --year-stroke: rgb(15 16 19 / 0.22);
+  --portrait-ring: rgb(255 255 255 / 0.55);
+  --sheen-a: rgb(255 205 220 / 0.55);
+  --sheen-b: rgb(205 220 255 / 0.35);
+  --backdrop: rgb(241 242 244 / 0.55);
+  --bubble-a: #ffffff;
+  --bubble-b: #fbfafc;
+  --bubble-c: #f3edf2;
+  --glow-a: rgb(246 207 203 / 0.95); /* blush / wine */
+  --glow-b: rgb(214 226 243 / 1); /* haze / midnight */
+  --glow-c: rgb(255 228 214 / 0.85); /* peach / amber */
+  --glow-ember: rgb(223 33 47 / 0.2);
+  --glow-pointer: rgb(223 33 47 / 0.1);
+  /* Story tints for the About and education cards. */
+  --tint-rose: #fbe5e2;
+  --tint-peach: #fff0e6;
+  --tint-navy: #e3eaf6;
+  --tint-gold: #faf0d9;
+  --tint-sky: #e2edfa;
+  --tint-saffron: #ffefdc;
+  --grain-opacity: 0.05;
+  --grain-blend: multiply;
+  --tone-tint: 10%; /* how strongly a skill bubble takes its area's colour */
+  --recede: brightness(0.97);
+
+  /* Skill areas: one colour each (white text on every one is 5:1 or more). */
+  --tone-1: #c0192a; /* AI / ML */
+  --tone-2: #6a3fd1; /* GenAI & LLMs */
+  --tone-3: #1e5ad6; /* Backend & Cloud */
+  --tone-4: #0b7a70; /* Frontend & Mobile */
+  --tone-5: #b45309; /* Data & Evaluation */
+
+  /* Fills built from the colours above, so they cross-fade too. */
+  --surface-fill: linear-gradient(
+    165deg,
+    var(--surface-top) 35%,
+    var(--surface-tint)
+  );
+  --lens-fill: linear-gradient(180deg, var(--lens-top), var(--lens-bottom));
+  --award-bg: linear-gradient(135deg, var(--award-a), var(--award-b));
+  --rose-bg: linear-gradient(135deg, var(--rose-a), var(--rose-b));
+  --quote-fill: linear-gradient(
+    150deg,
+    var(--quote-a),
+    var(--quote-b) 60%,
+    var(--quote-c)
+  );
+  --bubble-fill: radial-gradient(
+    circle at 30% 22%,
+    var(--bubble-a),
+    var(--bubble-b) 45%,
+    var(--bubble-c)
+  );
+  --gold-fill: linear-gradient(135deg, #fbe7a1, #f2c14e 48%, #d99a1e);
+
+  --lens-shadow:
+    inset 0 1px 0 #fff, 0 6px 16px -8px rgb(15 16 19 / 0.38),
+    0 0 0 1px rgb(15 16 19 / 0.05);
+  --bubble-shadow:
+    inset 0 1px 0 #fff, inset 0 -8px 14px -10px rgb(150 175 220 / 0.55),
+    0 8px 18px -12px rgb(15 16 19 / 0.35), 0 0 0 1px rgb(15 16 19 / 0.05);
+  --shadow-card:
+    0 1px 2px rgb(15 16 19 / 0.04), 0 24px 60px -34px rgb(15 16 19 / 0.3);
+  --shadow-float:
+    0 12px 36px -16px rgb(15 16 19 / 0.22), 0 0 0 1px rgb(15 16 19 / 0.04);
+  --shadow-lift:
+    0 2px 4px rgb(15 16 19 / 0.04), 0 36px 70px -36px rgb(15 16 19 / 0.42);
+  --shadow-chip:
+    0 8px 24px -14px rgb(15 16 19 / 0.35), 0 0 0 1px rgb(15 16 19 / 0.06);
+  --shadow-button:
+    inset 0 1px 0 rgb(255 255 255 / 0.18), 0 14px 30px -14px rgb(15 16 19 / 0.6);
+  --shadow-dialog: 0 60px 140px -40px rgb(15 16 19 / 0.5);
+
+  transition-property:
+    --page, --surface, --surface-top, --surface-tint, --surface-edge,
+    --surface-2, --surface-3, --chip, --field, --line, --hairline, --track,
+    --hover, --hover-strong, --ink, --text, --muted, --on-field, --accent,
+    --accent-text, --accent-wash, --invert, --invert-hover, --on-invert,
+    --on-invert-muted, --selection, --header-bg, --lens-top, --lens-bottom,
+    --award-a, --award-b, --rose-a, --rose-b, --navy-wash, --navy-text,
+    --rose-wash, --quote-a, --quote-b, --quote-c, --placeholder-base, --bar,
+    --year-stroke, --portrait-ring, --sheen-a, --sheen-b, --backdrop,
+    --bubble-a, --bubble-b, --bubble-c, --glow-a, --glow-b, --glow-c,
+    --glow-ember, --glow-pointer, --grain-opacity, --tone-tint, --tint-rose,
+    --tint-peach, --tint-navy, --tint-gold, --tint-sky, --tint-saffron;
+  transition-duration: 0.45s;
+  transition-timing-function: ease;
+}
+
+/* Clear Air at night: deep ink, wine and midnight light, warm white type. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0c10;
+  --surface: #18171c;
+  --surface-top: #1c1b21;
+  --surface-tint: #16151a;
+  --surface-edge: rgb(255 255 255 / 0.07);
+  --surface-2: #222027;
+  --surface-3: #2a2830;
+  --chip: #1c1b21;
+  --field: #121116;
+  --line: #2f2d35;
+  --hairline: rgb(255 255 255 / 0.09);
+  --track: rgb(255 255 255 / 0.14);
+  --hover: rgb(255 255 255 / 0.07);
+  --hover-strong: rgb(255 255 255 / 0.13);
+  --ink: #f4f2ef;
+  --text: #d8d5da;
+  --muted: #a7a3ac;
+  --on-field: #bab6be;
+  --accent: #f0414d;
+  --accent-text: #ff7d85;
+  --accent-wash: rgb(240 65 77 / 0.18);
+  --invert: #f4f2ef;
+  --invert-hover: #ffffff;
+  --on-invert: #0f1013;
+  --on-invert-muted: rgb(15 16 19 / 0.62);
+  --selection: rgb(240 65 77 / 0.4);
+  --header-bg: rgb(27 26 32 / 0.9);
+  --lens-top: #34323a;
+  --lens-bottom: #29272e;
+  --award-a: #2b2312;
+  --award-b: #211a0d;
+  --rose-a: #2c1619;
+  --rose-b: #201113;
+  --navy-wash: #1b2537;
+  --navy-text: #abc3ee;
+  --rose-wash: #301719;
+  --quote-a: #1d1c22;
+  --quote-b: #241618;
+  --quote-c: #1b1a25;
+  --placeholder-base: #1a1920;
+  --bar: #4b4853;
+  --year-stroke: rgb(255 255 255 / 0.24);
+  --portrait-ring: rgb(255 255 255 / 0.07);
+  --sheen-a: rgb(240 65 77 / 0.14);
+  --sheen-b: rgb(110 140 230 / 0.12);
+  --backdrop: rgb(13 12 16 / 0.6);
+  --bubble-a: #2c2b32;
+  --bubble-b: #212026;
+  --bubble-c: #1b1a20;
+  --glow-a: rgb(150 36 58 / 0.5);
+  --glow-b: rgb(44 70 132 / 0.55);
+  --glow-c: rgb(160 88 44 / 0.3);
+  --glow-ember: rgb(240 65 77 / 0.3);
+  --glow-pointer: rgb(240 65 77 / 0.1);
+  --tint-rose: #2b191c;
+  --tint-peach: #2a1f19;
+  --tint-navy: #182134;
+  --tint-gold: #29230f;
+  --tint-sky: #162336;
+  --tint-saffron: #2c1f10;
+  --grain-opacity: 0.08;
+  --grain-blend: screen;
+  --tone-tint: 24%;
+  --recede: brightness(0.82);
+  --lens-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1), 0 6px 16px -8px rgb(0 0 0 / 0.8),
+    0 0 0 1px rgb(255 255 255 / 0.06);
+  --bubble-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    inset 0 -8px 14px -10px rgb(110 140 230 / 0.35),
+    0 8px 18px -12px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.07);
+  --shadow-card:
+    inset 0 1px 0 rgb(255 255 255 / 0.04), 0 24px 60px -30px rgb(0 0 0 / 0.8);
+  --shadow-float:
+    0 12px 36px -16px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-lift:
+    inset 0 1px 0 rgb(255 255 255 / 0.05), 0 36px 70px -30px rgb(0 0 0 / 0.85);
+  --shadow-chip:
+    0 8px 24px -14px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.08);
+  --shadow-button:
+    inset 0 1px 0 rgb(255 255 255 / 0.6), 0 14px 30px -14px rgb(0 0 0 / 0.8);
+  --shadow-dialog: 0 60px 140px -40px rgb(0 0 0 / 0.85);
+}

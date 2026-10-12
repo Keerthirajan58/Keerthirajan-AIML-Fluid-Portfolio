@@ -1,0 +1,91 @@
+/* ───────── Scroll choreography (progressive enhancement) ─────────
+   Content is fully visible without support or with reduced motion; these
+   only map scroll position to transform/opacity on the compositor. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero {
+      view-timeline: --hero block;
+    }
+    .hero-inner {
+      animation: hero-recede linear both;
+      animation-timeline: --hero;
+      animation-range: exit 0% exit 100%;
+    }
+    .reveal,
+    .project-card,
+    .gallery-tile {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .about-layout {
+      view-timeline: --about block;
+    }
+    /* The portrait slowly zooms toward the face as you read: across the
+       stretch where it is pinned on desktop, as it passes on phones. */
+    .portrait img {
+      transform-origin: 50% 32%;
+      animation: portrait-zoom linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @media (min-width: 860px) {
+      .portrait img {
+        animation-timeline: --about;
+        animation-range: contain 0% contain 100%;
+      }
+    }
+  }
+}
+/* GW sinks back slightly while SVCE slides over it, finishing as SVCE lands
+   (its top passes 70% of the viewport, then reaches its resting line). */
+@supports (timeline-scope: --a) and (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 860px) {
+    .education-stack {
+      timeline-scope: --edu-next;
+    }
+    .education-slot:nth-child(2) {
+      view-timeline: --edu-next block;
+    }
+    .education-slot:first-child > .education-card {
+      animation: edu-recede linear both;
+      animation-timeline: --edu-next;
+      animation-range: cover 30vh cover calc(100vh - 150px);
+    }
+  }
+}
+@keyframes hero-recede {
+  to {
+    opacity: 0;
+    transform: translateY(26vh) scale(0.94);
+  }
+}
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 36px;
+  }
+}
+@keyframes portrait-zoom {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.18;
+  }
+}
+@keyframes edu-recede {
+  to {
+    scale: 0.95;
+    filter: var(--recede);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

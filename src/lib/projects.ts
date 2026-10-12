@@ -1,71 +1,41 @@
-import {
-  projects,
-  experience,
-  type ProjectEntry,
-  type CaseStudySection,
-} from "@/content/data";
-import { nvcProject } from "@/content/nvc";
-const order = [
-  "siri-core-modeling",
-  "barterbrain",
-  "pitchpulse",
-  "historical-event-narrator",
-  "coding-problem-recommender",
-  "face-cloaking",
-];
-export const allProjects: ProjectEntry[] = [
-  ...projects.map((p) => ({
-    ...p,
-    displayOrder: order.includes(p.slug) ? order.indexOf(p.slug) : 99,
-    ...(p.slug === "barterbrain"
-      ? {
-          achievement: {
-            label: "Technica winner",
-            detail: "Best Hack for Social Good · Sustainability",
-          },
-        }
-      : {}),
-  })),
-  nvcProject,
-];
-export function getFeaturedProjects(source = allProjects) {
-  return source
-    .filter((p) => p.gallery && !p.parentSlug)
-    .sort((a, b) => (a.displayOrder ?? 99) - (b.displayOrder ?? 99));
+import type { Project } from "@/content/types";
+
+/** Work cards, in content order (chapters are reached from their original). */
+export function workProjects(projects: readonly Project[]) {
+  return projects.filter((p) => !p.chapter);
 }
-export function getGridProjects(source = allProjects) {
-  return source.filter((p) => p.kind === "grid" && !p.gallery);
+
+/** Projects with their own case-study page. */
+export function caseStudies(projects: readonly Project[]) {
+  return projects.filter((p) => p.caseStudy);
 }
-export function getCertifications(source = allProjects) {
-  return source.filter((p) => p.kind === "certification");
+
+export function getProjectBySlug(slug: string, projects: readonly Project[]) {
+  return projects.find((p) => p.slug === slug);
 }
-export function getPublications(source = allProjects) {
-  return source.filter((p) => p.kind === "publication");
+
+/** The case-study page of a project, if it has one. */
+export function projectRoute(project: Project) {
+  return project.caseStudy ? `/projects/${project.slug}` : undefined;
 }
-export const caseStudySlugs = allProjects
-  .filter((p) => p.gallery)
-  .map((p) => p.slug);
-export function getProjectBySlug(slug: string, source = allProjects) {
-  return source.find((p) => p.slug === slug);
+
+/** Follow-up projects that continue this one. */
+export function chaptersOf(project: Project, projects: readonly Project[]) {
+  return projects.filter((p) => p.chapter?.of === project.slug);
 }
-export function getCaseStudySections(
-  project: ProjectEntry,
-  jobs = experience,
-): CaseStudySection[] {
-  if (project.sections) return project.sections;
-  const cs = project.caseStudy;
-  if (cs)
-    return [
-      { heading: "Overview", body: cs.overview },
-      { heading: "Problem", body: cs.problem },
-      { heading: "How I built it", bullets: cs.engineeringBullets },
-      { heading: "Impact", body: cs.impact },
-    ];
-  const apple = jobs.find((e) => e.company === "Apple");
-  return [
-    { heading: "Overview", body: project.description },
-    ...(project.slug === "siri-core-modeling" && apple
-      ? [{ heading: "At Apple", bullets: apple.bullets }]
-      : []),
-  ];
+
+/** The project a chapter continues. */
+export function parentOf(project: Project, projects: readonly Project[]) {
+  return project.chapter
+    ? getProjectBySlug(project.chapter.of, projects)
+    : undefined;
+}
+
+/** Case-study link buttons, always in this order. */
+export const linkOrder = ["github", "devpost", "blog"] as const;
+
+export function projectLinks(project: Project) {
+  return linkOrder.flatMap((kind) =>
+    project.links?.[kind] ? [{ kind, href: project.links[kind]! }] : [],
+  );
 }

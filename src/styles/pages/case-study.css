@@ -1,0 +1,356 @@
+/* ───────── Case studies ───────── */
+.case-hero {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  padding-block: calc(env(safe-area-inset-top, 0px) + 112px)
+    clamp(44px, 6vw, 80px);
+}
+.case-hero .back-link {
+  margin-bottom: 12px;
+}
+.case-hero h1 {
+  max-width: 18ch;
+  margin: 0;
+  font: 600 clamp(36px, 6.4vw, 88px) / 1 var(--font-display);
+  letter-spacing: -0.055em;
+}
+.case-description {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(17px, 1.6vw, 21px);
+}
+.achievement {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 5px 16px 5px 5px;
+  border-radius: 999px;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  font-size: 14px;
+  font-weight: 600;
+}
+.achievement .chip-icon {
+  background: var(--gold-fill);
+  color: #3d2a00;
+}
+.case-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: min(100%, 780px);
+  margin: 8px 0 0;
+}
+.case-meta > div {
+  flex: 1 1 170px;
+  padding: 14px 18px;
+  border: 1px solid var(--surface-edge);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.case-meta dt {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.case-meta dd {
+  margin: 4px 0 0;
+  font-weight: 500;
+}
+/* Project links as real buttons: GitHub in ink, Devpost in its own teal,
+   a write-up as a light chip. */
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.case-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    transform 0.25s var(--ease),
+    background 0.2s;
+}
+.case-action svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+.case-action svg:last-child {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
+.case-action:hover {
+  transform: translateY(-2px);
+}
+.case-action[data-kind="github"] {
+  background: var(--invert);
+  box-shadow: var(--shadow-button);
+  color: var(--on-invert);
+}
+.case-action[data-kind="github"]:hover {
+  background: var(--invert-hover);
+}
+.case-action[data-kind="devpost"] {
+  background: #003e54;
+  box-shadow: 0 14px 30px -14px rgb(0 62 84 / 0.75);
+  color: #fff;
+}
+.case-action[data-kind="devpost"]:hover {
+  background: #005b78;
+}
+:root[data-theme="dark"] .case-action[data-kind="devpost"] {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.16),
+    0 14px 30px -14px rgb(0 0 0 / 0.8);
+}
+.related-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 18px 8px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-float);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.related-mini .chip-icon {
+  background: linear-gradient(135deg, #d81f2c, #a8141e);
+  color: #fff;
+}
+.related-mini small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+.related-mini > svg {
+  width: 16px;
+  height: 16px;
+}
+.case-sheet {
+  padding-bottom: clamp(48px, 6vw, 80px);
+}
+.case-body {
+  display: grid;
+  gap: clamp(36px, 5vw, 60px);
+  padding: clamp(24px, 4vw, 56px);
+  border-radius: var(--radius-sheet);
+}
+.case-body section {
+  display: grid;
+  grid-template-columns: minmax(0, 240px) minmax(0, 760px);
+  gap: 14px 48px;
+}
+.case-body h2 {
+  margin: 0;
+  font: 600 clamp(20px, 2vw, 26px) / 1.2 var(--font-display);
+  letter-spacing: -0.045em;
+}
+.case-section-body {
+  display: grid;
+  gap: 18px;
+}
+.case-section-body > p {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.75;
+}
+.case-section-body .result-list {
+  font-size: 16.5px;
+  line-height: 1.65;
+}
+.case-media {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-media);
+}
+.case-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.case-metrics > div {
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.case-metrics strong {
+  font: 600 clamp(26px, 3vw, 36px) / 1 var(--font-display);
+  letter-spacing: -0.05em;
+}
+.case-metrics dd {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.subheading {
+  margin: clamp(64px, 8vw, 112px) 0 22px;
+  font: 600 clamp(26px, 3.4vw, 44px) / 1.05 var(--font-display);
+  letter-spacing: -0.05em;
+}
+.case-gallery > .back-link {
+  margin-top: clamp(32px, 4vw, 56px);
+}
+@media (max-width: 859px) {
+  .case-body section {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* "A closer look": justified rows, like a photo book. Every tile keeps its
+   image's own shape, tiles in a row share one height, and every row spans
+   the full width, so the wall reads as one aligned block. JavaScript picks
+   balanced row breaks; without it, flexbox gives nearly the same rows. */
+.gallery-wall {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.gallery-wall::after {
+  content: "";
+  flex-grow: 1000000;
+}
+.gallery-tile {
+  position: relative;
+  display: block;
+  flex: var(--ratio, 1.5) 1 calc(var(--ratio, 1.5) * 240px);
+  aspect-ratio: var(--ratio, 1.5);
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 18px;
+  background: var(--surface-3);
+  box-shadow: var(--shadow-card);
+  cursor: zoom-in;
+}
+/* The edge sits over the image as an overlay: a real border would make
+   WebKit buttons taller than their aspect ratio. */
+.gallery-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--surface-edge);
+  pointer-events: none;
+}
+.gallery-wall[data-justified] {
+  position: relative;
+  display: block;
+}
+.gallery-wall[data-justified]::after {
+  display: none;
+}
+.gallery-wall[data-justified] .gallery-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(var(--x, 0), var(--y, 0));
+}
+@media (max-width: 559px) {
+  .gallery-wall {
+    gap: 10px;
+  }
+  .gallery-tile {
+    flex-basis: calc(var(--ratio, 1.5) * 130px);
+    border-radius: 14px;
+  }
+}
+.gallery-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease);
+}
+.gallery-tile:hover .gallery-image {
+  transform: scale(1.035);
+}
+.gallery-zoom {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgb(15 16 19 / 0.6);
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.85);
+  transition:
+    opacity 0.25s,
+    transform 0.35s var(--spring);
+}
+.gallery-tile:hover .gallery-zoom,
+.gallery-tile:focus-visible .gallery-zoom {
+  opacity: 1;
+  transform: none;
+}
+@media (hover: none) {
+  .gallery-zoom {
+    opacity: 1;
+    transform: none;
+  }
+}
+.lightbox {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px
+    calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: rgb(10 10 13 / 0.95);
+  color: #fff;
+}
+.lightbox[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+}
+.lightbox :focus-visible {
+  outline-color: #fff;
+}
+.lightbox-toolbar,
+.lightbox-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lightbox-controls {
+  justify-content: center;
+  gap: 12px;
+}
+.lightbox .icon-button {
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+}
+.lightbox-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

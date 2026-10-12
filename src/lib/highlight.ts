@@ -18,7 +18,7 @@ export function splitByTerms(text: string, terms: string[]) {
   const parts: { text: string; hit: boolean }[] = [];
   let last = 0;
   for (const match of text.matchAll(pattern)) {
-    const start = match.index ?? 0;
+    const start = match.index;
     if (start > last) parts.push({ text: text.slice(last, start), hit: false });
     parts.push({ text: match[0], hit: true });
     last = start + match[0].length;

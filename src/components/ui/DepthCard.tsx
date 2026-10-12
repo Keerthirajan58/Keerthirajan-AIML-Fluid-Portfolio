@@ -1,5 +1,5 @@
 "use client";
-import { useRef, type CSSProperties, type ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useMotionEnabled } from "@/components/motion/useMotionEnabled";
 
 /**
@@ -16,18 +16,14 @@ export function DepthCard({
   className?: string;
   style?: CSSProperties;
 }) {
-  const ref = useRef<HTMLElement>(null);
   const enabled = useMotionEnabled();
-  const reset = () => {
-    const el = ref.current;
-    if (!el) return;
+  const reset = ({ currentTarget: el }: { currentTarget: HTMLElement }) => {
     el.style.setProperty("--rx", "0deg");
     el.style.setProperty("--ry", "0deg");
     el.style.setProperty("--shine", "0");
   };
   return (
     <article
-      ref={ref}
       style={style}
       className={`depth-card ${className}`}
       onPointerMove={(e) => {

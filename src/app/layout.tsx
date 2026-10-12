@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { profile, contact } from "@/content/data";
+import { contact } from "@/content/contact";
+import { profile } from "@/content/profile";
+import { Atmosphere } from "@/components/background/Atmosphere";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { TrainingMonitor } from "@/components/layout/TrainingMonitor";
+import { AnchorGlide } from "@/components/motion/AnchorGlide";
+import { MotionFoundation } from "@/components/motion/MotionFoundation";
+import { RouteArrival } from "@/components/motion/RouteArrival";
+import { loadContent } from "@/lib/content/load";
 import { getSiteUrl } from "@/lib/site";
 import { THEME_COLORS, themeScript } from "@/lib/themeMode";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
-import { MotionFoundation } from "@/components/motion/MotionFoundation";
-import { Atmosphere } from "@/components/scene/Atmosphere";
-import { RouteArrival } from "@/components/motion/RouteArrival";
-import { AnchorGlide } from "@/components/motion/AnchorGlide";
-import { TrainingMonitor } from "@/components/TrainingMonitor";
-import { loadContent } from "@/content/load";
-import "./globals.css";
+import "@/styles/globals.css";
 
 // Unbounded sets the hero name (the LCP element), so it is preloaded too.
 const unbounded = localFont({
@@ -34,7 +35,12 @@ export const metadata: Metadata = {
   },
   description: profile.tagline,
   keywords: [profile.name, ...profile.roles, "Portfolio"],
-  authors: [{ name: profile.name, url: contact.social.linkedin }],
+  authors: [
+    {
+      name: profile.name,
+      url: contact.socials.find((s) => s.network === "linkedin")?.href,
+    },
+  ],
   openGraph: {
     title: profile.pageTitle,
     description: profile.tagline,
@@ -86,7 +92,7 @@ export default async function RootLayout({
         <main id="main" tabIndex={-1} className="flex-1">
           {children}
         </main>
-        <SiteFooter />
+        <SiteFooter profile={content.profile} />
         <TrainingMonitor />
       </body>
     </html>

@@ -1,0 +1,28 @@
+/* Tailwind only scans src/ for class names (not docs, tests or tooling). */
+@import "tailwindcss" source("..");
+
+/* Clear Air. A soft light field drifts behind every section and re-lights as
+   you read; content sits on solid, light cards. Unbounded headings, Inter for
+   reading, crimson as the small, deliberate signal. Light is the identity;
+   dark ("Clear Air at night") is a visitor's choice, remembered.
+   Brand colours are mirrored in src/lib/theme.ts. */
+
+/* Order matters: later files build on earlier ones. */
+@import "./foundation/tokens.css";
+@import "./foundation/base.css";
+@import "./foundation/primitives.css";
+@import "./layout/background.css";
+@import "./layout/training-monitor.css";
+@import "./layout/theme-toggle.css";
+@import "./layout/header.css";
+@import "./sections/hero.css";
+@import "./sections/section.css";
+@import "./sections/about.css";
+@import "./sections/experience.css";
+@import "./sections/work.css";
+@import "./sections/skills.css";
+@import "./sections/credentials.css";
+@import "./sections/testimonials.css";
+@import "./sections/contact.css";
+@import "./pages/case-study.css";
+@import "./motion/scroll.css";

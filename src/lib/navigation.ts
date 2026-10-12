@@ -1,10 +1,4 @@
-export const navigation = [
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Work" },
-  { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
-];
+/** The section id a link points at, if it is an anchor on this page. */
 export function getAnchorTarget(href: string, current: string) {
   try {
     const url = new URL(href, current),
@@ -21,6 +15,7 @@ export function getAnchorTarget(href: string, current: string) {
     return null;
   }
 }
+/** Site paths, https URLs and mailto links only. */
 export function isSafeLink(value: string) {
   return (
     /^\/(?!\/)/.test(value) ||
@@ -28,6 +23,7 @@ export function isSafeLink(value: string) {
     /^mailto:[^\s@]+@[^\s@]+$/.test(value)
   );
 }
+/** Wraps an index into 0…length-1 (for carousels and galleries). */
 export function wrapIndex(index: number, length: number) {
   return length > 0 ? ((index % length) + length) % length : 0;
 }

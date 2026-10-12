@@ -1,0 +1,235 @@
+/* ───────── Living background ─────────
+   The round-one Clear Air light field, behind every page. Three glows drift
+   slowly; each home section re-lights them (positions keyed on data-scene,
+   eased over seconds), and a crimson ember gathers behind Contact. Fine
+   grain keeps the large gradients from banding. */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--page);
+}
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  translate: var(--tx, 0) var(--ty, 0);
+  scale: var(--s, 1);
+  opacity: var(--o, 1);
+  transition:
+    translate 2.8s var(--ease),
+    scale 2.8s var(--ease),
+    opacity 2.2s ease;
+}
+.glow-a {
+  width: 78vmax;
+  height: 78vmax;
+  left: -26vmax;
+  top: -34vmax;
+  background: radial-gradient(closest-side, var(--glow-a), transparent);
+}
+.glow-b {
+  width: 80vmax;
+  height: 80vmax;
+  right: -30vmax;
+  top: -36vmax;
+  background: radial-gradient(closest-side, var(--glow-b), transparent);
+}
+.glow-c {
+  width: 70vmax;
+  height: 70vmax;
+  left: 18vw;
+  bottom: -44vmax;
+  background: radial-gradient(closest-side, var(--glow-c), transparent);
+}
+.glow-ember {
+  --o: 0;
+  width: 64vmax;
+  height: 64vmax;
+  left: 50%;
+  bottom: -36vmax;
+  margin-left: -32vmax;
+  background: radial-gradient(closest-side, var(--glow-ember), transparent);
+}
+.glow-pointer {
+  display: none;
+  left: 0;
+  top: 0;
+  width: 44vmax;
+  height: 44vmax;
+  margin: -22vmax 0 0 -22vmax;
+  transform: translate3d(50vw, 42vh, 0);
+  background: radial-gradient(closest-side, var(--glow-pointer), transparent);
+  transition: none;
+}
+.atmosphere[data-live] .glow-pointer {
+  display: block;
+}
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+/* Scenes: each section re-lights the field. */
+.atmosphere[data-scene="about"] {
+  & .glow-a {
+    --tx: 10vw;
+    --ty: 22vh;
+    --s: 0.92;
+  }
+  & .glow-b {
+    --tx: -4vw;
+    --ty: 34vh;
+  }
+  & .glow-c {
+    --tx: -14vw;
+    --ty: -18vh;
+    --s: 1.08;
+  }
+}
+.atmosphere[data-scene="experience"] {
+  & .glow-a {
+    --tx: 58vw;
+    --ty: 46vh;
+    --s: 0.82;
+  }
+  & .glow-b {
+    --tx: -46vw;
+    --ty: 26vh;
+    --s: 1.12;
+  }
+  & .glow-c {
+    --tx: 20vw;
+    --ty: -8vh;
+    --o: 0.7;
+  }
+}
+.atmosphere[data-scene="projects"] {
+  & .glow-a {
+    --tx: 34vw;
+    --ty: 30vh;
+    --s: 1.05;
+  }
+  & .glow-b {
+    --tx: -12vw;
+    --ty: 50vh;
+    --o: 0.75;
+  }
+  & .glow-c {
+    --tx: 26vw;
+    --ty: -62vh;
+    --s: 1.1;
+  }
+}
+.atmosphere[data-scene="skills"] {
+  & .glow-a {
+    --tx: 66vw;
+    --ty: 64vh;
+    --s: 0.9;
+  }
+  & .glow-b {
+    --tx: -54vw;
+    --ty: 8vh;
+  }
+  & .glow-c {
+    --tx: -6vw;
+    --ty: -36vh;
+  }
+}
+.atmosphere[data-scene="credentials"] {
+  & .glow-a {
+    --tx: 44vw;
+    --ty: -4vh;
+  }
+  & .glow-b {
+    --tx: -34vw;
+    --ty: 58vh;
+    --s: 1.08;
+  }
+  & .glow-c {
+    --tx: 30vw;
+    --ty: -20vh;
+    --o: 0.8;
+  }
+}
+.atmosphere[data-scene="testimonials"] {
+  & .glow-a {
+    --tx: 34vw;
+    --ty: 36vh;
+    --s: 1.12;
+  }
+  & .glow-b {
+    --tx: 6vw;
+    --ty: 44vh;
+    --o: 0.7;
+  }
+  & .glow-c {
+    --tx: -22vw;
+    --ty: -10vh;
+  }
+}
+.atmosphere[data-scene="contact"] {
+  & .glow-a {
+    --tx: 12vw;
+    --ty: 40vh;
+  }
+  & .glow-b {
+    --tx: 10vw;
+    --ty: 10vh;
+    --o: 0.55;
+  }
+  & .glow-c {
+    --tx: -10vw;
+    --ty: -24vh;
+    --s: 1.1;
+  }
+  & .glow-ember {
+    --o: 1;
+    --ty: -14vh;
+  }
+}
+.atmosphere[data-scene="page"] {
+  & .glow-a {
+    --ty: 8vh;
+  }
+  & .glow-b {
+    --ty: 12vh;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .glow-a {
+    animation: drift-a 26s ease-in-out infinite alternate;
+  }
+  .glow-b {
+    animation: drift-b 31s ease-in-out infinite alternate;
+  }
+  .glow-c {
+    animation: drift-a 37s ease-in-out infinite alternate-reverse;
+  }
+  .glow-ember {
+    animation: ember 7s ease-in-out infinite alternate;
+  }
+  html[data-motion="paused"] .glow {
+    animation-play-state: paused;
+  }
+}
+@keyframes drift-a {
+  to {
+    transform: translate3d(6vw, 5vh, 0) scale(1.06);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-7vw, 6vh, 0) scale(0.95);
+  }
+}
+@keyframes ember {
+  to {
+    transform: scale(1.12);
+  }
+}

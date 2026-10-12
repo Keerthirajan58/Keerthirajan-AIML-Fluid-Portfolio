@@ -1,0 +1,117 @@
+/* ───────── Recommendations ───────── */
+.recommendations {
+  display: grid;
+  gap: 18px;
+}
+.testimonial-rail {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  border-radius: var(--radius-sheet);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.testimonial-rail::-webkit-scrollbar {
+  display: none;
+}
+.testimonial-rail[data-dragging] {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+.testimonial {
+  display: grid;
+  flex: 0 0 100%;
+  align-content: space-between;
+  gap: 28px;
+  margin: 0;
+  padding: clamp(26px, 4vw, 56px);
+  border: 1px solid var(--surface-edge);
+  border-radius: var(--radius-sheet);
+  background: var(--quote-fill);
+  scroll-snap-align: start;
+}
+.quote-mark {
+  height: 0.5em;
+  color: var(--accent);
+  font: 600 80px/1 var(--font-display);
+}
+.testimonial blockquote {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(16.5px, 1.6vw, 21px);
+  line-height: 1.65;
+}
+.testimonial figcaption {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.testimonial figcaption img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 3px var(--surface);
+}
+.testimonial strong {
+  display: block;
+}
+.testimonial figcaption span {
+  color: var(--muted);
+  font-size: 14px;
+}
+.carousel-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.carousel-count {
+  min-width: 44px;
+  color: var(--on-field);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.carousel-dots {
+  display: flex;
+  margin-right: auto;
+}
+.carousel-dots button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+}
+.carousel-dots span {
+  width: 22px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--track);
+  transition:
+    width 0.3s var(--ease),
+    background 0.3s;
+}
+.carousel-dots [aria-pressed="true"] span {
+  width: 34px;
+  background: var(--accent);
+}
+.playback-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+  font-size: 14px;
+  font-weight: 500;
+}
+.recommendations .icon-button {
+  background: var(--chip);
+  box-shadow: var(--shadow-chip);
+}
