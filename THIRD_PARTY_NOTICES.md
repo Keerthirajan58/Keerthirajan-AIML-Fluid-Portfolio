@@ -14,10 +14,10 @@ No third-party UI components are bundled. The React Bits Silk shader used in the
   - Duke: [Duke University logo](https://commons.wikimedia.org/wiki/File:Duke_University_logo.svg), Wikimedia Commons, public domain.
   - Coursera: [Coursera logo](https://commons.wikimedia.org/wiki/File:Coursera-logo_500x500.svg) by Lawrie Sisley Talansky, Wikimedia Commons, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); the PNG is a rasterised copy under the same licence.
   - Udemy: [Udemy logo](https://commons.wikimedia.org/wiki/File:Udemy_logo.svg), Wikimedia Commons, public domain.
-  - GUVI and API Academy: logo images found and supplied by the owner (originals in `docs/assets/logo-sources/`), trimmed of empty margins and saved as PNG.
+  - GUVI and API Academy: logo images found and supplied by the owner, trimmed of empty margins and saved as PNG.
   - NPTEL: the wordmark from the official site (nptel.ac.in), converted to PNG.
 - Devpost mark on case-study buttons: [Simple Icons](https://github.com/simple-icons/simple-icons) `icons/devpost.svg`, [CC0 1.0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md). Trademark remains with Devpost.
 - Apple symbol remains the existing inline monochrome brand icon. Employer/school marks identify factual work/education history, not sponsorship or endorsement.
-- `ks-mark.svg` and `BrandMark.tsx`: original code-native KS ligature for this portfolio. PNG app icons (`src/app/icon.png`, `src/app/apple-icon.png`) are rendered from that SVG; no generative project imagery or altered authentic media.
+- `BrandMark.tsx`: original code-native KS ligature for this portfolio. The PNG app icons (`src/app/icon.png`, `src/app/apple-icon.png`) are rendered from the same mark; no generative project imagery or altered authentic media.
 
 Design references (studied, not copied): [UpSunday](https://www.upsunday.co/), [Highflyers](https://www.highflyers.ai/) and [Alkares](https://alkares.com/) for the light, airy field-and-sheet structure. The portfolio uses original layout, code and copy; no reference-site source or artwork is reproduced.

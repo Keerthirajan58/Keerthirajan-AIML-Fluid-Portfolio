@@ -218,6 +218,17 @@ describe("source layout", () => {
   });
 });
 
+describe("documentation", () => {
+  it("explains every content file in the README's guide to adding content", () => {
+    const readme = read("README.md");
+    const files = readdirSync(join(root, "src/content")).filter(
+      (f) => f.endsWith(".ts") && f !== "index.ts",
+    );
+    for (const file of files) expect(readme, file).toContain(file);
+    expect(readme).toContain("src/content/projects/index.ts");
+  });
+});
+
 describe("styles", () => {
   it("imports every partial exactly once, in one entry", () => {
     const entry = read("src/styles/globals.css");
