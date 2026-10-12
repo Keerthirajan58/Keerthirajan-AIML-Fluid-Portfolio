@@ -48,6 +48,7 @@ describe("HoverLens", () => {
     expect(lens.style.getPropertyValue("--hy")).toBe("10px");
     expect(lens.style.getPropertyValue("--hw")).toBe("90px");
     expect(lens.style.getPropertyValue("--hh")).toBe("40px");
+    expect(a).toHaveAttribute("data-lensed");
   });
 
   it("glides to the next item and fades out after the pointer leaves", () => {
@@ -57,6 +58,8 @@ describe("HoverLens", () => {
     fireEvent.pointerOver(b, { pointerType: "mouse" });
     expect(lens.style.getPropertyValue("--hx")).toBe("130px");
     expect(lens.style.getPropertyValue("--hw")).toBe("110px");
+    expect(a).not.toHaveAttribute("data-lensed");
+    expect(b).toHaveAttribute("data-lensed");
     // Crossing a gap keeps it on; it hides only once the grace period ends.
     fireEvent.pointerOver(note, { pointerType: "mouse" });
     expect(lens).toHaveAttribute("data-on");
@@ -66,6 +69,7 @@ describe("HoverLens", () => {
     fireEvent.pointerLeave(group, { pointerType: "mouse" });
     act(() => vi.advanceTimersByTime(300));
     expect(lens).not.toHaveAttribute("data-on");
+    expect(group.querySelector("[data-lensed]")).toBeNull();
   });
 
   it("ignores touch", () => {

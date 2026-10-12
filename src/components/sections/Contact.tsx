@@ -25,8 +25,10 @@ export function Contact({
     >
       <div className="contact-inner shell reveal">
         <p className="availability">
-          <span className="status-dot" aria-hidden="true" />
-          Open to opportunities
+          <span className="lens-content">
+            <span className="status-dot" aria-hidden="true" />
+            Open to opportunities
+          </span>
         </p>
         <h2 id="contact-heading">
           Have a role in mind? <span>Let&apos;s talk.</span>
@@ -43,10 +45,14 @@ export function Contact({
             }
             className="button button-primary"
           >
-            Say hello <ArrowUpRightIcon />
+            <span className="lens-content">
+              Say hello <ArrowUpRightIcon />
+            </span>
           </ContactLauncher>
           <a className="button button-secondary" href={contact.resumeUrl}>
-            View résumé <ArrowUpRightIcon />
+            <span className="lens-content">
+              View résumé <ArrowUpRightIcon />
+            </span>
           </a>
         </div>
         <div className="contact-card surface">

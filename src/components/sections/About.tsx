@@ -50,26 +50,30 @@ export function About({
             <ul className="achievement-list">
               {profile.aboutHighlights.map((h, i) => (
                 <li key={h.text}>
-                  <span
-                    className="chip-icon"
-                    data-tone={chipStyles[i % 3].tone}
-                  >
-                    {chipStyles[i % 3].icon}
+                  <span className="lens-content">
+                    <span
+                      className="chip-icon"
+                      data-tone={chipStyles[i % 3].tone}
+                    >
+                      {chipStyles[i % 3].icon}
+                    </span>
+                    {h.text}
                   </span>
-                  {h.text}
                 </li>
               ))}
             </ul>
             <div className="location-pill">
-              <span className="location-icon" aria-hidden="true">
-                <MapPinIcon />
-              </span>
-              <span>
-                <strong>{profile.location}</strong>
-                <small>
-                  <span className="status-dot" aria-hidden="true" />
-                  Open to relocation
-                </small>
+              <span className="lens-content">
+                <span className="location-icon" aria-hidden="true">
+                  <MapPinIcon />
+                </span>
+                <span>
+                  <strong>{profile.location}</strong>
+                  <small>
+                    <span className="status-dot" aria-hidden="true" />
+                    Open to relocation
+                  </small>
+                </span>
               </span>
             </div>
             <HoverLens items=".achievement-list li, .location-pill" />

@@ -991,18 +991,52 @@ test("buttons get the glass lens only on hover, and it glides between them", asy
     return (
       !!l &&
       !!t &&
-      Math.abs(l.x - (t.x - 4)) < 1.5 &&
-      Math.abs(l.width - (t.width + 8)) < 1.5 &&
-      Math.abs(l.height - (t.height + 8)) < 1.5
+      Math.abs(l.x - t.x) < 1 &&
+      Math.abs(l.y - t.y) < 1 &&
+      Math.abs(l.width - t.width) < 1 &&
+      Math.abs(l.height - t.height) < 1
     );
   };
   await expect.poll(() => around(resume)).toBe(true);
+  // Edge to edge like the filters' lens, with the words magnified a little.
+  await expect(resume).toHaveAttribute("data-lensed", "");
+  await expect(resume.locator(".lens-content")).toHaveCSS("scale", "1.05");
   const github = page.locator(".hero-actions .social-link").nth(1);
   await github.hover();
   await expect.poll(() => around(github)).toBe(true);
+  await expect(resume).not.toHaveAttribute("data-lensed");
   await page.mouse.move(4, 600);
   await expect(lens).not.toHaveAttribute("data-on");
+  await expect(github).not.toHaveAttribute("data-lensed");
   // The About card and the contact band have their own lens.
   await expect(page.locator(".about-story > .hover-lens")).toHaveCount(1);
   await expect(page.locator(".contact-inner > .hover-lens")).toHaveCount(1);
+});
+
+test("the hero caret never runs ahead of the words", async ({ page }) => {
+  await page.goto("/");
+  const tokens = await page.locator(".token-stream .tok").evaluateAll((els) =>
+    els.map((el) => {
+      const seconds = (v: string) =>
+        parseFloat(v) * (v.endsWith("ms") ? 0.001 : 1);
+      const word = getComputedStyle(el.querySelector(".tok-word")!);
+      const caret = getComputedStyle(el, "::after");
+      return {
+        word: seconds(word.animationDelay),
+        caret: seconds(caret.animationDelay),
+        name: caret.animationName,
+      };
+    }),
+  );
+  expect(tokens.length).toBeGreaterThan(5);
+  const last = tokens[tokens.length - 1];
+  // A caret step rides just behind each word; only after the last word
+  // starts does the caret blink, and nothing sits at the end before that.
+  tokens.slice(0, -1).forEach((t) => {
+    expect(t.name).toBe("tok-cursor");
+    expect(t.caret).toBeGreaterThan(t.word);
+  });
+  expect(last.name).toBe("caret-blink");
+  expect(last.caret).toBeGreaterThan(Math.max(...tokens.map((t) => t.word)));
+  await expect(page.locator(".tok-caret")).toHaveCount(0);
 });

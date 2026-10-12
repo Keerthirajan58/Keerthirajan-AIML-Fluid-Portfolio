@@ -6,7 +6,8 @@ import { useEffect, useRef } from "react";
  * shows by default; when a fine pointer (or keyboard focus) reaches one of
  * `items` inside the lens's parent, the lens appears on it, glides to the
  * next one, and fades away once the pointer leaves. A short grace period
- * keeps it gliding across the gaps between neighbours.
+ * keeps it gliding across the gaps between neighbours. The item under the
+ * lens is marked `data-lensed`, which magnifies its `.lens-content` a little.
  * The parent must be positioned (`position: relative`).
  */
 export function HoverLens({ items }: { items: string }) {
@@ -40,7 +41,9 @@ export function HoverLens({ items }: { items: string }) {
     const show = (item: HTMLElement) => {
       window.clearTimeout(leave);
       const fresh = !el.hasAttribute("data-on");
+      current?.removeAttribute("data-lensed");
       current = item;
+      item.setAttribute("data-lensed", "");
       // Arriving from outside: appear in place rather than glide in.
       if (fresh) el.setAttribute("data-snap", "");
       place(item);
@@ -53,6 +56,7 @@ export function HoverLens({ items }: { items: string }) {
     const hide = () => {
       window.clearTimeout(leave);
       leave = window.setTimeout(() => {
+        current?.removeAttribute("data-lensed");
         current = null;
         el.removeAttribute("data-on");
       }, 140);
@@ -70,6 +74,9 @@ export function HoverLens({ items }: { items: string }) {
       else window.clearTimeout(leave);
     };
     // Buttons that drift a little (magnetic, hover lift) keep the lens on them.
+    const settle = (e: TransitionEvent) => {
+      if (current && e.target === current) place(current);
+    };
     const follow = () => {
       if (!current || frame) return;
       frame = requestAnimationFrame(() => {
@@ -89,14 +96,17 @@ export function HoverLens({ items }: { items: string }) {
     };
     group.addEventListener("pointerover", over);
     group.addEventListener("pointermove", follow);
+    group.addEventListener("transitionend", settle);
     group.addEventListener("pointerleave", hide);
     group.addEventListener("focusin", focus);
     group.addEventListener("focusout", hide);
     return () => {
       window.clearTimeout(leave);
       cancelAnimationFrame(frame);
+      current?.removeAttribute("data-lensed");
       group.removeEventListener("pointerover", over);
       group.removeEventListener("pointermove", follow);
+      group.removeEventListener("transitionend", settle);
       group.removeEventListener("pointerleave", hide);
       group.removeEventListener("focusin", focus);
       group.removeEventListener("focusout", hide);

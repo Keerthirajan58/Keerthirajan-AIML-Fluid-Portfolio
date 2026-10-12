@@ -22,8 +22,10 @@ export function Hero({
     <section id="hero" aria-labelledby="hero-heading" className="hero">
       <div className="hero-inner shell">
         <p className="availability">
-          <span className="status-dot" aria-hidden="true" />
-          Open to AIML &amp; software engineering roles
+          <span className="lens-content">
+            <span className="status-dot" aria-hidden="true" />
+            Open to AIML &amp; software engineering roles
+          </span>
         </p>
         <h1 id="hero-heading" className="hero-name">
           <span>{first}</span> <span>{rest.join(" ")}</span>
@@ -40,7 +42,7 @@ export function Hero({
                 style={{ "--i": i } as CSSProperties}
                 aria-hidden="true"
               >
-                {t.text}
+                <span className="tok-word">{t.text}</span>
                 <span className="tok-probs">
                   <span className="tok-probs-title">Next-token candidates</span>
                   {t.alts.map(([word, p], j) => (
@@ -61,34 +63,43 @@ export function Hero({
               </span>{" "}
             </Fragment>
           ))}
-          <span className="tok-caret" aria-hidden="true" />
         </p>
         <ul className="hero-facts">
           <li>
-            <span className="fact-icon">
-              <AppleIcon />
+            <span className="lens-content">
+              <span className="fact-icon">
+                <AppleIcon />
+              </span>
+              Apple AIML Intern
             </span>
-            Apple AIML Intern
           </li>
           <li>
-            <span className="fact-icon fact-school">
-              <GraduationIcon />
+            <span className="lens-content">
+              <span className="fact-icon fact-school">
+                <GraduationIcon />
+              </span>
+              MS CS · GWU 2026
             </span>
-            MS CS · GWU 2026
           </li>
           <li>
-            <span className="fact-icon fact-place">
-              <MapPinIcon />
+            <span className="lens-content">
+              <span className="fact-icon fact-place">
+                <MapPinIcon />
+              </span>
+              {profile.location}
             </span>
-            {profile.location}
           </li>
         </ul>
         <div className="hero-actions">
           <MagneticLink href="#projects">
-            Explore my work <ArrowUpRightIcon />
+            <span className="lens-content">
+              Explore my work <ArrowUpRightIcon />
+            </span>
           </MagneticLink>
           <a className="button button-secondary" href={contact.resumeUrl}>
-            View résumé <ArrowUpRightIcon />
+            <span className="lens-content">
+              View résumé <ArrowUpRightIcon />
+            </span>
           </a>
           <SocialLinks contact={contact} />
         </div>

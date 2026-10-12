@@ -1052,22 +1052,17 @@ dialog::backdrop {
   pointer-events: none;
 }
 /* The same glass lens for ordinary buttons and chips (HoverLens): hidden by
-   default, it appears on the hovered item and glides between neighbours.
-   It sits a few pixels proud of the item, so its glass rim still reads
-   around solid white buttons. */
+   default, it appears on the hovered item, edge to edge like the filters'
+   lens, glides between neighbours and magnifies the item's content a little. */
 .hover-lens {
-  --pad: 4px;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 3;
-  width: calc(var(--hw, 0px) + 2 * var(--pad));
-  height: calc(var(--hh, 0px) + 2 * var(--pad));
-  border-radius: calc(var(--hr, 999px) + var(--pad));
-  transform: translate(
-    calc(var(--hx, 0px) - var(--pad)),
-    calc(var(--hy, 0px) - var(--pad))
-  );
+  width: var(--hw, 0);
+  height: var(--hh, 0);
+  border-radius: var(--hr, 999px);
+  transform: translate(var(--hx, 0), var(--hy, 0));
   background:
     radial-gradient(
       120% 70% at 50% 0%,
@@ -1079,7 +1074,6 @@ dialog::backdrop {
     inset 0 1px 0 rgb(255 255 255 / 0.85),
     inset 0 0 0 1px rgb(255 255 255 / 0.4),
     inset 0 -8px 14px -10px rgb(130 160 215 / 0.5),
-    0 0 0 1px rgb(15 16 19 / 0.07),
     0 12px 24px -12px rgb(15 16 19 / 0.4);
   opacity: 0;
   scale: 0.9;
@@ -1114,6 +1108,23 @@ dialog::backdrop {
   transition:
     opacity 0.25s ease,
     scale 0.4s var(--spring);
+}
+/* The words and icons inside a lensed item: one group, laid out exactly as
+   the item lays out its children, so it can grow slightly under the glass. */
+.lens-content {
+  display: inherit;
+  flex-direction: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+  gap: inherit;
+  transition: scale 0.4s var(--spring);
+}
+.social-link > svg {
+  transition: scale 0.4s var(--spring);
+}
+[data-lensed] .lens-content,
+.social-link[data-lensed] > svg {
+  scale: 1.05;
 }
 [data-ready] > .filter-lens {
   opacity: 1;
@@ -1945,9 +1956,6 @@ dialog::backdrop {
     background 0.2s,
     color 0.2s;
 }
-.tok-caret {
-  display: none;
-}
 .tok-probs {
   position: absolute;
   left: 50%;
@@ -2032,21 +2040,30 @@ dialog::backdrop {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .tok {
+  .tok-word {
+    display: inline-block;
     animation: tok-in 0.5s var(--ease) both;
     animation-delay: calc(0.35s + var(--i) * 55ms);
   }
-  .tok-caret {
-    display: inline-block;
+  /* The caret rides just behind the words as they arrive (one 55ms step per
+     token, 0.2s after it starts fading in), then blinks after the last one
+     and goes. It is never on screen ahead of the line. */
+  .tok::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
     width: 2px;
     height: 1.05em;
-    margin-left: 2px;
-    vertical-align: -0.16em;
+    margin: -0.5em 0 0 1px;
     border-radius: 2px;
     background: var(--accent);
-    animation:
-      caret-blink 0.9s steps(1) 1.3s 5,
-      caret-out 0.4s ease 5.8s forwards;
+    opacity: 0;
+    pointer-events: none;
+    animation: tok-cursor 55ms steps(1) calc(0.55s + var(--i) * 55ms);
+  }
+  .tok:last-of-type::after {
+    animation: caret-blink 0.9s linear calc(0.55s + var(--i) * 55ms) 4;
   }
 }
 @keyframes tok-in {
@@ -2056,13 +2073,19 @@ dialog::backdrop {
     transform: translateY(0.35em);
   }
 }
-@keyframes caret-blink {
-  50% {
-    opacity: 0;
+@keyframes tok-cursor {
+  from,
+  to {
+    opacity: 1;
   }
 }
-@keyframes caret-out {
-  to {
+@keyframes caret-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  60%,
+  100% {
     opacity: 0;
   }
 }
