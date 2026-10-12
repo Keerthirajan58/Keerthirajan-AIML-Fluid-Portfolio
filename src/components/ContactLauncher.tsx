@@ -7,8 +7,8 @@ const loadDialog = () => import("./ContactDialog");
 const ContactDialog = dynamic(loadDialog, { ssr: false });
 
 /**
- * A real mailto link that, with JavaScript, opens the contact popup instead.
- * Modifier-clicks keep the plain mail link behaviour.
+ * "Say hello": a button that opens the contact popup (the form card over a
+ * blurred page). Without JavaScript a plain email link stands in for it.
  */
 export function ContactLauncher({
   email,
@@ -22,24 +22,26 @@ export function ContactLauncher({
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const trigger = useRef<HTMLAnchorElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
   return (
     <>
-      <a
+      <noscript>
+        <style>{".contact-launch{display:none}"}</style>
+        <a href={"mailto:" + email} className={className}>
+          {children}
+        </a>
+      </noscript>
+      <button
         ref={trigger}
-        href={"mailto:" + email}
-        className={className}
+        type="button"
+        className={`contact-launch ${className ?? ""}`}
         aria-haspopup="dialog"
-        onMouseEnter={() => void loadDialog()}
+        onPointerEnter={() => void loadDialog()}
         onFocus={() => void loadDialog()}
-        onClick={(e) => {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-          e.preventDefault();
-          setOpen(true);
-        }}
+        onClick={() => setOpen(true)}
       >
         {children}
-      </a>
+      </button>
       {open && (
         <ContactDialog
           email={email}

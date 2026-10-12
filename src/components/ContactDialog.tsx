@@ -2,7 +2,10 @@
 import { useEffect, useRef } from "react";
 import { ContactForm } from "./ContactForm";
 
-/** The "Say hello" popup: a solid card over a blurred page. */
+/**
+ * The "Say hello" popup: a card over a blurred page. A deep wine gradient
+ * band carries the title; the form sits on the solid body below.
+ */
 export default function ContactDialog({
   email,
   formId,
@@ -37,6 +40,9 @@ export default function ContactDialog({
           <div>
             <p className="eyebrow">Say hello</p>
             <h2 id="contact-dialog-title">Tell me about it.</h2>
+            <p className="contact-dialog-note">
+              Your message lands straight in my inbox.
+            </p>
           </div>
           <button
             type="button"
@@ -47,7 +53,9 @@ export default function ContactDialog({
             ×
           </button>
         </div>
-        <ContactForm formId={formId} email={email} />
+        <div className="contact-dialog-body">
+          <ContactForm formId={formId} email={email} />
+        </div>
       </div>
     </dialog>
   );

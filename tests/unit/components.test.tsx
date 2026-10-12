@@ -146,12 +146,18 @@ describe("readable portfolio content", () => {
       document.querySelectorAll(".skill-bubble:not([data-dim])"),
     ).map((el) => el.firstChild?.textContent);
     expect(lit).toEqual(group.skills);
-    // Each area has its own colour: the sliding pill takes it, and so do the
-    // area's bubbles (every bubble carries its area's dot).
+    // Each area's tab is filled with its own colour, and so are the area's
+    // bubbles when it is chosen (every bubble carries its area's dot).
     const tabs = screen.getByRole("group", {
       name: "Highlight skills by area",
     });
-    expect(tabs).toHaveAttribute("data-tone", "2");
+    expect(
+      Array.from(tabs.querySelectorAll(":scope > button")).map((b) =>
+        b.getAttribute("data-tone"),
+      ),
+    ).toEqual([null, "1", "2", "3", "4", "5"]);
+    // No dots on the tabs any more: the fill is the colour.
+    expect(tabs.querySelector(".tone-dot")).toBeNull();
     const litBubbles = document.querySelectorAll(".skill-bubble[data-lit]");
     expect(litBubbles).toHaveLength(group.skills.length);
     litBubbles.forEach((el) => expect(el).toHaveAttribute("data-tone", "2"));
@@ -163,7 +169,6 @@ describe("readable portfolio content", () => {
     expect(cloud).toHaveAttribute("data-wave", "a");
     await userEvent.click(screen.getByRole("button", { name: /^All/ }));
     expect(cloud).toHaveAttribute("data-wave", "b");
-    expect(tabs).not.toHaveAttribute("data-tone");
     expect(document.querySelectorAll(".skill-bubble[data-lit]")).toHaveLength(
       0,
     );
@@ -207,10 +212,10 @@ describe("readable portfolio content", () => {
     expect(screen.getByText(/All rights reserved/)).toBeVisible();
     // The KS mark lives in the header only.
     expect(document.querySelector(".site-footer .wordmark")).toBeNull();
-    expect(screen.getByRole("link", { name: /Say hello/ })).toHaveAttribute(
-      "href",
-      "mailto:" + localContent.contact.emails[0],
-    );
+    // "Say hello" is a real button that opens the popup, not a mail link.
+    const hello = screen.getByRole("button", { name: /Say hello/ });
+    expect(hello).toHaveAttribute("aria-haspopup", "dialog");
+    expect(hello).not.toHaveAttribute("href");
     expect(document.querySelector('a[href^="tel:"]')).toBeNull();
     expect(screen.queryByText(/form is not connected/)).toBeNull();
     expect(document.querySelector("form")).toBeNull();

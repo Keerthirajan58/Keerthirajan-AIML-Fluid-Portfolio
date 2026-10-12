@@ -269,11 +269,30 @@ test("home retains identity, one education section and copyright", async ({
   await expect(page.locator(".site-footer .wordmark")).toHaveCount(0);
   await expect(page.locator(".project-card")).toHaveCount(11);
   await page.locator("#contact").scrollIntoViewIfNeeded();
-  const hello = page.getByRole("link", { name: /Say hello/ });
+  // The copyright sits in the centre of the footer.
+  expect(
+    await page.locator(".footer-inner").evaluate((footer) => {
+      const box = footer.getBoundingClientRect();
+      const text = footer.querySelector("p")!.getBoundingClientRect();
+      return Math.abs(text.left + text.width / 2 - (box.left + box.width / 2));
+    }),
+  ).toBeLessThan(2);
+  const hello = page.getByRole("button", { name: /Say hello/ });
   await expect(hello).toBeVisible();
   await hello.click();
   const dialog = page.getByRole("dialog", { name: "Tell me about it." });
   await expect(dialog).toBeVisible();
+  // The form card: a wine gradient band over a blurred page.
+  expect(
+    await dialog.evaluate((el) => ({
+      band: getComputedStyle(el.querySelector(".contact-dialog-head")!)
+        .backgroundImage,
+      backdrop: getComputedStyle(el, "::backdrop").backdropFilter,
+    })),
+  ).toEqual({
+    band: expect.stringContaining("linear-gradient"),
+    backdrop: expect.stringContaining("blur"),
+  });
   await expect(dialog.getByLabel("name")).toBeFocused();
   await expect(
     dialog.getByRole("button", { name: /Send message/ }),
@@ -306,6 +325,12 @@ test("revised art direction keeps credentials visible and project actions integr
   await expect(
     page.getByRole("heading", { level: 2, name: "AIML / Software Engineer" }),
   ).toBeVisible();
+  // The San Francisco pill stays compact.
+  expect(
+    await page
+      .locator(".location-pill")
+      .evaluate((el) => el.getBoundingClientRect().height),
+  ).toBeLessThan(46);
   // Every issuer shows its real logo (GUVI and API Academy from the owner).
   await expect(page.locator(".cert-mark[data-logo] img")).toHaveCount(9);
   await expect(page.locator(".cert-mark:not([data-logo])")).toHaveCount(0);
@@ -864,7 +889,7 @@ test("the contact popup delivers through Formspree and confirms (network mocked)
   });
   await page.goto("/");
   await page.locator("#contact").scrollIntoViewIfNeeded();
-  await page.getByRole("link", { name: /Say hello/ }).click();
+  await page.getByRole("button", { name: /Say hello/ }).click();
   const dialog = page.getByRole("dialog", { name: "Tell me about it." });
   await dialog.getByLabel("name").fill("Test Person");
   await dialog.getByLabel("email").fill("test@example.com");
@@ -914,19 +939,27 @@ test("the About portrait slowly zooms while it is pinned", async ({
   const late = await scaleAt(0.9);
   expect(late - early).toBeGreaterThan(0.1);
 });
-test("each skill area has its own colour and the pill takes it", async ({
+test("each skill area's tab is filled with its colour; a click moves the ink pill", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/#skills");
   const tabs = page.getByRole("group", { name: "Highlight skills by area" });
-  await tabs.getByRole("button", { name: /GenAI & LLMs/ }).click();
+  const genai = tabs.getByRole("button", { name: /GenAI & LLMs/ });
+  expect(
+    await genai.evaluate((el) => getComputedStyle(el).backgroundColor),
+  ).toBe("rgb(106, 63, 209)");
+  await genai.click();
+  const left = await genai.evaluate(
+    (el) => `${(el as HTMLElement).offsetLeft}px`,
+  );
   await expect
-    .poll(() =>
-      tabs
-        .locator(".chip-ink")
-        .evaluate((el) => getComputedStyle(el).backgroundColor),
-    )
-    .toBe("rgb(106, 63, 209)");
+    .poll(() => tabs.evaluate((el) => el.style.getPropertyValue("--ix")))
+    .toBe(left);
+  expect(
+    await tabs
+      .locator(".chip-ink")
+      .evaluate((el) => getComputedStyle(el).backgroundColor),
+  ).toBe("rgb(15, 16, 19)");
   await expect(page.locator(".skill-bubble[data-lit]").first()).toBeVisible();
 });

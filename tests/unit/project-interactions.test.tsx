@@ -14,6 +14,7 @@ import { ExperienceJourney } from "@/components/ExperienceJourney";
 import { CompanyMark } from "@/components/ui/CompanyMark";
 import { Contact } from "@/components/sections/Contact";
 import { ContactForm } from "@/components/ContactForm";
+import ContactDialog from "@/components/ContactDialog";
 
 // Contact lazy-loads its form; the only dynamic import rendered in this file.
 vi.mock("next/dynamic", async () => {
@@ -330,8 +331,7 @@ describe("contact availability", () => {
     vi.stubEnv("NEXT_PUBLIC_FORMSPREE_FORM_ID", "abcdefgh");
     render(<Contact />);
     expect(document.querySelector("form")).toBeNull();
-    const hello = screen.getByRole("link", { name: /Say hello/ });
-    expect(hello).toHaveAttribute("href", expect.stringMatching(/^mailto:/));
+    const hello = screen.getByRole("button", { name: /Say hello/ });
     await userEvent.click(hello);
     expect(screen.getByRole("button", { name: /Send message/ })).toBeVisible();
     expect(document.querySelector("form")).toHaveAttribute(
@@ -339,9 +339,29 @@ describe("contact availability", () => {
       "https://formspree.io/f/abcdefgh",
     );
   });
+  it("shows the form card with its band, focuses the name and closes", async () => {
+    const onClose = vi.fn();
+    render(
+      <ContactDialog
+        email="test@example.com"
+        formId="abcdefgh"
+        onClose={onClose}
+      />,
+    );
+    const dialog = screen.getByRole("dialog", { name: "Tell me about it." });
+    expect(dialog).toHaveAttribute("open");
+    expect(dialog.querySelector(".contact-dialog-head")).toHaveTextContent(
+      "Your message lands straight in my inbox.",
+    );
+    expect(within(dialog).getByLabelText("name")).toHaveFocus();
+    await userEvent.click(
+      within(dialog).getByRole("button", { name: "Close contact form" }),
+    );
+    expect(onClose).toHaveBeenCalledOnce();
+  });
   it("posts to the portfolio's own Formspree form by default", async () => {
     render(<Contact />);
-    await userEvent.click(screen.getByRole("link", { name: /Say hello/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Say hello/ }));
     expect(document.querySelector("form")).toHaveAttribute(
       "action",
       "https://formspree.io/f/mwlvqyoe",

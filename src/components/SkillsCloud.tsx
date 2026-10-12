@@ -15,9 +15,9 @@ const toneOf = (index: number) => (Math.max(0, index) % 5) + 1;
 /**
  * A compact, interactive skills panel: every skill is a bubble sized by how
  * often it appears in real projects and roles, with a dot in its area's
- * colour. Choosing an area slides a pill in that colour onto the tab and
- * brings its bubbles forward with a quick pop; hovering one shows where it
- * was used.
+ * colour. Each area's tab is filled with that colour; choosing one slides
+ * the ink pill onto it and brings its bubbles forward with a quick pop;
+ * hovering a bubble shows where it was used.
  */
 export function SkillsCloud({
   categories,
@@ -41,9 +41,6 @@ export function SkillsCloud({
   const lit = skills.filter(isOn).map((s) => s.name);
   const tabLabel = (c: string) => (
     <>
-      {c !== "all" && (
-        <i className="tone-dot" data-tone={toneOf(categories.indexOf(c))} />
-      )}
       {c === "all" ? "All" : c}
       <span aria-hidden="true">{count(c)}</span>
     </>
@@ -55,15 +52,13 @@ export function SkillsCloud({
         role="group"
         aria-label="Highlight skills by area"
         ref={tabs}
-        data-tone={
-          active === "all" ? undefined : toneOf(categories.indexOf(active))
-        }
       >
         {tabList.map((c) => (
           <button
             key={c}
             type="button"
             className="chip"
+            data-tone={c === "all" ? undefined : toneOf(categories.indexOf(c))}
             aria-pressed={active === c}
             aria-controls="skill-cloud"
             onClick={() => {
