@@ -58,6 +58,8 @@ function importsOf(file: string): string[] {
 
 describe("tracked files", () => {
   it.runIf(trackedFiles)("contain no local helper or generated files", () => {
+    // Only README.md and THIRD_PARTY_NOTICES.md sit at the top level as
+    // Markdown, and the only top-level dot folder is .github.
     const forbidden =
       /^(helper|docs|legacy|scripts|coverage|test-results|playwright-report|node_modules)\/|^\.(?!github\/|env\.example$|gitignore$|prettierignore$|prettierrc$)|^(?!README\.md$|THIRD_PARTY_NOTICES\.md$)[^/]+\.md$|(^|\/)\.DS_Store$|\.log$|tsconfig\.tsbuildinfo$|^next-env\.d\.ts$/;
     expect(trackedFiles!.filter((f) => forbidden.test(f))).toEqual([]);

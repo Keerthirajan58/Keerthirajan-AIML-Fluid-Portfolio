@@ -114,7 +114,7 @@ The unit suite covers more than features:
 - **Structure:** folder conventions, no dead modules, one-way dependencies, no server code in client components, no unused public files.
 - **Safety:** no secrets or personal data in source, environment variables only where intended, safe external links, and the security headers.
 
-`.github/workflows/verify.yml` runs the same checks, plus a production dependency audit, on pushes to `main` and on pull requests.
+`.github/workflows/verify.yml` runs the type check, lint, unit tests with coverage, the build and a production dependency audit on every push to `main` and on pull requests. The browser suite runs there on demand ("Run workflow").
 
 ## Security
 
