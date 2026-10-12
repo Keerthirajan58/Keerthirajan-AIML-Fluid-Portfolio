@@ -2040,37 +2040,44 @@ dialog::backdrop {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .tok-word {
-    display: inline-block;
-    animation: tok-in 0.5s var(--ease) both;
-    animation-delay: calc(0.35s + var(--i) * 55ms);
+  /* Typed out one character per step. The caret sits just after the newest
+     character (a step longer after a word, where the space is typed), then
+     blinks after the last one and goes, so it never runs ahead of the text. */
+  .token-stream {
+    --type-start: 0.35s;
+    --type-step: 22ms;
   }
-  /* The caret rides just behind the words as they arrive (one 55ms step per
-     token, 0.2s after it starts fading in), then blinks after the last one
-     and goes. It is never on screen ahead of the line. */
-  .tok::after {
+  .tok-char {
+    position: relative;
+    animation: type-in 1ms backwards;
+    animation-delay: calc(var(--type-start) + var(--c) * var(--type-step));
+  }
+  .tok-char::after {
     content: "";
     position: absolute;
-    top: 50%;
-    left: 100%;
+    top: 0.08em;
+    right: -3px;
     width: 2px;
     height: 1.05em;
-    margin: -0.5em 0 0 1px;
     border-radius: 2px;
     background: var(--accent);
     opacity: 0;
     pointer-events: none;
-    animation: tok-cursor 55ms steps(1) calc(0.55s + var(--i) * 55ms);
+    animation: tok-cursor var(--type-step) steps(1)
+      calc(var(--type-start) + var(--c) * var(--type-step));
   }
-  .tok:last-of-type::after {
-    animation: caret-blink 0.9s linear calc(0.55s + var(--i) * 55ms) 4;
+  .tok-char:last-child::after {
+    animation-duration: calc(2 * var(--type-step));
+  }
+  .tok:last-of-type .tok-char:last-child::after {
+    animation: caret-blink 0.9s linear
+      calc(var(--type-start) + var(--c) * var(--type-step)) 4;
   }
 }
-@keyframes tok-in {
-  from {
+@keyframes type-in {
+  from,
+  to {
     opacity: 0;
-    filter: blur(6px);
-    transform: translateY(0.35em);
   }
 }
 @keyframes tok-cursor {

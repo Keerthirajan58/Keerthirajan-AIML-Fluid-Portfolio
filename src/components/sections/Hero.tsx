@@ -10,6 +10,10 @@ import {
   ArrowUpRightIcon,
 } from "@/components/ui/icons";
 import { MagneticLink } from "@/components/ui/MagneticLink";
+import { typingOffsets } from "@/lib/typing";
+
+// Where each token's first character falls in the typing sequence.
+const typedAt = typingOffsets(heroTokens);
 
 export function Hero({
   content = localContent,
@@ -31,18 +35,25 @@ export function Hero({
           <span>{first}</span> <span>{rest.join(" ")}</span>
         </h1>
         <p className="hero-intro">AIML + Software Engineering</p>
-        {/* Decodes token by token (CSS only, so it runs before hydration and
-            is static under reduced motion). Hover a token for alternatives. */}
+        {/* Types itself out character by character with a caret (CSS only,
+            so it runs before hydration and is static under reduced motion).
+            Hover a token for its next-token alternatives. */}
         <p className="hero-description token-stream">
           <span className="sr-only">{heroSentence}</span>
           {heroTokens.map((t, i) => (
             <Fragment key={t.text + i}>
-              <span
-                className="tok"
-                style={{ "--i": i } as CSSProperties}
-                aria-hidden="true"
-              >
-                <span className="tok-word">{t.text}</span>
+              <span className="tok" aria-hidden="true">
+                <span className="tok-word">
+                  {[...t.text].map((ch, k) => (
+                    <span
+                      className="tok-char"
+                      style={{ "--c": typedAt[i] + k } as CSSProperties}
+                      key={k}
+                    >
+                      {ch}
+                    </span>
+                  ))}
+                </span>
                 <span className="tok-probs">
                   <span className="tok-probs-title">Next-token candidates</span>
                   {t.alts.map(([word, p], j) => (

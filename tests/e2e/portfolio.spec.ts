@@ -1013,30 +1013,42 @@ test("buttons get the glass lens only on hover, and it glides between them", asy
   await expect(page.locator(".contact-inner > .hover-lens")).toHaveCount(1);
 });
 
-test("the hero caret never runs ahead of the words", async ({ page }) => {
+test("the hero line types itself out with the caret right behind it", async ({
+  page,
+}) => {
   await page.goto("/");
-  const tokens = await page.locator(".token-stream .tok").evaluateAll((els) =>
-    els.map((el) => {
-      const seconds = (v: string) =>
-        parseFloat(v) * (v.endsWith("ms") ? 0.001 : 1);
-      const word = getComputedStyle(el.querySelector(".tok-word")!);
-      const caret = getComputedStyle(el, "::after");
-      return {
-        word: seconds(word.animationDelay),
-        caret: seconds(caret.animationDelay),
-        name: caret.animationName,
-      };
-    }),
-  );
-  expect(tokens.length).toBeGreaterThan(5);
-  const last = tokens[tokens.length - 1];
-  // A caret step rides just behind each word; only after the last word
-  // starts does the caret blink, and nothing sits at the end before that.
-  tokens.slice(0, -1).forEach((t) => {
-    expect(t.name).toBe("tok-cursor");
-    expect(t.caret).toBeGreaterThan(t.word);
+  const chars = await page
+    .locator(".token-stream .tok-char")
+    .evaluateAll((els) =>
+      els.map((el) => {
+        const seconds = (v: string) =>
+          parseFloat(v) * (v.endsWith("ms") ? 0.001 : 1);
+        const char = getComputedStyle(el);
+        const caret = getComputedStyle(el, "::after");
+        return {
+          text: el.textContent,
+          lastInWord: !el.nextElementSibling,
+          typed: seconds(char.animationDelay),
+          caret: seconds(caret.animationDelay),
+          caretFor: seconds(caret.animationDuration),
+          name: caret.animationName,
+        };
+      }),
+    );
+  const sentence = await page.locator(".token-stream .sr-only").textContent();
+  // Every visible character of the sentence is typed, in order.
+  expect(chars.map((c) => c.text).join("")).toBe(sentence!.replace(/ /g, ""));
+  const gaps = chars.slice(1).map((c, i) => c.typed - chars[i].typed);
+  gaps.forEach((gap) => expect(gap).toBeGreaterThan(0));
+  // The caret appears with each character (never ahead of the text), lingers
+  // a step longer where a space follows, and only the last one blinks.
+  const step = Math.min(...gaps);
+  chars.slice(0, -1).forEach((c) => {
+    expect(c.name).toBe("tok-cursor");
+    expect(c.caret).toBeCloseTo(c.typed, 5);
+    expect(c.caretFor).toBeCloseTo(c.lastInWord ? 2 * step : step, 5);
   });
+  const last = chars[chars.length - 1];
   expect(last.name).toBe("caret-blink");
-  expect(last.caret).toBeGreaterThan(Math.max(...tokens.map((t) => t.word)));
-  await expect(page.locator(".tok-caret")).toHaveCount(0);
+  expect(last.caret).toBeCloseTo(last.typed, 5);
 });

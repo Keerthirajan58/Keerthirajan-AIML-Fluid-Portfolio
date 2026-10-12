@@ -49,6 +49,17 @@ describe("readable portfolio content", () => {
     const tokens = document.querySelectorAll(".token-stream .tok");
     expect(tokens.length).toBeGreaterThan(5);
     tokens.forEach((t) => expect(t).toHaveAttribute("aria-hidden", "true"));
+    // Typed character by character: the characters spell the sentence and
+    // each one's step skips one for every space typed before it.
+    const chars = Array.from(
+      document.querySelectorAll<HTMLElement>(".token-stream .tok-char"),
+    );
+    expect(chars.map((c) => c.textContent).join("")).toBe(
+      heroSentence.replace(/ /g, ""),
+    );
+    const steps = chars.map((c) => Number(c.style.getPropertyValue("--c")));
+    expect(steps[0]).toBe(0);
+    expect(steps.at(-1)).toBe(heroSentence.length - 1);
     expect(document.querySelector(".tok-probs-note")).toHaveTextContent(
       "Illustrative",
     );

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { splitByTerms } from "@/lib/highlight";
 import { heroSentence, heroTokens } from "@/content/heroTokens";
+import { typingOffsets } from "@/lib/typing";
 import {
   registerScroller,
   scrollToSection,
@@ -29,6 +30,17 @@ describe("term highlighting", () => {
     expect(splitByTerms("plain", ["  "])).toEqual([
       { text: "plain", hit: false },
     ]);
+  });
+});
+
+describe("typing schedule", () => {
+  it("gives each token a start step, one step per character and space", () => {
+    expect(
+      typingOffsets([{ text: "I" }, { text: "build" }, { text: "AI." }]),
+    ).toEqual([0, 2, 8]);
+    expect(typingOffsets([])).toEqual([]);
+    // Characters are counted by code point, so emoji take one step.
+    expect(typingOffsets([{ text: "a😀" }, { text: "b" }])).toEqual([0, 3]);
   });
 });
 
