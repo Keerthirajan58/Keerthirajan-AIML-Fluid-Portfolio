@@ -14,8 +14,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Archived legacy site — not part of the new app, not linted.
-    "legacy/**",
+    // Local-only helper folder (notes, legacy site, audit tools); never committed.
+    "helper/**",
     "coverage/**",
     "playwright-report/**",
     "test-results/**",

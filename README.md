@@ -2,7 +2,6 @@
 
 Personal portfolio built with Next.js (App Router), TypeScript and Tailwind CSS v4. The "Clear Air" design sets solid, light cards over a soft light field that re-lights as you move through the page, with a remembered light/dark switch (light by default). Unbounded and Inter type, CSS scroll-driven animation, Lenis wheel smoothing on desktop, Motion for one small hover effect; no canvas or WebGL. Webflow content has a validated local fallback; the contact popup posts to Formspree when configured and otherwise drafts an email.
 
-
 ## Local development
 
 ```bash
@@ -24,9 +23,9 @@ This runs TypeScript, ESLint, Vitest with enforced coverage, the production buil
 - Unit coverage: `coverage/index.html`. Browser evidence: `playwright-report/index.html` and `test-results/`. Both folders are generated and disposable.
 - CI workflow: `.github/workflows/verify.yml` (not yet run remotely).
 
-
 ## Contact photo
 
+The avatar next to the email in Contact is `public/images/contact-profile.jpg` (a `.png` or `.webp` with the same name also works). The current file is the owner's own crop, used as is. To swap it:
 
 1. Crop to roughly head and shoulders; square (1:1) is ideal, and a slightly taller portrait also works because the circle shows the top square of the photo.
 2. Keep the face in the upper middle with a little space above the hair.
