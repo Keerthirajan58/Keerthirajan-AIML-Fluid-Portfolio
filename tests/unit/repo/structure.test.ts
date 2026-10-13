@@ -78,6 +78,7 @@ describe("tracked files", () => {
           ".gitignore",
           ".prettierignore",
           ".prettierrc",
+          "LICENSE",
           "README.md",
           "THIRD_PARTY_NOTICES.md",
           "eslint.config.mjs",
@@ -221,13 +222,14 @@ describe("source layout", () => {
 });
 
 describe("documentation", () => {
-  it("explains every content file in the README's guide to adding content", () => {
+  it("states the copyright and keeps the README to the essentials", () => {
     const readme = read("README.md");
-    const files = readdirSync(join(root, "src/content")).filter(
-      (f) => f.endsWith(".ts") && f !== "index.ts",
+    expect(read("LICENSE")).toMatch(/All rights reserved/);
+    expect(readme).toMatch(/All rights reserved/);
+    expect(readme).toContain(
+      "https://keerthirajan-aiml-fluid-portfolio.vercel.app",
     );
-    for (const file of files) expect(readme, file).toContain(file);
-    expect(readme).toContain("src/content/projects/index.ts");
+    expect(JSON.parse(read("package.json")).license).toBe("UNLICENSED");
   });
 });
 
