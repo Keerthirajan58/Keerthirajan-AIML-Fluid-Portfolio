@@ -16,7 +16,7 @@ The personal portfolio of an AI/ML and software engineer.
 
 © 2026 Keerthirajan Senthilkumar. All rights reserved.
 
-This repository is public so that the work can be seen. It is not open source. No license is granted to copy, modify, distribute, host or reuse any part of it, including its code, visual design, layout, animations, text, photographs and résumé, in whole or in part, without my prior written permission. See [LICENSE](LICENSE).
+This repository is public so that the work can be seen. It is not open source. No license is granted to copy, modify, distribute, host or reuse any part of it, including its code, visual design, layout, animations, text, photographs and résumé, in whole or in part. See [LICENSE](LICENSE).
 
 ## Credits
 
