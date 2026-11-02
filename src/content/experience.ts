@@ -16,6 +16,18 @@ export const appleInternship: ExperienceEntry = {
 };
 
 export const experience: ExperienceEntry[] = [
+  {
+    role: "AI Engineer",
+    company: "EventDone LLC",
+    dates: "Aug 2026 - Present",
+    bullets: [
+      "Working on AI integration and LLM infrastructure, with a focus on multi-model inference, API interoperability, provider routing, reliability, and developer tooling.",
+      "Developed and tested LLM gateway integrations using Python, LiteLLM, Docker, REST APIs, and OpenAI-compatible SDKs, including concurrent request handling and controlled failover testing.",
+      "Collaborating with engineering leadership on Kubernetes-based deployment, AI service integration, technical evaluation, and adoption of AI-assisted software development workflows.",
+      "Contributing across the software development lifecycle through requirements analysis, solution design, implementation, functional testing, troubleshooting, and technical documentation.",
+      "Working with a technology stack that includes C#/.NET, React, TypeScript, Azure DevOps, Git, Kubernetes, and AI/LLM tooling.",
+    ],
+  },
   appleInternship,
   {
     role: "Machine Learning Intern",

@@ -112,23 +112,32 @@ describe("experience tracker", () => {
 describe("experience timeline", () => {
   it("shows each role newest first with its end year and badge", () => {
     render(<Experience />);
-    const items = document.querySelectorAll(".timeline-item");
+    const items = document.querySelectorAll<HTMLElement>(".timeline-item");
     expect(items).toHaveLength(localContent.experience.length);
+    // A current role reads "Now" instead of a year.
     expect(
       Array.from(document.querySelectorAll(".timeline-year")).map(
         (y) => y.textContent,
       ),
-    ).toEqual(["2025", "2021", "2021"]);
-    // Apple's icon, then the TCS and Sparks logos.
+    ).toEqual(["Now", "2025", "2021", "2021"]);
+    // EventDone has no logo yet (briefcase), then Apple's icon and the TCS
+    // and Sparks logos.
     const marks = document.querySelectorAll(".company-mark");
     expect(marks[0].querySelector("svg")).not.toBeNull();
-    expect(marks[1].querySelector("img")).toHaveAttribute(
+    expect(marks[1].querySelector("svg")).not.toBeNull();
+    expect(marks[2].querySelector("img")).toHaveAttribute(
       "src",
       "/images/brands/tcs.svg",
     );
-    expect(marks[2].querySelector("img")).toHaveAttribute(
+    expect(marks[3].querySelector("img")).toHaveAttribute(
       "src",
       "/images/brands/sparks.png",
+    );
+    // A role without a location shows no location line.
+    expect(within(items[0]).getByText("EventDone LLC")).toBeVisible();
+    expect(items[0].querySelector(".job-org span")).toBeNull();
+    expect(items[1].querySelector(".job-org span")).toHaveTextContent(
+      "Seattle, WA",
     );
   });
 

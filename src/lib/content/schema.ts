@@ -122,7 +122,7 @@ export const contentSchema = z.object({
         role: text,
         company: text,
         dates: text,
-        location: text,
+        location: text.optional(),
         bullets: list,
         logo: z
           .union([z.object({ icon }), z.object({ src: image })])

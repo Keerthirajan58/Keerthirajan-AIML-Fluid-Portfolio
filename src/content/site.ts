@@ -35,7 +35,7 @@ export const homeSections: SectionInfo[] = [
     nav: "Experience",
     eyebrow: "Experience",
     title: "Where I've worked",
-    lede: "From web development to modeling and evaluation work on Siri.",
+    lede: "From web development to Siri modeling and evaluation, and now LLM infrastructure.",
   },
   {
     id: "projects",

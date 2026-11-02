@@ -234,7 +234,7 @@ function mapExperience({ fieldData: f }: Item): ExperienceEntry {
     role: str(f, "role"),
     company,
     dates: str(f, "dates"),
-    location: str(f, "location"),
+    ...(str(f, "location") ? { location: str(f, "location") } : {}),
     bullets: lines(f, "bullets"),
     ...(logo
       ? { logo: { src: logo } }

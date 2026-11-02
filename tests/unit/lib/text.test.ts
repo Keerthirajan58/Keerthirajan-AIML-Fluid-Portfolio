@@ -48,7 +48,9 @@ describe("dates", () => {
     expect(yearOf("Spring")).toBe("");
     expect(endYear("May 2025 - Aug 2025")).toBe("2025");
     expect(endYear("Nov 2021 - Dec 2021 ")).toBe("2021");
-    expect(endYear("Present")).toBe("");
+    expect(endYear("Spring term")).toBe("");
+    expect(endYear("Aug 2026 - Present")).toBe("Now");
+    expect(endYear("Aug 2026 – present ")).toBe("Now");
   });
 });
 

@@ -30,6 +30,7 @@ export const skills: SkillGroup[] = [
       "Agentic AI",
       "Vector Embeddings",
       "Semantic Search",
+      "LiteLLM",
     ],
   },
   {
@@ -44,12 +45,17 @@ export const skills: SkillGroup[] = [
       "Google Vertex AI",
       "Firebase",
       "BigQuery",
+      "Kubernetes",
+      "C# / .NET",
+      "Azure DevOps",
     ],
   },
   {
     category: "Frontend & Mobile",
     skills: [
       "JavaScript",
+      "TypeScript",
+      "React",
       "Streamlit",
       "Flutter",
       "Kotlin",

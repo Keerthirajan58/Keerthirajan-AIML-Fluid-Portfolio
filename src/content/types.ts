@@ -78,9 +78,10 @@ export type CompanyLogo = { icon: IconName } | { src: string };
 export interface ExperienceEntry {
   role: string;
   company: string;
-  /** "May 2025 - Aug 2025"; the timeline shows the final year. */
+  /** "May 2025 - Aug 2025" or "Aug 2026 - Present"; the timeline shows the final year (or "Now"). */
   dates: string;
-  location: string;
+  /** Omit when unknown; the card then shows no location. */
+  location?: string;
   bullets: string[];
   /** Defaults to a briefcase. */
   logo?: CompanyLogo;

@@ -39,10 +39,12 @@ export function Experience({
                     <h3>{job.role}</h3>
                     <p className="job-org">
                       <strong>{job.company}</strong>
-                      <span>
-                        <MapPinIcon aria-hidden="true" />
-                        {job.location}
-                      </span>
+                      {job.location && (
+                        <span>
+                          <MapPinIcon aria-hidden="true" />
+                          {job.location}
+                        </span>
+                      )}
                     </p>
                   </div>
                   <span className="job-dates">{job.dates}</span>
