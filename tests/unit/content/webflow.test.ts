@@ -30,8 +30,9 @@ const projectFields = (p: Project): Record<string, unknown> => ({
   ...p.links,
   achievement: p.achievement?.label,
   "achievement-detail": p.achievement?.detail,
-  cover: p.caseStudy && { url: p.caseStudy.gallery.cover },
-  slides: p.caseStudy?.gallery.slides.map((url) => ({ url })),
+  cover: p.caseStudy?.gallery && { url: p.caseStudy.gallery.cover },
+  slides: p.caseStudy?.gallery?.slides.map((url) => ({ url })),
+  "private-repo": p.privateRepo,
   focus: p.caseStudy?.focus,
   timeline: p.caseStudy?.timeline,
   tech: p.caseStudy?.tech?.join("\n"),
@@ -319,7 +320,7 @@ describe("Webflow mapping", () => {
     expect(study.sections).toEqual([
       { heading: "Just bullets", bullets: ["A", "B"] },
     ]);
-    expect(study.gallery.slides).toEqual([]);
+    expect(study.gallery!.slides).toEqual([]);
     expect(result.education[0].notes).toEqual([
       "Thesis track.",
       "Teaching assistant.",

@@ -110,13 +110,27 @@ describe("content schema", () => {
     }, "Duplicate project slug: siri-core-modeling");
   });
 
-  it("requires a case study to have a gallery and at least one section", () => {
+  it("requires a case study to have sections; screenshots are optional", () => {
     rejects((c) => {
       c.projects[0].caseStudy!.sections = [];
     });
+    expect(() =>
+      validateContent(
+        contentWith((c) => {
+          delete c.projects[0].caseStudy!.gallery;
+        }),
+      ),
+    ).not.toThrow();
     rejects((c) => {
-      delete (c.projects[0].caseStudy as { gallery?: unknown }).gallery;
-    });
+      c.projects[0].caseStudy!.gallery = { cover: "not an image", slides: [] };
+    }, "Unsupported image");
+  });
+
+  it("keeps a private project's code unlinked", () => {
+    rejects((c) => {
+      const p = c.projects.find((q) => q.privateRepo)!;
+      p.links = { github: "https://github.com/x/y" };
+    }, "Private project links its repository: job-event-search");
   });
 
   it("only lets a chapter continue a real case study", () => {

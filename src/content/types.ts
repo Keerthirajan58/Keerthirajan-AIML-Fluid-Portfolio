@@ -128,8 +128,12 @@ export interface CaseStudy {
   timeline: string;
   /** Tools listed in the header; defaults to the card tags. */
   tech?: string[];
-  /** The cover leads the card and the gallery; slides follow in order. */
-  gallery: { cover: string; slides: string[] };
+  /**
+   * Screenshots: the cover leads the card and the gallery, slides follow in
+   * order. Without a gallery the page has no "A closer look" section and the
+   * card uses a dropped-in cover file or its placeholder.
+   */
+  gallery?: { cover: string; slides: string[] };
   sections: CaseStudySection[];
 }
 
@@ -157,7 +161,12 @@ export interface Project {
   tags: string[];
   /** Work filters this project appears under. */
   filters: FilterId[];
-  links?: { github?: string; devpost?: string; blog?: string };
+  links?: { github?: string; pypi?: string; devpost?: string; blog?: string };
+  /**
+   * The code is private: no repository link, and the card and case study say
+   * so and offer a walkthrough through the contact section instead.
+   */
+  privateRepo?: boolean;
   /** Award ribbon on the card and case study. */
   achievement?: { label: string; detail: string };
   /** A "Project notes" dialog on the card. */

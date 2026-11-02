@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     openGraph: {
       title: p.title,
       description: p.description,
-      ...(p.caseStudy ? { images: [p.caseStudy.gallery.cover] } : {}),
+      ...(p.caseStudy?.gallery ? { images: [p.caseStudy.gallery.cover] } : {}),
     },
   };
 }

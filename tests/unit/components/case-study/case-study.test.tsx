@@ -85,6 +85,32 @@ describe("case study page", () => {
     expect(screen.getByText("LLM Evaluation")).toBeVisible();
   });
 
+  it("links a package and skips the gallery when a study has none", () => {
+    study("bugbout");
+    expect(
+      Array.from(document.querySelectorAll(".case-action")).map((a) => [
+        a.getAttribute("data-kind"),
+        a.textContent,
+      ]),
+    ).toEqual([
+      ["github", "View on GitHub"],
+      ["pypi", "View on PyPI"],
+    ]);
+    expect(document.querySelector(".gallery-tile")).toBeNull();
+    expect(screen.queryByText("A closer look")).toBeNull();
+    expect(document.querySelector(".case-private")).toBeNull();
+  });
+
+  it("says when the code is private and offers a walkthrough instead", () => {
+    study("job-event-search");
+    expect(document.querySelector(".case-actions")).toBeNull();
+    const note = document.querySelector(".case-private") as HTMLElement;
+    expect(note).toHaveTextContent("The code is private.");
+    expect(
+      within(note).getByRole("link", { name: "get in touch" }),
+    ).toHaveAttribute("href", "/#contact");
+  });
+
   it("renders a new case study, section media included", () => {
     const fresh = newProject({
       caseStudy: newCaseStudy({

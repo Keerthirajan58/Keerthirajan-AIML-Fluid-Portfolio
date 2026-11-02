@@ -13,6 +13,6 @@ export const work = workProjects(localContent.projects);
 /** A case study's images in gallery order (cover first). */
 export function galleryOf(slug: string) {
   const study = localContent.projects.find((p) => p.slug === slug)?.caseStudy;
-  if (!study) throw new Error(`No case study: ${slug}`);
+  if (!study?.gallery) throw new Error(`No gallery: ${slug}`);
   return [study.gallery.cover, ...study.gallery.slides];
 }

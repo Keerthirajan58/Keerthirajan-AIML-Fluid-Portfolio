@@ -6,6 +6,9 @@ import { pitchpulse } from "./pitchpulse";
 import { historicalEventNarrator } from "./historical-event-narrator";
 import { codingProblemRecommender } from "./coding-problem-recommender";
 import { faceCloaking } from "./face-cloaking";
+import { bugbout } from "./bugbout";
+import { nightshift } from "./nightshift";
+import { jobEventSearch } from "./job-event-search";
 import { moodbites } from "./moodbites";
 import { giTractSegmentation } from "./gi-tract-segmentation";
 import { waterQualityAnalysis } from "./water-quality-analysis";
@@ -25,6 +28,9 @@ export const projects: Project[] = [
   historicalEventNarrator,
   codingProblemRecommender,
   faceCloaking,
+  bugbout,
+  jobEventSearch,
+  nightshift,
   moodbites,
   giTractSegmentation,
   waterQualityAnalysis,

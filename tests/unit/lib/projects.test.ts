@@ -24,6 +24,9 @@ describe("project selectors", () => {
       "historical-event-narrator",
       "coding-problem-recommender",
       "face-cloaking",
+      "bugbout",
+      "job-event-search",
+      "nightshift",
       "moodbites",
       "gi-tract-segmentation",
       "water-quality-analysis",
@@ -33,7 +36,7 @@ describe("project selectors", () => {
   });
 
   it("finds case studies and their routes", () => {
-    expect(caseStudies(projects)).toHaveLength(7);
+    expect(caseStudies(projects)).toHaveLength(10);
     expect(projectRoute(bySlug("pitchpulse"))).toBe("/projects/pitchpulse");
     expect(projectRoute(bySlug("moodbites"))).toBeUndefined();
     expect(getProjectBySlug("unknown", projects)).toBeUndefined();
@@ -48,8 +51,8 @@ describe("project selectors", () => {
     expect(parentOf(original, projects)).toBeUndefined();
   });
 
-  it("orders link buttons GitHub, Devpost, then write-up", () => {
-    expect(linkOrder).toEqual(["github", "devpost", "blog"]);
+  it("orders link buttons GitHub, PyPI, Devpost, then write-up", () => {
+    expect(linkOrder).toEqual(["github", "pypi", "devpost", "blog"]);
     const p = newProject({
       links: {
         blog: "https://example.com/post",

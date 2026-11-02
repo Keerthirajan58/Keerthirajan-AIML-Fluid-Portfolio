@@ -15,7 +15,7 @@ describe("content repository", () => {
     expect(caseStudyRoutes).toEqual(
       localContent.projects.filter((p) => p.caseStudy).map((p) => p.slug),
     );
-    expect(caseStudyRoutes).toHaveLength(7);
+    expect(caseStudyRoutes).toHaveLength(10);
   });
 
   it("returns validated content from a healthy source", async () => {

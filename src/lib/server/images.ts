@@ -83,7 +83,7 @@ function parse(buf: Buffer): ImageDimensions {
  */
 export function projectCover(p: Project): string | null {
   return (
-    p.caseStudy?.gallery.cover ??
+    p.caseStudy?.gallery?.cover ??
     findPublicImage(`images/projects/${p.slug}/cover`)
   );
 }

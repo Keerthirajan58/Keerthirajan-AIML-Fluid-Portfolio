@@ -170,7 +170,7 @@ function mapProject(
     filters: lines(f, "filters") as FilterId[],
   };
   const links = Object.fromEntries(
-    (["github", "devpost", "blog"] as const)
+    (["github", "pypi", "devpost", "blog"] as const)
       .filter((key) => str(f, key))
       .map((key) => [key, str(f, key)]),
   );
@@ -185,8 +185,10 @@ function mapProject(
   if (lines(f, "notes").length) notes.push({ bullets: lines(f, "notes") });
   if (notes.length) project.notes = notes;
   else if (local?.notes) project.notes = local.notes;
+  if (f["private-repo"] === true) project.privateRepo = true;
   const cover = media(f.cover);
-  if (cover) {
+  // A cover, a focus or a matching local case study makes a case-study page.
+  if (cover || str(f, "focus") || local?.caseStudy) {
     const tech = lines(f, "tech");
     project.caseStudy = {
       focus: str(f, "focus") || local?.caseStudy?.focus || project.badge,
@@ -196,10 +198,14 @@ function mapProject(
         : local?.caseStudy?.tech
           ? { tech: local.caseStudy.tech }
           : {}),
-      gallery: {
-        cover,
-        slides: Array.isArray(f.slides) ? f.slides.map(media) : [],
-      },
+      ...(cover
+        ? {
+            gallery: {
+              cover,
+              slides: Array.isArray(f.slides) ? f.slides.map(media) : [],
+            },
+          }
+        : {}),
       sections: sections.get(slug) ??
         local?.caseStudy?.sections ?? [
           { heading: "Overview", body: project.description },

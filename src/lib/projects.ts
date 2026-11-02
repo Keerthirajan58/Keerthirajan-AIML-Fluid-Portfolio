@@ -31,8 +31,8 @@ export function parentOf(project: Project, projects: readonly Project[]) {
     : undefined;
 }
 
-/** Case-study link buttons, always in this order. */
-export const linkOrder = ["github", "devpost", "blog"] as const;
+/** Project link buttons, always in this order. */
+export const linkOrder = ["github", "pypi", "devpost", "blog"] as const;
 
 export function projectLinks(project: Project) {
   return linkOrder.flatMap((kind) =>

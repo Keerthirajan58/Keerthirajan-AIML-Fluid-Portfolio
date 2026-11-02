@@ -8,17 +8,18 @@ describe("work filters", () => {
   it("counts real work per category and hides empty ones", () => {
     const counts = availableFilters(workProjects(localContent.projects));
     expect(Object.fromEntries(counts.map((f) => [f.id, f.count]))).toEqual({
-      all: 11,
-      aiml: 10,
-      genai: 5,
+      all: 14,
+      aiml: 13,
+      genai: 8,
       hackathon: 2,
-      web: 4,
+      web: 5,
       mobile: 3,
       cv: 3,
+      opensource: 1,
     });
     // "Startups" exists, but only the NVC chapter (not a card) uses it.
     expect(counts.some((f) => f.id === "startup")).toBe(false);
-    expect(counts[0]).toEqual({ id: "all", label: allWorkLabel, count: 11 });
+    expect(counts[0]).toEqual({ id: "all", label: allWorkLabel, count: 14 });
   });
 
   it("shows a category as soon as one item uses it", () => {

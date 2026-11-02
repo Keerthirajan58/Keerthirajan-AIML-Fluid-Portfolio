@@ -91,6 +91,18 @@ describe("adding a project", () => {
     ).toBeVisible();
   });
 
+  it("hides a project's code link when its repository is private", () => {
+    const content = valid(
+      contentWith((c) => c.projects.push(newProject({ privateRepo: true }))),
+    );
+    renderHome(content);
+    const card = Array.from(
+      document.querySelectorAll<HTMLElement>(".project-card"),
+    ).find((el) => el.textContent?.includes("Orbit Planner"))!;
+    expect(within(card).getByText("Private code")).toBeVisible();
+    expect(within(card).queryByRole("link", { name: /GitHub/ })).toBeNull();
+  });
+
   it("links a follow-up chapter from the project it continues", () => {
     const content = valid(
       contentWith((c) =>

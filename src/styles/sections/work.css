@@ -298,6 +298,20 @@
   width: 15px;
   height: 15px;
 }
+/* A project whose code is private says so where its source link would be. */
+.project-private {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.project-private svg {
+  width: 14px;
+  height: 14px;
+}
 .empty-projects {
   color: var(--muted);
 }

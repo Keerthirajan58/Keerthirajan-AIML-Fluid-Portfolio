@@ -10,6 +10,7 @@ export const projectFilters = [
   { id: "web", label: "Web" },
   { id: "mobile", label: "Mobile" },
   { id: "cv", label: "Computer Vision" },
+  { id: "opensource", label: "Open source" },
   { id: "startup", label: "Startups" },
 ] as const;
 

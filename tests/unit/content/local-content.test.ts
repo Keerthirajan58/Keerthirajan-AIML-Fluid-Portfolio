@@ -30,8 +30,9 @@ function referencedFiles() {
     ...content.projects.flatMap((p) =>
       p.caseStudy
         ? [
-            p.caseStudy.gallery.cover,
-            ...p.caseStudy.gallery.slides,
+            ...(p.caseStudy.gallery
+              ? [p.caseStudy.gallery.cover, ...p.caseStudy.gallery.slides]
+              : []),
             ...p.caseStudy.sections.flatMap((s) =>
               s.media ? [s.media.src] : [],
             ),
@@ -132,9 +133,9 @@ describe("local content", () => {
     const hack = content.projects.find((p) => p.slug === "barterbrain")!;
     const nvc = content.projects.find((p) => p.slug === "barterbrain-nvc")!;
     expect(
-      hack.caseStudy!.gallery.slides.every((s) => !s.includes("nvc")),
+      hack.caseStudy!.gallery!.slides.every((s) => !s.includes("nvc")),
     ).toBe(true);
-    const { cover, slides } = nvc.caseStudy!.gallery;
+    const { cover, slides } = nvc.caseStudy!.gallery!;
     expect([cover, ...slides]).toEqual([
       "/images/projects/barterbrain-nvc/slide-2.jpg",
       "/images/projects/barterbrain-nvc/slide-1.jpg",

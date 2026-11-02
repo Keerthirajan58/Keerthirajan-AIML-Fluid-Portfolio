@@ -50,10 +50,12 @@ const project = z.object({
   links: z
     .object({
       github: link.optional(),
+      pypi: link.optional(),
       devpost: link.optional(),
       blog: link.optional(),
     })
     .optional(),
+  privateRepo: z.boolean().optional(),
   achievement: z.object({ label: text, detail: text }).optional(),
   notes: z
     .array(
@@ -70,7 +72,7 @@ const project = z.object({
       focus: text,
       timeline: text,
       tech: list.optional(),
-      gallery: z.object({ cover: image, slides: z.array(image) }),
+      gallery: z.object({ cover: image, slides: z.array(image) }).optional(),
       sections: z.array(section).min(1),
     })
     .optional(),
@@ -185,6 +187,9 @@ export function validateContent(
     if (!p.caseStudy || !parent?.caseStudy || parent.chapter)
       throw new Error(`Invalid chapter: ${p.slug}`);
   }
+  for (const p of content.projects)
+    if (p.privateRepo && p.links?.github)
+      throw new Error(`Private project links its repository: ${p.slug}`);
   if (routes) {
     const pages = content.projects.filter((p) => p.caseStudy);
     for (const slug of routes)

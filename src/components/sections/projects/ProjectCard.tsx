@@ -5,6 +5,7 @@ import {
   ArrowUpRightIcon,
   AwardIcon,
   GitHubIcon,
+  LockIcon,
   SparkIcon,
 } from "@/components/ui/icons";
 import { projectRoute } from "@/lib/projects";
@@ -147,6 +148,12 @@ export function ProjectCard({
             <ArrowUpRightIcon />
           </Link>
         ) : null}
+        {p.privateRepo && (
+          <span className="project-private">
+            <LockIcon aria-hidden="true" />
+            Private code
+          </span>
+        )}
         {p.notes && (
           <ProjectNotes title={p.title}>
             <NoteBlocks blocks={p.notes} />

@@ -9,6 +9,8 @@ import {
   BookIcon,
   DevpostIcon,
   GitHubIcon,
+  LockIcon,
+  PackageIcon,
 } from "@/components/ui/icons";
 import {
   chaptersOf,
@@ -25,6 +27,7 @@ const linkStyles: Record<
   { label: string; icon: ReactNode }
 > = {
   github: { label: "View on GitHub", icon: <GitHubIcon /> },
+  pypi: { label: "View on PyPI", icon: <PackageIcon /> },
   devpost: { label: "View on Devpost", icon: <DevpostIcon /> },
   blog: { label: "Read the write-up", icon: <BookIcon /> },
 };
@@ -93,6 +96,17 @@ export function CaseStudy({
               </a>
             ))}
           </div>
+        )}
+        {p.privateRepo && (
+          <p className="case-private">
+            <span className="chip-icon">
+              <LockIcon />
+            </span>
+            <span>
+              The code is private. I&apos;m glad to walk you through it:{" "}
+              <Link href="/#contact">get in touch</Link>.
+            </span>
+          </p>
         )}
         <ul className="tag-list">
           {(cs.tech ?? p.tags).map((t) => (
@@ -170,14 +184,18 @@ export function CaseStudy({
           ))}
         </div>
         <div className="case-gallery">
-          <h2 className="subheading">A closer look</h2>
-          <ProjectGallery
-            images={[cs.gallery.cover, ...cs.gallery.slides].map((src) => ({
-              src,
-              ...getImageSize(src),
-            }))}
-            title={p.title}
-          />
+          {cs.gallery && (
+            <>
+              <h2 className="subheading">A closer look</h2>
+              <ProjectGallery
+                images={[cs.gallery.cover, ...cs.gallery.slides].map((src) => ({
+                  src,
+                  ...getImageSize(src),
+                }))}
+                title={p.title}
+              />
+            </>
+          )}
           <BackToWork />
         </div>
       </div>

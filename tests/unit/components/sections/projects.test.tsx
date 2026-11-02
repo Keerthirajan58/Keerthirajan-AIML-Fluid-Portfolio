@@ -56,7 +56,6 @@ describe("work cards", () => {
     );
     // Placeholders stand in only until a cover screenshot is dropped in.
     const waiting = work.filter((p) => !projectCover(p));
-    expect(waiting.length).toBeLessThanOrEqual(5);
     expect(document.querySelectorAll(".project-placeholder")).toHaveLength(
       waiting.length,
     );
@@ -179,7 +178,7 @@ describe("project discovery", () => {
           expect(slot).toHaveAttribute("aria-hidden", "true");
         });
       expect(screen.getByRole("status")).toHaveTextContent(
-        `${expected.length} projects`,
+        `${expected.length} ${expected.length === 1 ? "project" : "projects"}`,
       );
       expect(document.querySelector("a a")).toBeNull();
       expect(

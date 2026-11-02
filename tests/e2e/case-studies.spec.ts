@@ -1,13 +1,19 @@
 // Case studies: direct routes, gallery and link buttons.
 import { test, expect } from "./fixtures";
-import { caseStudyRoutes } from "./data";
+import { caseStudyRoutes, content } from "./data";
 
 for (const slug of caseStudyRoutes) {
+  const hasGallery = Boolean(
+    content.projects.find((p) => p.slug === slug)?.caseStudy?.gallery,
+  );
   test("direct case study: " + slug, async ({ page }) => {
     const response = await page.goto("/projects/" + slug);
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.locator(".gallery-tile").first()).toBeAttached();
+    // A study without images has no gallery rather than an empty one.
+    if (hasGallery)
+      await expect(page.locator(".gallery-tile").first()).toBeAttached();
+    else await expect(page.locator(".gallery-tile")).toHaveCount(0);
     await page.getByRole("link", { name: "Back to work" }).first().click();
     await expect(page).toHaveURL(/\/#projects$/);
     await expect(page.locator("#projects")).toBeInViewport();
