@@ -7,6 +7,7 @@ import { projects } from "./projects";
 import { skills } from "./skills";
 import { certifications } from "./certifications";
 import { publications } from "./publications";
+import { openSource } from "./openSource";
 import { testimonials } from "./testimonials";
 
 /**
@@ -23,6 +24,7 @@ export const localContent: PortfolioContent = {
   skills,
   certifications,
   publications,
+  openSource,
   testimonials,
 };
 

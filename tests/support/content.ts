@@ -5,6 +5,7 @@
 import { localContent } from "@/content";
 import type {
   Certification,
+  Contribution,
   EducationEntry,
   ExperienceEntry,
   PortfolioContent,
@@ -96,5 +97,19 @@ export const newTestimonial = (
   name: "Dr. Example Mentor",
   title: "Advisor",
   image: "/images/testimonials/testimonials-1.jpg",
+  ...overrides,
+});
+
+export const newContribution = (
+  overrides: Partial<Contribution> = {},
+): Contribution => ({
+  project: "Example Lib",
+  repo: "example-org/example-lib",
+  url: "https://github.com/example-org/example-lib/pull/42",
+  title: "Retry failed uploads",
+  summary: "Retries uploads that fail on a dropped connection.",
+  status: "merged",
+  date: "Jan 2027",
+  tech: ["Python"],
   ...overrides,
 });

@@ -159,7 +159,7 @@ describe("training monitor", () => {
     const monitor = screen.getByRole("complementary", {
       name: "Training monitor",
     });
-    expect(monitor).toHaveTextContent("Epoch 1 of 8");
+    expect(monitor).toHaveTextContent("Epoch 1 of 9");
     expect(monitor).toHaveTextContent("Intro");
     expect(monitor).toHaveTextContent(
       `Loss ${lossAt(0).toFixed(3)} and falling`,
@@ -173,7 +173,7 @@ describe("training monitor", () => {
     );
 
     FakeObserver.cross("projects");
-    expect(monitor).toHaveTextContent("Epoch 4 of 8");
+    expect(monitor).toHaveTextContent("Epoch 4 of 9");
     expect(monitor).toHaveTextContent("Work");
     expect(screen.getByRole("link", { name: "Epoch 4: Work" })).toHaveAttribute(
       "aria-current",
@@ -200,7 +200,7 @@ describe("training monitor", () => {
     );
 
     FakeObserver.cross("contact");
-    expect(monitor).toHaveTextContent("Epoch 8 of 8");
+    expect(monitor).toHaveTextContent("Epoch 9 of 9");
     expect(monitor).toHaveTextContent("Converged. Let's talk.");
     expect(monitor).not.toHaveTextContent("and falling");
   });
@@ -226,7 +226,7 @@ describe("training monitor", () => {
 
     const epochs = screen.getByRole("navigation", { name: "Epochs" });
     expect(epochs.querySelectorAll("a")).toHaveLength(homeSections.length);
-    const skills = screen.getByRole("link", { name: "Epoch 5: Skills" });
+    const skills = screen.getByRole("link", { name: "Epoch 6: Skills" });
     expect(skills).toHaveAttribute("href", "#skills");
     const click = fireEvent.click(skills);
     expect(runtime.scrollToSection).toHaveBeenCalledWith("skills");
@@ -354,7 +354,7 @@ describe("training monitor edge cases", () => {
         observer as unknown as IntersectionObserver,
       ),
     );
-    expect(monitor).toHaveTextContent("Epoch 1 of 8");
+    expect(monitor).toHaveTextContent("Epoch 1 of 9");
   });
 
   it("reads zero progress on a page that cannot scroll", () => {

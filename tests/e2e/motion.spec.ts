@@ -29,7 +29,7 @@ test("living background re-lights each section, follows the pointer, can be paus
   // Plain words, no optimiser jargon.
   const monitor = page.getByRole("complementary", { name: "Training monitor" });
   await expect(monitor).toBeVisible();
-  await expect(monitor).toContainText("Epoch 1 of 8");
+  await expect(monitor).toContainText("Epoch 1 of 9");
   await expect(monitor).toContainText("and falling");
   await expect(monitor).not.toContainText(
     /rosenbrock|camel|himmelblau|landscape/i,
@@ -38,7 +38,7 @@ test("living background re-lights each section, follows the pointer, can be paus
     .locator("#experience")
     .evaluate((el) => el.scrollIntoView({ block: "center" }));
   await expect(field).toHaveAttribute("data-scene", "experience");
-  await expect(monitor).toContainText("Epoch 3 of 8");
+  await expect(monitor).toContainText("Epoch 3 of 9");
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect(field).toHaveAttribute("data-scene", "contact");
   await expect(monitor).toContainText("Converged. Let's talk.");

@@ -126,6 +126,23 @@
     --s: 1.1;
   }
 }
+.atmosphere[data-scene="open-source"] {
+  & .glow-a {
+    --tx: 52vw;
+    --ty: 46vh;
+    --s: 0.98;
+  }
+  & .glow-b {
+    --tx: -34vw;
+    --ty: 28vh;
+    --o: 0.72;
+  }
+  & .glow-c {
+    --tx: 10vw;
+    --ty: -50vh;
+    --s: 1.05;
+  }
+}
 .atmosphere[data-scene="skills"] {
   & .glow-a {
     --tx: 66vw;

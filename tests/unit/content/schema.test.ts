@@ -133,6 +133,21 @@ describe("content schema", () => {
     }, "Private project links its repository: job-event-search");
   });
 
+  it("only lists maintained projects that exist, and checks every contribution", () => {
+    rejects((c) => {
+      c.openSource.maintained.push("not-a-project");
+    }, "Unknown maintained project: not-a-project");
+    rejects((c) => {
+      c.openSource.contributions[0].repo = "no-slash";
+    }, "Repos are owner/name");
+    rejects((c) => {
+      c.openSource.contributions[0].url = "http://insecure.example.com/pr/1";
+    }, "Unsafe URL");
+    rejects((c) => {
+      (c.openSource.contributions[0] as { status: string }).status = "closed";
+    });
+  });
+
   it("only lets a chapter continue a real case study", () => {
     const chapter = {
       of: "barterbrain",

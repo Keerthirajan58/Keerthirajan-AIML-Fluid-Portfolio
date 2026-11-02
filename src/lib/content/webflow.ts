@@ -334,6 +334,8 @@ export function mapCollections(
         venue: str(f, "venue"),
         date: str(f, "date"),
       })),
+      // Open-source work comes from GitHub, not the CMS.
+      openSource: localContent.openSource,
       testimonials: records.testimonials.map(({ fieldData: f }) => ({
         quote: str(f, "quote"),
         name: str(f, "name"),

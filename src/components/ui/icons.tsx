@@ -267,6 +267,36 @@ export function PackageIcon(props: IconProps) {
   );
 }
 
+export function MergeIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    >
+      <circle cx="6" cy="5" r="2.2" />
+      <circle cx="6" cy="19" r="2.2" />
+      <circle cx="18" cy="12" r="2.2" />
+      <path d="M6 7.2v9.6M6 7.5c0 3 3 4.5 9.8 4.5" />
+    </svg>
+  );
+}
+
+export function ReviewIcon(props: IconProps) {
+  return (
+    <svg
+      {...base(props)}
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    >
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </svg>
+  );
+}
+
 /** The icons content can name (`IconName`); every name needs one here. */
 const named: Record<IconName, (props: IconProps) => React.JSX.Element> = {
   apple: AppleIcon,

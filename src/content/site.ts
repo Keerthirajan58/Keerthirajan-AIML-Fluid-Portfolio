@@ -8,6 +8,7 @@ export type SectionId =
   | "about"
   | "experience"
   | "projects"
+  | "open-source"
   | "skills"
   | "credentials"
   | "testimonials"
@@ -43,6 +44,14 @@ export const homeSections: SectionInfo[] = [
     eyebrow: "Work",
     title: "Selected work",
     lede: "Machine learning, generative AI, and the full-stack software that ships them. Open a project for the full case study.",
+  },
+  {
+    id: "open-source",
+    epoch: "Open source",
+    nav: "Open source",
+    eyebrow: "Open source",
+    title: "Building in the open",
+    lede: "A hobby that keeps me learning: fixes and features for open-source projects I use, and a tool I maintain.",
   },
   {
     id: "skills",

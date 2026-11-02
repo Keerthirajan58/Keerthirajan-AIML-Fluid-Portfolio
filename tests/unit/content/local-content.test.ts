@@ -173,6 +173,7 @@ describe("home sections", () => {
       "about",
       "experience",
       "projects",
+      "open-source",
       "skills",
       "credentials",
       "testimonials",
@@ -182,6 +183,7 @@ describe("home sections", () => {
       { id: "about", label: "About" },
       { id: "experience", label: "Experience" },
       { id: "projects", label: "Work" },
+      { id: "open-source", label: "Open source" },
       { id: "skills", label: "Skills" },
       { id: "contact", label: "Contact" },
     ]);

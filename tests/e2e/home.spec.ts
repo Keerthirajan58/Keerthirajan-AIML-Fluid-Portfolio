@@ -81,6 +81,12 @@ test("revised art direction keeps credentials visible and project actions integr
   await expect(page.locator(".timeline-item")).toHaveCount(
     content.experience.length,
   );
+  await expect(page.locator(".oss-card")).toHaveCount(
+    content.openSource.contributions.length,
+  );
+  await expect(page.locator(".oss-maintained")).toHaveCount(
+    content.openSource.maintained.length,
+  );
   await expect(
     page.getByRole("heading", { level: 2, name: "AIML / Software Engineer" }),
   ).toBeVisible();

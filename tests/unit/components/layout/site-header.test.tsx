@@ -62,7 +62,8 @@ describe("liquid lens", () => {
     fireEvent.mouseLeave(nav);
     expect(nav.style.getPropertyValue("--lens-o")).toBe("0");
     fireEvent.focus(link("Skills"));
-    expect(nav.style.getPropertyValue("--lens-x")).toBe("300px");
+    // Skills is the fifth header link.
+    expect(nav.style.getPropertyValue("--lens-x")).toBe("400px");
     fireEvent.blur(link("Skills"));
     expect(nav.style.getPropertyValue("--lens-o")).toBe("0");
   });

@@ -17,6 +17,7 @@ import {
   contentWith,
   newCaseStudy,
   newCertification,
+  newContribution,
   newDegree,
   newJob,
   newProject,
@@ -216,6 +217,41 @@ describe("adding skills and credentials", () => {
   });
 });
 
+describe("adding open-source work", () => {
+  it("adds a pull request card and updates the counts", () => {
+    const content = valid(
+      contentWith((c) =>
+        c.openSource.contributions.push(newContribution({ status: "open" })),
+      ),
+    );
+    renderHome(content);
+    const card = Array.from(
+      document.querySelectorAll<HTMLElement>(".oss-card"),
+    ).at(-1)!;
+    expect(card).toHaveTextContent("Retry failed uploads");
+    expect(card).toHaveTextContent("In review · Jan 2027");
+    expect(card).toHaveAttribute(
+      "href",
+      "https://github.com/example-org/example-lib/pull/42",
+    );
+  });
+
+  it("features a project as maintained by naming its slug", () => {
+    const content = valid(
+      contentWith((c) => {
+        c.projects.push(
+          newProject({ links: { github: "https://github.com/me/orbit" } }),
+        );
+        c.openSource.maintained.push("orbit-planner");
+      }),
+    );
+    renderHome(content);
+    const leads = document.querySelectorAll(".oss-maintained");
+    expect(leads).toHaveLength(2);
+    expect(leads[1]).toHaveTextContent("Orbit Planner");
+  });
+});
+
 describe("removing content", () => {
   it("drops empty sections instead of leaving empty headings", () => {
     const content = valid(
@@ -223,9 +259,11 @@ describe("removing content", () => {
         c.testimonials = [];
         c.publications = [];
         c.certifications = [];
+        c.openSource = { maintained: [], contributions: [] };
       }),
     );
     renderHome(content);
+    expect(document.getElementById("open-source")).toBeNull();
     expect(document.getElementById("testimonials")).toBeNull();
     expect(document.getElementById("credentials")).toBeNull();
     expect(document.getElementById("projects")).not.toBeNull();
@@ -243,6 +281,7 @@ describe("everything at once", () => {
         c.certifications.push(newCertification());
         c.publications.push(newPublication());
         c.testimonials.push(newTestimonial());
+        c.openSource.contributions.push(newContribution());
       }),
     );
     renderHome(content);
@@ -254,6 +293,7 @@ describe("everything at once", () => {
       "Deep Reinforcement Learning",
       "Fast Planning with Learned Heuristics",
       "A thoughtful engineer who ships.",
+      "Retry failed uploads",
     ])
       expect(screen.getAllByText(text).length, text).toBeGreaterThan(0);
   });

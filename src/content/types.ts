@@ -201,6 +201,32 @@ export interface Publication {
   date: string;
 }
 
+/** A pull request to someone else's open-source project. */
+export interface Contribution {
+  /** The project, as people know it, e.g. "Nebari". */
+  project: string;
+  /** owner/name on GitHub. */
+  repo: string;
+  /** The pull request. */
+  url: string;
+  /** What the change does, in a few words. */
+  title: string;
+  /** One sentence on the problem it solves. */
+  summary: string;
+  /** Merged upstream, or still open and in review. */
+  status: "merged" | "open";
+  /** When it was merged (or opened, if still in review), e.g. "Oct 2026". */
+  date: string;
+  tech: string[];
+}
+
+export interface OpenSourceWork {
+  /** Slugs of projects I maintain as open source (they must exist in projects). */
+  maintained: string[];
+  /** Shown in this order: merged work first, then work in review. */
+  contributions: Contribution[];
+}
+
 export interface Testimonial {
   quote: string;
   name: string;
@@ -218,5 +244,6 @@ export interface PortfolioContent {
   skills: SkillGroup[];
   certifications: Certification[];
   publications: Publication[];
+  openSource: OpenSourceWork;
   testimonials: Testimonial[];
 }

@@ -5,6 +5,7 @@ import { Hero } from "./hero/Hero";
 import { About } from "./about/About";
 import { Experience } from "./experience/Experience";
 import { Projects } from "./projects/Projects";
+import { OpenSource } from "./open-source/OpenSource";
 import { Skills } from "./skills/Skills";
 import { Credentials } from "./credentials/Credentials";
 import { Testimonials } from "./testimonials/Testimonials";
@@ -19,6 +20,7 @@ export const sectionComponents: Record<
   about: About,
   experience: Experience,
   projects: Projects,
+  "open-source": OpenSource,
   skills: Skills,
   credentials: Credentials,
   testimonials: Testimonials,

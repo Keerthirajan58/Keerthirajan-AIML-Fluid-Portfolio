@@ -155,6 +155,21 @@ export const contentSchema = z.object({
     z.object({ title: text, issuer: text, url: link, logo: image.optional() }),
   ),
   publications: z.array(z.object({ title: text, venue: text, date: text })),
+  openSource: z.object({
+    maintained: z.array(text),
+    contributions: z.array(
+      z.object({
+        project: text,
+        repo: text.regex(/^[\w.-]+\/[\w.-]+$/, "Repos are owner/name"),
+        url: link,
+        title: text,
+        summary: text,
+        status: z.enum(["merged", "open"]),
+        date: text,
+        tech: z.array(text),
+      }),
+    ),
+  }),
   testimonials: z.array(
     z.object({ quote: text, name: text, title: text, image }),
   ),
@@ -190,6 +205,9 @@ export function validateContent(
   for (const p of content.projects)
     if (p.privateRepo && p.links?.github)
       throw new Error(`Private project links its repository: ${p.slug}`);
+  for (const slug of content.openSource.maintained)
+    if (!slugs.includes(slug))
+      throw new Error(`Unknown maintained project: ${slug}`);
   if (routes) {
     const pages = content.projects.filter((p) => p.caseStudy);
     for (const slug of routes)

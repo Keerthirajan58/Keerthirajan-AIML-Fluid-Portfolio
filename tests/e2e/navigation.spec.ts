@@ -110,7 +110,14 @@ test("every internal destination exists without redirects", async ({
 
 test("direct anchors remain visible with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const id of ["about", "experience", "projects", "skills", "contact"]) {
+  for (const id of [
+    "about",
+    "experience",
+    "projects",
+    "open-source",
+    "skills",
+    "contact",
+  ]) {
     await page.goto("/#" + id);
     await expect(page.locator("#" + id)).toBeInViewport();
     await expect(page.locator("#" + id + " h2")).toBeVisible();

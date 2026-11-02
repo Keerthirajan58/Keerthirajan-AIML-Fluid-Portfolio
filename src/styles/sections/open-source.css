@@ -1,0 +1,205 @@
+/* ───────── Open source ───────── */
+/* The project I maintain leads as a wide, softly tinted card; pull requests
+   to other projects follow as cards with their review status in words. */
+.oss-maintained {
+  --tint-from: var(--tint-navy);
+  --tint-to: var(--tint-sky);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px 40px;
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: var(--radius-card);
+}
+.oss-maintained h3 {
+  margin: 6px 0 8px;
+  font: 600 clamp(24px, 2.6vw, 32px) / 1.1 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.oss-maintained h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.oss-maintained h3 a:hover {
+  text-decoration: underline;
+}
+.oss-maintained-text > p:not(.eyebrow) {
+  max-width: 62ch;
+  margin: 0 0 14px;
+  color: var(--text);
+}
+.oss-maintained-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.oss-contributions {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+.oss-contributions-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 20px;
+  margin-bottom: 16px;
+}
+.oss-contributions-head .sub-title {
+  margin: 0;
+}
+.oss-contributions-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.oss-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oss-grid > li {
+  display: flex;
+  container: oss-card / inline-size;
+}
+.oss-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.45s var(--spring),
+    box-shadow 0.3s ease;
+}
+.oss-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+.oss-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.oss-project {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.oss-project > svg {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.oss-project strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.25;
+}
+.oss-project small {
+  display: block;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.oss-status {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.oss-status svg {
+  width: 14px;
+  height: 14px;
+}
+.oss-status[data-status="merged"] {
+  background: var(--navy-wash);
+  color: var(--navy-text);
+}
+.oss-status[data-status="open"] {
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--muted);
+}
+.oss-title {
+  font: 600 17px / 1.3 var(--font-display);
+  letter-spacing: -0.03em;
+}
+.oss-summary {
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.oss-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+.oss-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.oss-tech span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.oss-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+}
+.oss-cta svg {
+  width: 13px;
+  height: 13px;
+}
+@media (max-width: 859px) {
+  .oss-maintained {
+    grid-template-columns: 1fr;
+  }
+  .oss-maintained-actions {
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 759px) {
+  .oss-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* A narrow card puts the status under the project, so the name and repo
+   keep the full width instead of wrapping beside the pill. */
+@container oss-card (max-width: 439.98px) {
+  .oss-card-top {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
