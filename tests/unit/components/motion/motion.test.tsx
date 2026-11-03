@@ -34,6 +34,8 @@ import { Atmosphere } from "@/components/background/Atmosphere";
 import { MotionFoundation } from "@/components/motion/MotionFoundation";
 import { RecommendationCarousel } from "@/components/sections/testimonials/RecommendationCarousel";
 import { MagneticLink } from "@/components/ui/MagneticLink";
+import { loadFeatures } from "@/components/ui/loadMotionFeatures";
+import motionFeatures from "@/components/ui/motionFeatures";
 import { DepthCard } from "@/components/ui/DepthCard";
 import { localContent } from "@/content";
 beforeEach(() => {
@@ -105,6 +107,10 @@ it("keeps magnetic link hit targets fixed and skips movement for reduced motion"
   rerender(<MagneticLink href="#work">Work</MagneticLink>);
   fireEvent(link, move);
   expect(link.style.transform).toBe("");
+});
+it("loads the magnetic link's animation features on demand", async () => {
+  // Awaited here so coverage never depends on when the lazy import settles.
+  await expect(loadFeatures()).resolves.toBe(motionFeatures);
 });
 it("never loads motion or decorative cursor when disabled", () => {
   runtime.enabled = false;

@@ -2,8 +2,7 @@
 import { useState, type ReactNode } from "react";
 import { LazyMotion, m } from "motion/react";
 import { useMotionEnabled } from "@/components/motion/useMotionEnabled";
-const loadFeatures = () =>
-  import("./motionFeatures").then((module) => module.default);
+import { loadFeatures } from "./loadMotionFeatures";
 /** Only the contents move, by at most 3px. The actual hit target never moves. */
 export function MagneticLink({
   href,
