@@ -89,6 +89,11 @@ describe("personal data", () => {
       for (const email of emails) expect(read(file), file).not.toContain(email);
   });
 
+  it("publishes no personal webmail address anywhere in the source", () => {
+    for (const file of source)
+      expect(read(file), file).not.toMatch(/@(gmail|yahoo|outlook|hotmail)\./i);
+  });
+
   it("publishes no phone numbers", () => {
     for (const file of source)
       expect(read(file), file).not.toMatch(/href=["'`]tel:|\+1[\s-]?\(?\d{3}/);
