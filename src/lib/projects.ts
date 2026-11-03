@@ -32,10 +32,32 @@ export function parentOf(project: Project, projects: readonly Project[]) {
 }
 
 /** Project link buttons, always in this order. */
-export const linkOrder = ["github", "pypi", "devpost", "blog"] as const;
+export const linkOrder = [
+  "github",
+  "pypi",
+  "video",
+  "devpost",
+  "blog",
+  "devto",
+] as const;
 
 export function projectLinks(project: Project) {
   return linkOrder.flatMap((kind) =>
     project.links?.[kind] ? [{ kind, href: project.links[kind]! }] : [],
   );
+}
+
+/**
+ * The image a shared link shows: the card's own image when it shows the
+ * project (an illustrative cover would lose its label), else the first
+ * screenshot, each with its description. Null when there is neither.
+ */
+export function shareImage(p: Project) {
+  const display = p.coverDisplay;
+  if (display?.src && !display.illustrative)
+    return { url: display.src, alt: display.alt ?? p.title };
+  const gallery = p.caseStudy?.gallery;
+  return gallery
+    ? { url: gallery.cover, alt: gallery.alt?.[0] ?? p.title }
+    : null;
 }

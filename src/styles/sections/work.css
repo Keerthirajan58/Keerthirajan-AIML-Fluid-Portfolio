@@ -123,8 +123,20 @@
 .project-card:hover .project-image img {
   transform: scale(1.04);
 }
+/* A wide screenshot shown whole, floating on the placeholder's soft field. */
+.project-image[data-fit="contain"] {
+  background:
+    radial-gradient(circle at 18% 22%, var(--glow-a), transparent 55%),
+    radial-gradient(circle at 85% 78%, var(--glow-b), transparent 60%),
+    var(--placeholder-base);
+}
+.project-image[data-fit="contain"] img {
+  padding: 18px;
+  object-position: center;
+}
 .project-open,
-.project-achievement {
+.project-achievement,
+.project-cover-note {
   position: absolute;
   display: inline-flex;
   align-items: center;
@@ -139,6 +151,16 @@
   right: 12px;
   background: var(--surface);
   color: var(--ink);
+  box-shadow: 0 6px 16px -8px rgb(15 16 19 / 0.45);
+}
+/* Says a cover only illustrates the project, rather than showing it. */
+.project-cover-note {
+  right: 12px;
+  bottom: 12px;
+  padding: 5px 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
   box-shadow: 0 6px 16px -8px rgb(15 16 19 / 0.45);
 }
 .project-achievement {

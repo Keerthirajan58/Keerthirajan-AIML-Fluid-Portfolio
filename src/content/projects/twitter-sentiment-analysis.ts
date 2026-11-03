@@ -8,6 +8,11 @@ export const twitterSentimentAnalysis: Project = {
     "Real-time sentiment analysis web app for extracting product insights from Twitter data.",
   tags: ["Tweepy", "TextBlob", "Python", "Flask"],
   filters: ["aiml", "web"],
+  // Drawn for this site: it illustrates the project, it isn't a screenshot.
+  coverDisplay: {
+    illustrative: true,
+    alt: "Illustration: a sentiment app showing 58% of recent tweets for #productlaunch as positive, with example tweets labelled positive, neutral and negative",
+  },
   notes: [
     {
       text: "The purpose of this project is to perform real-time sentiment analysis on Twitter data. Users can input either a Twitter username or a hashtag, and the application fetches relevant tweets using the Twitter API. By analyzing these tweets with TextBlob, it categorizes them as Positive, Negative, or Neutral and calculates the percentage for each sentiment. The insights can help businesses make data-driven decisions by understanding public sentiment.",

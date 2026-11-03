@@ -170,7 +170,7 @@ function mapProject(
     filters: lines(f, "filters") as FilterId[],
   };
   const links = Object.fromEntries(
-    (["github", "pypi", "devpost", "blog"] as const)
+    (["github", "pypi", "video", "devpost", "blog", "devto"] as const)
       .filter((key) => str(f, key))
       .map((key) => [key, str(f, key)]),
   );
@@ -186,7 +186,32 @@ function mapProject(
   if (notes.length) project.notes = notes;
   else if (local?.notes) project.notes = local.notes;
   if (f["private-repo"] === true) project.privateRepo = true;
+  // Each cover field falls back to the local project; the local description
+  // applies only while the card shows the same image.
+  const shown = local?.coverDisplay;
+  const src = media(f["card-cover"]) || shown?.src;
+  const coverAlt =
+    str(f, "cover-alt") || (src === shown?.src ? shown?.alt : undefined);
+  const coverDisplay = {
+    ...(src ? { src } : {}),
+    ...(str(f, "cover-fit") === "contain" || shown?.fit === "contain"
+      ? { fit: "contain" as const }
+      : {}),
+    ...(coverAlt ? { alt: coverAlt } : {}),
+    ...(f["cover-illustrative"] === true || shown?.illustrative
+      ? { illustrative: true }
+      : {}),
+  };
+  if (Object.keys(coverDisplay).length) project.coverDisplay = coverDisplay;
   const cover = media(f.cover);
+  const slides = Array.isArray(f.slides) ? f.slides.map(media) : [];
+  // The local descriptions apply only while the CMS has the same images.
+  const localAlt = local?.caseStudy?.gallery?.alt;
+  const alt = lines(f, "gallery-alt").length
+    ? lines(f, "gallery-alt")
+    : localAlt?.length === slides.length + 1
+      ? localAlt
+      : [];
   // A cover, a focus or a matching local case study makes a case-study page.
   if (cover || str(f, "focus") || local?.caseStudy) {
     const tech = lines(f, "tech");
@@ -202,7 +227,8 @@ function mapProject(
         ? {
             gallery: {
               cover,
-              slides: Array.isArray(f.slides) ? f.slides.map(media) : [],
+              slides,
+              ...(alt.length ? { alt } : {}),
             },
           }
         : {}),

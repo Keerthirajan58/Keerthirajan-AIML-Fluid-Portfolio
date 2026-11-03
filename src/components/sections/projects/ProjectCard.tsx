@@ -53,10 +53,20 @@ export function ProjectCard({
       {cover ? (
         <Image
           src={cover}
-          alt={p.title + " preview"}
+          alt={
+            p.coverDisplay?.alt ??
+            (cover === p.caseStudy?.gallery?.cover
+              ? p.caseStudy?.gallery?.alt?.[0]
+              : undefined) ??
+            p.title + " preview"
+          }
           fill
           sizes="(max-width: 599px) 100vw, (max-width: 959px) 50vw, 33vw"
-          className="object-cover"
+          className={
+            p.coverDisplay?.fit === "contain"
+              ? "object-contain"
+              : "object-cover"
+          }
         />
       ) : (
         // No screenshot exists yet: show the real stack instead of a fake visual.
@@ -71,6 +81,12 @@ export function ProjectCard({
           </ul>
           <span className="placeholder-note">Screenshot coming soon</span>
         </div>
+      )}
+      {cover && p.coverDisplay?.illustrative && (
+        // The image's alt text already says what it is.
+        <span className="project-cover-note" aria-hidden="true">
+          Illustrative image
+        </span>
       )}
       {route && (
         <span className="project-open">
@@ -89,11 +105,18 @@ export function ProjectCard({
   return (
     <article className="project-card surface" data-project={p.slug}>
       {route ? (
-        <Link href={route} className="project-image" tabIndex={-1}>
+        <Link
+          href={route}
+          className="project-image"
+          data-fit={p.coverDisplay?.fit}
+          tabIndex={-1}
+        >
           {preview}
         </Link>
       ) : (
-        <div className="project-image">{preview}</div>
+        <div className="project-image" data-fit={p.coverDisplay?.fit}>
+          {preview}
+        </div>
       )}
       <div className="project-content">
         <span className="project-category">{p.badge}</span>

@@ -11,7 +11,13 @@ import {
 import { wrapIndex } from "@/lib/navigation";
 import { galleryRowHeight, placeJustified } from "@/lib/layout";
 import { ExpandIcon } from "@/components/ui/icons";
-export type GalleryImage = { src: string; width: number; height: number };
+export type GalleryImage = {
+  src: string;
+  width: number;
+  height: number;
+  /** What the image shows; defaults to "<title>, image N". */
+  alt?: string;
+};
 
 /**
  * "A closer look": justified rows, like a photo book. Every image keeps its
@@ -87,7 +93,7 @@ export function ProjectGallery({
             type="button"
             className="gallery-tile"
             style={{ "--ratio": ratios[i].toFixed(4) } as CSSProperties}
-            aria-label={`Open image ${i + 1} of ${images.length}`}
+            aria-label={`Open image ${i + 1} of ${images.length}${img.alt ? `: ${img.alt}` : ""}`}
             onClick={(e) => {
               opener.current = e.currentTarget;
               setLightbox(i);
@@ -96,7 +102,7 @@ export function ProjectGallery({
           >
             <Image
               src={img.src}
-              alt={`${title}, image ${i + 1}`}
+              alt={img.alt ?? `${title}, image ${i + 1}`}
               width={img.width}
               height={img.height}
               sizes={`(max-width: 879px) 60vw, ${Math.min(1208, Math.round(ratios[i] * 360))}px`}
@@ -125,6 +131,7 @@ export function ProjectGallery({
         <div className="lightbox-toolbar">
           <span aria-live="polite">
             {lightbox + 1} / {images.length}
+            {current.alt && <span className="sr-only">: {current.alt}</span>}
           </span>
           <button
             type="button"
@@ -137,7 +144,7 @@ export function ProjectGallery({
         </div>
         <Image
           src={current.src}
-          alt={`${title}, image ${lightbox + 1}`}
+          alt={current.alt ?? `${title}, image ${lightbox + 1}`}
           width={current.width}
           height={current.height}
           sizes="100vw"

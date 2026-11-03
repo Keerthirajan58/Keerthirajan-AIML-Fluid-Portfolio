@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CaseStudy } from "@/components/case-study/CaseStudy";
 import { caseStudyRoutes } from "@/lib/content/repository";
 import { loadContent } from "@/lib/content/load";
-import { getProjectBySlug } from "@/lib/projects";
+import { getProjectBySlug, shareImage } from "@/lib/projects";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     openGraph: {
       title: p.title,
       description: p.description,
-      ...(p.caseStudy?.gallery ? { images: [p.caseStudy.gallery.cover] } : {}),
+      ...(shareImage(p) ? { images: [shareImage(p)!] } : {}),
     },
   };
 }

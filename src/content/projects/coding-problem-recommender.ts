@@ -11,6 +11,11 @@ export const codingProblemRecommender: Project = {
   links: {
     github: "https://github.com/Keerthirajan58/Interview-prep-tool-AI-ML-",
   },
+  // The card frames the app's own screenshots; the gallery keeps them as taken.
+  coverDisplay: {
+    src: "/images/projects/coding-problem-recommender/card.jpg",
+    alt: "Screenshots: the Interview Prep Tool form and its Recommended Problems table",
+  },
   caseStudy: {
     focus: "Semantic Search / Interview Prep",
     timeline: "Jan 2025 - Apr 2025",
@@ -30,6 +35,12 @@ export const codingProblemRecommender: Project = {
         "/images/projects/coding-problem-recommender/slide-1.jpg",
         "/images/projects/coding-problem-recommender/slide-2.jpg",
         "/images/projects/coding-problem-recommender/slide-3.jpg",
+      ],
+      alt: [
+        "Interview Prep Tool form with a job description box, a difficulty dropdown, a recommendations slider set to 10, and a Get Recommendations button.",
+        "Recommended Problems table listing ten LeetCode problems with difficulty and topics, followed by a short explanation of why they were picked.",
+        "Dataset preview of LeetCode problems with id, title, description, premium and difficulty columns, topped by summary charts for each column.",
+        "Bar chart comparing no clustering with K-Means clustering: similarity score 25% versus 60%, and topic coverage 22% versus 85%.",
       ],
     },
     sections: [

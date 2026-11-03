@@ -129,6 +129,29 @@ describe("case-study gallery", () => {
     expect(opener).toHaveFocus();
   });
 
+  it("names each image by its description and announces it in the viewer", async () => {
+    const described = images.map((img, i) => ({
+      ...img,
+      alt: ["A dashboard", "A phone screen", "A team photo"][i],
+    }));
+    render(<ProjectGallery images={described} title="Demo" />);
+    await userEvent.click(
+      screen.getByRole("button", { name: "Open image 2 of 3: A phone screen" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByRole("img")).toHaveAttribute(
+      "alt",
+      "A phone screen",
+    );
+    expect(dialog.querySelector("[aria-live]")).toHaveTextContent(
+      "2 / 3: A phone screen",
+    );
+    fireEvent.keyDown(dialog, { key: "ArrowRight" });
+    expect(dialog.querySelector("[aria-live]")).toHaveTextContent(
+      "3 / 3: A team photo",
+    );
+  });
+
   it("renders no controls for empty media", () => {
     const { container } = render(<ProjectGallery images={[]} title="Empty" />);
     expect(container).toBeEmptyDOMElement();

@@ -8,6 +8,11 @@ export const giTractSegmentation: Project = {
     "Deep learning project for segmenting gastro-intestinal tract organs and tumor regions from MRI scans.",
   tags: ["Deep Learning", "Computer Vision", "Medical AI"],
   filters: ["aiml", "cv"],
+  // Drawn for this site: it illustrates the project, it isn't a screenshot.
+  coverDisplay: {
+    illustrative: true,
+    alt: "Illustration: an MRI viewer with the stomach, small bowel and large bowel highlighted on an abdominal slice",
+  },
   // The old public repository returns 404, so the card has no GitHub link.
   notes: [
     {

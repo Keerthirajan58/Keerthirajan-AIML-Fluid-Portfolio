@@ -136,6 +136,81 @@ describe("work cards", () => {
     expect(screen.getByText("Screenshot coming soon")).toBeVisible();
   });
 
+  it("shows a wide screenshot whole and labels illustrations as such", () => {
+    render(<Projects />);
+    const card = (slug: string) =>
+      document.querySelector<HTMLElement>(`[data-project="${slug}"]`)!;
+    const bugbout = card("bugbout");
+    expect(bugbout.querySelector(".project-image")).toHaveAttribute(
+      "data-fit",
+      "contain",
+    );
+    expect(bugbout.querySelector("img")).toHaveClass("object-contain");
+    // The card reuses the gallery's description of its cover.
+    expect(bugbout.querySelector("img")?.getAttribute("alt")).toMatch(
+      /^bugbout tasks: /,
+    );
+    expect(within(bugbout).queryByText("Illustrative image")).toBeNull();
+    // Drawn covers say they only illustrate the project; the alt text says
+    // what each one shows, so the pill is hidden from screen readers.
+    for (const slug of [
+      "moodbites",
+      "water-quality-analysis",
+      "job-event-search",
+    ]) {
+      const note = within(card(slug)).getByText("Illustrative image");
+      expect(note).toBeVisible();
+      expect(note).toHaveAttribute("aria-hidden", "true");
+      expect(card(slug).querySelector("img")).toHaveClass("object-cover");
+    }
+    expect(card("moodbites").querySelector("img")?.getAttribute("alt")).toMatch(
+      /^Illustration: /,
+    );
+    // A card can show an image made for it instead of the first screenshot.
+    const coding = card("coding-problem-recommender").querySelector("img");
+    expect(coding?.getAttribute("alt")).toMatch(/^Screenshots: /);
+    expect(coding).toHaveAttribute(
+      "src",
+      "/images/projects/coding-problem-recommender/card.jpg",
+    );
+    expect(
+      within(card("coding-problem-recommender")).queryByText(
+        "Illustrative image",
+      ),
+    ).toBeNull();
+  });
+
+  it("describes a card image only with text written for it", () => {
+    const study = newCaseStudy({
+      gallery: { ...newCaseStudy().gallery!, alt: ["The first slide", "Next"] },
+    });
+    render(
+      <ProjectCard
+        index={0}
+        project={newProject({
+          caseStudy: study,
+          coverDisplay: { src: "/images/projects/orbit-planner/card.jpg" },
+        })}
+      />,
+    );
+    expect(screen.getByRole("img")).toHaveAttribute(
+      "alt",
+      "Orbit Planner preview",
+    );
+  });
+
+  it("never labels a missing cover as illustrative", () => {
+    const content = contentWith((c) =>
+      c.projects.push(newProject({ coverDisplay: { illustrative: true } })),
+    );
+    render(<Projects content={content} />);
+    const card = document.querySelector<HTMLElement>(
+      '[data-project="orbit-planner"]',
+    )!;
+    expect(card.querySelector(".project-placeholder")).not.toBeNull();
+    expect(within(card).queryByText("Illustrative image")).toBeNull();
+  });
+
   it("skips chapter links for projects that aren't chapters", () => {
     render(
       <ProjectCard

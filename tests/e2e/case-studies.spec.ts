@@ -91,14 +91,17 @@ test("gallery keeps image order in aligned justified rows and supports an access
       : "distorted";
   });
   expect(layout).toBe("true to shape");
+  // Each tile is named by what its image shows, and the viewer says it too.
+  const alt = content.projects.find((p) => p.slug === "siri-core-modeling")!
+    .caseStudy!.gallery!.alt!;
   const opener = page.getByRole("button", {
-    name: "Open image 2 of 4",
+    name: `Open image 2 of 4: ${alt[1]}`,
     exact: true,
   });
   await opener.click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("dialog")).toContainText("3 / 4");
+  await expect(page.getByRole("dialog")).toContainText(`3 / 4: ${alt[2]}`);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(opener).toBeFocused();

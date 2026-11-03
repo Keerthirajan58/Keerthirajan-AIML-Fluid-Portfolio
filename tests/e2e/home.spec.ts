@@ -134,9 +134,13 @@ test("revised art direction keeps credentials visible and project actions integr
       };
     }),
   ).toEqual({ betweenLines: true, clearOfTitle: true });
-  await expect(
-    page.locator(".project-image .project-achievement"),
-  ).toContainText("Technica winner");
+  // Every award ribbon sits on its own project's cover.
+  for (const p of work.filter((p) => p.achievement))
+    await expect(
+      page.locator(
+        `[data-project="${p.slug}"] .project-image .project-achievement`,
+      ),
+    ).toHaveText(p.achievement!.label);
   await expect(
     page.locator(".project-card .project-next-chapter"),
   ).toHaveAttribute("href", "/projects/barterbrain-nvc");

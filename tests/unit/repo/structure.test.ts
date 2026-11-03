@@ -7,7 +7,9 @@ import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { localContent } from "@/content";
 import { homeSections } from "@/content/site";
+import { projectCover } from "@/lib/server/images";
 
 const root = process.cwd();
 const read = (path: string) => readFileSync(join(root, path), "utf8");
@@ -252,6 +254,8 @@ describe("styles", () => {
 describe("public assets", () => {
   it("are all in use: no starter files or orphans are deployed", () => {
     const text = sourceFiles.map(read).join("\n");
+    // Dropped-in covers count only when a card really shows them.
+    const shownCovers = new Set(localContent.projects.map(projectCover));
     const unused = walk("public")
       .map((f) => f.replace(/^public/, ""))
       .filter((asset) => {
@@ -259,12 +263,7 @@ describe("public assets", () => {
         // Found by name at render time (see findPublicImage / projectCover).
         if (/^\/images\/contact-profile\.(jpg|jpeg|png|webp)$/.test(asset))
           return false;
-        if (
-          /^\/images\/projects\/[a-z0-9-]+\/cover\.(jpg|jpeg|png|webp)$/.test(
-            asset,
-          )
-        )
-          return false;
+        if (shownCovers.has(asset)) return false;
         // Certification logos are named through the logo() helper.
         const logo = asset.match(/^\/images\/brands\/certs\/([a-z-]+)\.png$/);
         return !(logo && text.includes(`logo("${logo[1]}")`));

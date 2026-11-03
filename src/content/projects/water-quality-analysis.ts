@@ -8,6 +8,11 @@ export const waterQualityAnalysis: Project = {
     "End-to-end model for water quality prediction using turbidity, hardness, and related environmental factors.",
   tags: ["XGBoost", "IBM Cloud", "ML Pipelines"],
   filters: ["aiml"],
+  // Drawn for this site: it illustrates the project, it isn't a screenshot.
+  coverDisplay: {
+    illustrative: true,
+    alt: "Illustration: a potability check scoring a water sample 0.81, Potable, from readings such as pH, hardness, sulfate and turbidity",
+  },
   links: {
     github:
       "https://github.com/Keerthirajan58/IBM---EFFICIENT-WATER-QUALITY-ANALYSIS-AND-PREDICTION",

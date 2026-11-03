@@ -39,6 +39,9 @@ function referencedFiles() {
           ]
         : [],
     ),
+    ...content.projects.flatMap((p) =>
+      p.coverDisplay?.src ? [p.coverDisplay.src] : [],
+    ),
     ...content.certifications.flatMap((c) => (c.logo ? [c.logo] : [])),
     ...content.testimonials.map((t) => t.image),
   ];

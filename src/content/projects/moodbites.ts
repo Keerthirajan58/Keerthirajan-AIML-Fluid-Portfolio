@@ -8,6 +8,11 @@ export const moodbites: Project = {
     "Kotlin Android app that recommends and tracks meals based on mood signals and user history.",
   tags: ["Kotlin", "Firebase", "Android"],
   filters: ["mobile", "aiml"],
+  // Drawn for this site: it illustrates the project, it isn't a screenshot.
+  coverDisplay: {
+    illustrative: true,
+    alt: "Illustration: a phone app asking how you feel and suggesting meals for a tired day, such as lentil soup and a berry yogurt bowl, beside a weekly mood log and an order confirmation",
+  },
   links: {
     github: "https://github.com/Keerthirajan58/Mood-Bites---Kotlin-App",
   },

@@ -21,6 +21,12 @@ export const siriCoreModeling: Project = {
         "/images/projects/siri-core-modeling/slide-2.jpg",
         "/images/projects/siri-core-modeling/slide-3.jpg",
       ],
+      alt: [
+        "Keerthirajan smiling in glasses and a gray sweater, arms crossed, beside a white Apple sign reading Dexter 333 above a flower bed.",
+        'Apple intern welcome kit on a desk: laptop captioned "From this, May \'25", keyboard, trackpads, mouse, nameplate, boxed cables, EarPods, notebook and bag.',
+        "Same desk captioned \"To this, Aug '25\", with a laptop showing an intern profile and a monitor celebrating Apple's 2025 interns.",
+        "Tall dark glass office building under a blue sky, with an Apple sign reading Dexter 333 and colorful sculptures out front.",
+      ],
     },
     sections: [
       {

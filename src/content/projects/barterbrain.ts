@@ -39,6 +39,16 @@ export const barterbrain: Project = {
         "/images/projects/barterbrain/slide-5.jpg",
         "/images/projects/barterbrain/slide-6.jpg",
       ],
+      alt: [
+        "Five people smile on a stage before a black curtain; three with hacker badges hold small prize boxes, flanked by two Technica organizers.",
+        'BarterBrAIn splash screen with an orange circuit-brain logo, the tagline "Barter better with BarterBrAIn," and a loading bar.',
+        "Edit Product form for a Samsung Galaxy S20FE listing, with two phone photos, brand, age, a $34.75 price and Fair condition.",
+        "Price Setup screen showing an AI-suggested price of $34.75 at 85% confidence, a written explanation, and buttons to accept it or set your own.",
+        "In-app chat where two traders negotiate a cash adjustment, topped by a green Trade Completed banner and a prompt to arrange a meetup.",
+        "Trade Details screen with each trader's total, a $24.19 price difference, a sustainability card noting 30 kg of CO2 saved, and a timeline.",
+        "Hackathon participants wearing Technica lanyards gather at a laptop-covered table, holding two smartphones up side by side to compare their screens.",
+        "Two participants work side by side at laptops in a crowded hackathon room, one laptop bearing a Major League Hacking sticker.",
+      ],
     },
     sections: [
       {

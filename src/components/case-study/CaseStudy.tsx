@@ -11,6 +11,7 @@ import {
   GitHubIcon,
   LockIcon,
   PackageIcon,
+  PlayIcon,
 } from "@/components/ui/icons";
 import {
   chaptersOf,
@@ -28,9 +29,22 @@ const linkStyles: Record<
 > = {
   github: { label: "View on GitHub", icon: <GitHubIcon /> },
   pypi: { label: "View on PyPI", icon: <PackageIcon /> },
+  video: { label: "Watch the demo", icon: <PlayIcon /> },
   devpost: { label: "View on Devpost", icon: <DevpostIcon /> },
   blog: { label: "Read the write-up", icon: <BookIcon /> },
+  devto: { label: "Read on DEV", icon: <BookIcon /> },
 };
+
+/** A write-up on Medium says where it opens; other links keep their label. */
+function linkLabel(kind: (typeof linkOrder)[number], href: string) {
+  if (
+    kind === "blog" &&
+    URL.canParse(href) &&
+    /(^|\.)medium\.com$/.test(new URL(href).hostname)
+  )
+    return "Read on Medium";
+  return linkStyles[kind].label;
+}
 
 function BackToWork() {
   return (
@@ -91,7 +105,7 @@ export function CaseStudy({
                 data-kind={kind}
               >
                 {linkStyles[kind].icon}
-                {linkStyles[kind].label}
+                {linkLabel(kind, href)}
                 <ArrowUpRightIcon width={14} height={14} />
               </a>
             ))}
@@ -188,10 +202,13 @@ export function CaseStudy({
             <>
               <h2 className="subheading">A closer look</h2>
               <ProjectGallery
-                images={[cs.gallery.cover, ...cs.gallery.slides].map((src) => ({
-                  src,
-                  ...getImageSize(src),
-                }))}
+                images={[cs.gallery.cover, ...cs.gallery.slides].map(
+                  (src, i) => ({
+                    src,
+                    ...getImageSize(src),
+                    alt: cs.gallery!.alt?.[i],
+                  }),
+                )}
                 title={p.title}
               />
             </>

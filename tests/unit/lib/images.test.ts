@@ -111,6 +111,15 @@ describe("public images by name", () => {
     expect(projectCover(newProject({ caseStudy: newCaseStudy() }))).toBe(
       "/images/projects/pitchpulse/cover.jpg",
     );
+    // An image made for the card wins over the case study's first screenshot.
+    expect(
+      projectCover(
+        newProject({
+          caseStudy: newCaseStudy(),
+          coverDisplay: { src: "/images/projects/orbit-planner/card.jpg" },
+        }),
+      ),
+    ).toBe("/images/projects/orbit-planner/card.jpg");
     expect(projectCover(newProject())).toBeNull();
     files.set("/images/projects/orbit-planner/cover.jpg", jpeg(1600, 1100));
     expect(projectCover(newProject())).toBe(

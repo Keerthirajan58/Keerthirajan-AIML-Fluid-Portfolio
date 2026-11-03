@@ -34,6 +34,14 @@ export const historicalEventNarrator: Project = {
         "/images/projects/historical-event-narrator/slide-4.jpg",
         "/images/projects/historical-event-narrator/slide-5.jpg",
       ],
+      alt: [
+        "Historical Event Narrator Streamlit app loading the fine-tuned model, with the Hiroshima and Nagasaki atomic bombing entered as the topic",
+        "Fine-tuned model's alternate-history story about the 1945 atomic bombings, followed by an AI judge verdict scoring creativity, relevance and twist quality",
+        "App settings with Base Mistral-7B selected, creativity set to 1.50, and the base model loading for the atomic bombings topic",
+        "Base Mistral-7B output written as a plain academic essay on the Hiroshima and Nagasaki bombings, with an essay-style heading",
+        "Base model's factual essay on the bombings, with an AI judge verdict below giving low creativity and twist scores",
+        "AI judge verdict on the base model's essay, scoring creativity, accuracy and twist quality low and listing its factual errors",
+      ],
     },
     sections: [
       {

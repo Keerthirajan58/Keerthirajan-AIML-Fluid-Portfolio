@@ -124,6 +124,12 @@ describe("content schema", () => {
     rejects((c) => {
       c.projects[0].caseStudy!.gallery = { cover: "not an image", slides: [] };
     }, "Unsupported image");
+    // Alt text, when given, describes every image: the cover and each slide.
+    rejects((c) => {
+      const gallery = c.projects.find((p) => p.slug === "nightshift")!
+        .caseStudy!.gallery!;
+      gallery.alt = gallery.alt!.slice(1);
+    }, "Gallery alt text must describe every image: nightshift");
   });
 
   it("keeps a private project's code unlinked", () => {

@@ -72,9 +72,24 @@ describe("case-study route", () => {
       openGraph: {
         title: "PitchPulse",
         description: expect.any(String),
-        images: ["/images/projects/pitchpulse/cover.jpg"],
+        images: [
+          {
+            url: "/images/projects/pitchpulse/cover.jpg",
+            alt: localContent.projects.find((p) => p.slug === "pitchpulse")!
+              .caseStudy!.gallery!.alt![0],
+          },
+        ],
       },
     });
+    // A card image made from real screenshots is what a shared link shows.
+    expect(
+      (await generateMetadata(params("coding-problem-recommender"))).openGraph,
+    ).toHaveProperty("images", [
+      {
+        url: "/images/projects/coding-problem-recommender/card.jpg",
+        alt: "Screenshots: the Interview Prep Tool form and its Recommended Problems table",
+      },
+    ]);
     // A project without a page keeps its title but has no share image.
     const moodbites = await generateMetadata(params("moodbites"));
     expect(moodbites.openGraph).not.toHaveProperty("images");

@@ -32,6 +32,11 @@ const projectFields = (p: Project): Record<string, unknown> => ({
   "achievement-detail": p.achievement?.detail,
   cover: p.caseStudy?.gallery && { url: p.caseStudy.gallery.cover },
   slides: p.caseStudy?.gallery?.slides.map((url) => ({ url })),
+  "gallery-alt": p.caseStudy?.gallery?.alt?.join("\n"),
+  "card-cover": p.coverDisplay?.src && { url: p.coverDisplay.src },
+  "cover-fit": p.coverDisplay?.fit,
+  "cover-alt": p.coverDisplay?.alt,
+  "cover-illustrative": p.coverDisplay?.illustrative,
   "private-repo": p.privateRepo,
   focus: p.caseStudy?.focus,
   timeline: p.caseStudy?.timeline,
@@ -302,6 +307,57 @@ describe("Webflow mapping", () => {
       );
   });
 
+  it("keeps the local cover display and image descriptions when the CMS has none", () => {
+    const records = snapshot();
+    const fields = (slug: string) =>
+      records.projects.find((p) => p.id === slug)!.fieldData;
+    for (const slug of ["bugbout", "moodbites", "nightshift"]) {
+      const f = fields(slug);
+      delete f["cover-fit"];
+      delete f["cover-alt"];
+      delete f["cover-illustrative"];
+      delete f["gallery-alt"];
+    }
+    // With a different set of images, the local descriptions no longer fit.
+    const shift = fields("nightshift");
+    shift.slides = (shift.slides as { url: string }[]).slice(1);
+    const mapped = mapCollections(records).projects;
+    const bySlug = (slug: string) => mapped.find((p) => p.slug === slug)!;
+    const localOf = (slug: string) =>
+      local.projects.find((p) => p.slug === slug)!;
+    expect(bySlug("bugbout").coverDisplay).toEqual({ fit: "contain" });
+    expect(bySlug("bugbout").caseStudy?.gallery?.alt).toEqual(
+      localOf("bugbout").caseStudy?.gallery?.alt,
+    );
+    expect(bySlug("moodbites").coverDisplay).toEqual(
+      localOf("moodbites").coverDisplay,
+    );
+    expect(bySlug("nightshift").caseStudy?.gallery).not.toHaveProperty("alt");
+  });
+
+  it("never reuses a card image's description for a different image", () => {
+    const records = snapshot();
+    const coding = records.projects.find(
+      (p) => p.id === "coding-problem-recommender",
+    )!.fieldData;
+    // Without CMS values, the local image and its description apply.
+    delete coding["card-cover"];
+    delete coding["cover-alt"];
+    expect(
+      mapCollections(records).projects.find(
+        (p) => p.slug === "coding-problem-recommender",
+      )?.coverDisplay,
+    ).toEqual(
+      local.projects.find((p) => p.slug === "coding-problem-recommender")
+        ?.coverDisplay,
+    );
+    // A different image needs its own description.
+    coding["card-cover"] = { url: "/images/projects/pitchpulse/cover.jpg" };
+    expect(() => mapCollections(records)).toThrow(
+      "A card image needs its own alt text",
+    );
+  });
+
   it("maps sparse CMS entries: bullets-only sections, no slides, education notes", () => {
     const records = snapshot();
     records.sections = [
@@ -313,6 +369,8 @@ describe("Webflow mapping", () => {
     ];
     const face = records.projects.find((p) => p.id === "face-cloaking")!;
     delete face.fieldData.slides;
+    // With no slides, the descriptions must shrink to the cover's alone.
+    face.fieldData["gallery-alt"] = "The cover only.";
     records.education[0].fieldData.notes = "Thesis track.\nTeaching assistant.";
     const result = mapCollections(records);
     const study = result.projects.find(
@@ -322,6 +380,7 @@ describe("Webflow mapping", () => {
       { heading: "Just bullets", bullets: ["A", "B"] },
     ]);
     expect(study.gallery!.slides).toEqual([]);
+    expect(study.gallery!.alt).toEqual(["The cover only."]);
     expect(result.education[0].notes).toEqual([
       "Thesis track.",
       "Teaching assistant.",

@@ -134,7 +134,12 @@ export interface CaseStudy {
    * order. Without a gallery the page has no "A closer look" section and the
    * card uses a dropped-in cover file or its placeholder.
    */
-  gallery?: { cover: string; slides: string[] };
+  gallery?: {
+    cover: string;
+    slides: string[];
+    /** Describes each image, cover first; defaults to "<title>, image N". */
+    alt?: string[];
+  };
   sections: CaseStudySection[];
 }
 
@@ -162,7 +167,29 @@ export interface Project {
   tags: string[];
   /** Work filters this project appears under. */
   filters: FilterId[];
-  links?: { github?: string; pypi?: string; devpost?: string; blog?: string };
+  /** Buttons on the case study, shown in a fixed order (see `linkOrder`). */
+  links?: {
+    github?: string;
+    pypi?: string;
+    /** A demo video. */
+    video?: string;
+    devpost?: string;
+    /** A write-up; labelled "Read on Medium" when it is on Medium. */
+    blog?: string;
+    /** The same write-up on DEV. */
+    devto?: string;
+  };
+  /** How the card shows its cover. */
+  coverDisplay?: {
+    /** An image made for the card, used instead of the case study's first screenshot; needs `alt`. */
+    src?: string;
+    /** Shows the whole image, for wide screenshots, instead of filling the frame. */
+    fit?: "contain";
+    /** Describes the cover when "<title> preview" would mislead, e.g. an illustration. */
+    alt?: string;
+    /** The cover only illustrates the project (a drawn mock-up, not a screenshot); the card says so. */
+    illustrative?: boolean;
+  };
   /**
    * The code is private: no repository link, and the card and case study say
    * so and offer a walkthrough through the contact section instead.

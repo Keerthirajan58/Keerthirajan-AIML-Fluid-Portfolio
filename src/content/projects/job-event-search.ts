@@ -12,6 +12,11 @@ export const jobEventSearch: Project = {
   tags: ["Python", "LLM judge", "GitHub Actions", "SQLite"],
   filters: ["aiml", "genai", "web"],
   privateRepo: true,
+  // Drawn for this site with invented events; only the run counts are real.
+  coverDisplay: {
+    illustrative: true,
+    alt: "Illustration: a phone showing today's ranked event picks with scores and reasons, beside a run summary of 1,203 listings, 881 events and 89 picks",
+  },
   caseStudy: {
     focus: "LLM ranking · Data pipeline",
     timeline: "Aug – Oct 2026",

@@ -11,7 +11,7 @@ describe("work filters", () => {
       all: 14,
       aiml: 13,
       genai: 8,
-      hackathon: 2,
+      hackathon: 3,
       web: 5,
       mobile: 3,
       cv: 3,

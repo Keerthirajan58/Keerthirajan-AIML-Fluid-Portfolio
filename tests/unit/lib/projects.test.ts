@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { localContent } from "@/content";
 import {
+  shareImage,
   caseStudies,
   chaptersOf,
   getProjectBySlug,
@@ -19,14 +20,14 @@ describe("project selectors", () => {
   it("lists work cards in content order, without chapters", () => {
     expect(workProjects(projects).map((p) => p.slug)).toEqual([
       "siri-core-modeling",
+      "bugbout",
+      "nightshift",
+      "job-event-search",
       "barterbrain",
       "pitchpulse",
       "historical-event-narrator",
       "coding-problem-recommender",
       "face-cloaking",
-      "bugbout",
-      "job-event-search",
-      "nightshift",
       "moodbites",
       "gi-tract-segmentation",
       "water-quality-analysis",
@@ -51,8 +52,15 @@ describe("project selectors", () => {
     expect(parentOf(original, projects)).toBeUndefined();
   });
 
-  it("orders link buttons GitHub, PyPI, Devpost, then write-up", () => {
-    expect(linkOrder).toEqual(["github", "pypi", "devpost", "blog"]);
+  it("orders link buttons code, package, demo, Devpost, then write-ups", () => {
+    expect(linkOrder).toEqual([
+      "github",
+      "pypi",
+      "video",
+      "devpost",
+      "blog",
+      "devto",
+    ]);
     const p = newProject({
       links: {
         blog: "https://example.com/post",
@@ -64,6 +72,36 @@ describe("project selectors", () => {
       { kind: "blog", href: "https://example.com/post" },
     ]);
     expect(projectLinks(newProject())).toEqual([]);
+  });
+
+  it("shares a project's own image with its description, never an illustration", () => {
+    const study = newCaseStudy();
+    // The first screenshot, described when the gallery says what it shows.
+    expect(shareImage(newProject({ caseStudy: study }))).toEqual({
+      url: study.gallery!.cover,
+      alt: "Orbit Planner",
+    });
+    expect(
+      shareImage(
+        newProject({
+          caseStudy: newCaseStudy({
+            gallery: { ...study.gallery!, alt: ["Planner", "Slide"] },
+          }),
+        }),
+      ),
+    ).toEqual({ url: study.gallery!.cover, alt: "Planner" });
+    // A card image made from the project wins; an illustrative one never does.
+    const card = "/images/projects/orbit-planner/card.jpg";
+    expect(
+      shareImage(newProject({ caseStudy: study, coverDisplay: { src: card } })),
+    ).toEqual({ url: card, alt: "Orbit Planner" });
+    expect(
+      shareImage(
+        newProject({
+          coverDisplay: { src: card, alt: "A drawing", illustrative: true },
+        }),
+      ),
+    ).toBeNull();
   });
 
   it("treats a new case study like any other", () => {

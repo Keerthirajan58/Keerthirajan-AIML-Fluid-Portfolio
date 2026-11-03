@@ -2,6 +2,10 @@
 
 No third-party UI components are bundled. The React Bits Silk shader used in the September 30 revision was removed with the Clear Air redesign (October 10, 2026), along with its MIT + Commons Clause notice.
 
+## Fonts
+
+Inter and Unbounded, both under the [SIL Open Font License 1.1](https://openfontlicense.org); their licence texts are in `src/assets/fonts/`.
+
 ## Brand assets
 
 - LeetCode glyph and TCS mnemonic: [Simple Icons](https://github.com/simple-icons/simple-icons), `icons/leetcode.svg` and `icons/tcs.svg`, [CC0 1.0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md). Brand trademarks remain with their owners. LeetCode is now the recognizable brand mark, replacing the previously requested generic journal-code symbol.
@@ -19,6 +23,14 @@ No third-party UI components are bundled. The React Bits Silk shader used in the
 - Devpost mark on case-study buttons: [Simple Icons](https://github.com/simple-icons/simple-icons) `icons/devpost.svg`, [CC0 1.0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md). Trademark remains with Devpost.
 - EventDone mark: the teal check-and-E icon cut from EventDone's [official logo](https://eventdone.com/images/logo/EventDoneSVG.svg), the same mark the company uses as its site icon. Trademark remains with EventDone LLC.
 - Apple symbol remains the existing inline monochrome brand icon. Employer/school marks identify factual work/education history, not sponsorship or endorsement.
-- `BrandMark.tsx`: original code-native KS ligature for this portfolio. The PNG app icons (`src/app/icon.png`, `src/app/apple-icon.png`) are rendered from the same mark; no generative project imagery or altered authentic media.
+- `BrandMark.tsx`: original code-native KS ligature for this portfolio. The PNG app icons (`src/app/icon.png`, `src/app/apple-icon.png`) are rendered from the same mark. No project image is AI-generated. Real media is edited only as described below: the Night Shift photo crop and pointer removal, and the Coding Problem Recommender card, which frames the app's own screenshots.
 
 Design references (studied, not copied): [UpSunday](https://www.upsunday.co/), [Highflyers](https://www.highflyers.ai/) and [Alkares](https://alkares.com/) for the light, airy field-and-sheet structure. The portfolio uses original layout, code and copy; no reference-site source or artwork is reproduced.
+
+## Illustrative project covers
+
+The covers of six projects (MoodBites, GI Tract Segmentation, Water Quality Analysis, Twitter Sentiment Analysis, the Charity Donation Website and Job-Event Search) are original illustrations drawn for this portfolio in its own style. They are not screenshots, and each card labels its cover "Illustrative image". Their names, numbers and text are illustrative, except Job-Event Search's run counts, which come from the project. The Coding Problem Recommender card frames the project's own screenshots.
+
+## Event photos
+
+Night Shift's stage photos show the event's own projected slides (Dell, NVIDIA and BuilderBase); those marks belong to their owners. The build-table selfie is cropped to the team, and a stray mouse pointer is removed from two demo screenshots; nothing else is changed.

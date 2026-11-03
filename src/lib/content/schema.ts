@@ -51,9 +51,20 @@ const project = z.object({
     .object({
       github: link.optional(),
       pypi: link.optional(),
+      video: link.optional(),
       devpost: link.optional(),
       blog: link.optional(),
+      devto: link.optional(),
     })
+    .optional(),
+  coverDisplay: z
+    .object({
+      src: image.optional(),
+      fit: z.literal("contain").optional(),
+      alt: text.optional(),
+      illustrative: z.boolean().optional(),
+    })
+    .refine((d) => !d.src || d.alt, "A card image needs its own alt text")
     .optional(),
   privateRepo: z.boolean().optional(),
   achievement: z.object({ label: text, detail: text }).optional(),
@@ -72,7 +83,13 @@ const project = z.object({
       focus: text,
       timeline: text,
       tech: list.optional(),
-      gallery: z.object({ cover: image, slides: z.array(image) }).optional(),
+      gallery: z
+        .object({
+          cover: image,
+          slides: z.array(image),
+          alt: z.array(text).optional(),
+        })
+        .optional(),
       sections: z.array(section).min(1),
     })
     .optional(),
@@ -202,9 +219,13 @@ export function validateContent(
     if (!p.caseStudy || !parent?.caseStudy || parent.chapter)
       throw new Error(`Invalid chapter: ${p.slug}`);
   }
-  for (const p of content.projects)
+  for (const p of content.projects) {
     if (p.privateRepo && p.links?.github)
       throw new Error(`Private project links its repository: ${p.slug}`);
+    const gallery = p.caseStudy?.gallery;
+    if (gallery?.alt && gallery.alt.length !== gallery.slides.length + 1)
+      throw new Error(`Gallery alt text must describe every image: ${p.slug}`);
+  }
   for (const slug of content.openSource.maintained)
     if (!slugs.includes(slug))
       throw new Error(`Unknown maintained project: ${slug}`);

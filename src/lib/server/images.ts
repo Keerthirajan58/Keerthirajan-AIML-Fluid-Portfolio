@@ -78,11 +78,13 @@ function parse(buf: Buffer): ImageDimensions {
 }
 
 /**
- * A project card's image: its case-study cover, or else a `cover` file
- * dropped into `public/images/projects/<slug>/` (null shows the placeholder).
+ * A project card's image: one made for the card (`coverDisplay.src`), else
+ * its case-study cover, else a `cover` file dropped into
+ * `public/images/projects/<slug>/` (null shows the placeholder).
  */
 export function projectCover(p: Project): string | null {
   return (
+    p.coverDisplay?.src ??
     p.caseStudy?.gallery?.cover ??
     findPublicImage(`images/projects/${p.slug}/cover`)
   );

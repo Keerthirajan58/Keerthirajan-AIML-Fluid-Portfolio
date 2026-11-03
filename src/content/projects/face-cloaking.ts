@@ -27,6 +27,10 @@ export const faceCloaking: Project = {
     gallery: {
       cover: "/images/projects/face-cloaking/cover.jpg",
       slides: ["/images/projects/face-cloaking/slide-1.jpg"],
+      alt: [
+        "Failure-case analysis: original and cloaked photos of a bearded man in a red shirt, with 0.52 similarity, beside a perturbation map.",
+        "Dark 3D render of a human head covered in a web-like wireframe mesh, with glowing light-blue eyes against a black background.",
+      ],
     },
     sections: [
       {

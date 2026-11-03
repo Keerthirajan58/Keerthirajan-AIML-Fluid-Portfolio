@@ -85,7 +85,7 @@ describe("case study page", () => {
     expect(screen.getByText("LLM Evaluation")).toBeVisible();
   });
 
-  it("links a package and skips the gallery when a study has none", () => {
+  it("links code, package and write-ups, and describes each screenshot", () => {
     study("bugbout");
     expect(
       Array.from(document.querySelectorAll(".case-action")).map((a) => [
@@ -95,10 +95,45 @@ describe("case study page", () => {
     ).toEqual([
       ["github", "View on GitHub"],
       ["pypi", "View on PyPI"],
+      ["blog", "Read on Medium"],
+      ["devto", "Read on DEV"],
     ]);
+    const tiles = screen.getAllByRole("button", { name: /^Open image/ });
+    expect(tiles).toHaveLength(3);
+    expect(tiles[0]).toHaveAccessibleName(
+      "Open image 1 of 3: bugbout tasks: three past sqlparse bugs, each with the failing tests that prove the fix",
+    );
+    expect(document.querySelector(".case-private")).toBeNull();
+  });
+
+  it("links a demo video and shows a hackathon placing", () => {
+    study("nightshift");
+    expect(
+      screen.getByRole("link", { name: /Watch the demo/ }),
+    ).toHaveAttribute("href", "https://youtu.be/DaT-o4J2H8Y");
+    expect(document.querySelector(".achievement")).toHaveTextContent(
+      "2nd place · Dell x NVIDIA AI Hackathon · San Francisco",
+    );
+    expect(screen.getAllByRole("button", { name: /^Open image/ })).toHaveLength(
+      6,
+    );
+  });
+
+  it("names a write-up by its host only when the link is a full URL", () => {
+    const own = newProject({
+      links: { blog: "/writing/orbit-planner" },
+      caseStudy: newCaseStudy(),
+    });
+    study("orbit-planner", [...projects, own]);
+    expect(
+      screen.getByRole("link", { name: /Read the write-up/ }),
+    ).toHaveAttribute("href", "/writing/orbit-planner");
+  });
+
+  it("skips the gallery when a study has none", () => {
+    study("job-event-search");
     expect(document.querySelector(".gallery-tile")).toBeNull();
     expect(screen.queryByText("A closer look")).toBeNull();
-    expect(document.querySelector(".case-private")).toBeNull();
   });
 
   it("says when the code is private and offers a walkthrough instead", () => {

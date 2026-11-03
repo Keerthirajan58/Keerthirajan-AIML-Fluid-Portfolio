@@ -22,15 +22,15 @@ import { charityDonationWebsite } from "./charity-donation-website";
  */
 export const projects: Project[] = [
   siriCoreModeling,
+  bugbout,
+  nightshift,
+  jobEventSearch,
   barterbrain,
   barterbrainNvc,
   pitchpulse,
   historicalEventNarrator,
   codingProblemRecommender,
   faceCloaking,
-  bugbout,
-  jobEventSearch,
-  nightshift,
   moodbites,
   giTractSegmentation,
   waterQualityAnalysis,

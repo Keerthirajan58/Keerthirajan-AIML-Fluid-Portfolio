@@ -33,6 +33,12 @@ export const barterbrainNvc: Project = {
         "/images/projects/barterbrain-nvc/slide-3.jpg",
         "/images/projects/barterbrain-nvc/cover.jpg",
       ],
+      alt: [
+        "New Venture Competition 2026 awards ceremony: a speaker at a podium beside an 'NVC by the Numbers' slide showing 500+ participants and 215 teams.",
+        "Three team members in suits pitch on stage, one speaking into a microphone, in front of a Founding Team slide with headshots and roles.",
+        "Three team members in suits smile in a New Venture Competition 2026 photo-booth frame, against a dark wall lit by blue neon strips.",
+        "Three team members in business suits stand together and smile in front of a yellow backdrop patterned with green and blue shapes.",
+      ],
     },
     sections: [
       {
