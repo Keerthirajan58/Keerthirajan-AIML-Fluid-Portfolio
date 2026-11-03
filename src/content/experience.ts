@@ -20,6 +20,8 @@ export const experience: ExperienceEntry[] = [
     role: "AI Engineer",
     company: "EventDone LLC",
     dates: "Aug 2026 - Present",
+    location: "San Francisco, CA - Remote",
+    logo: { src: "/images/brands/eventdone.svg" },
     bullets: [
       "Working on AI integration and LLM infrastructure, with a focus on multi-model inference, API interoperability, provider routing, reliability, and developer tooling.",
       "Developed and tested LLM gateway integrations using Python, LiteLLM, Docker, REST APIs, and OpenAI-compatible SDKs, including concurrent request handling and controlled failover testing.",

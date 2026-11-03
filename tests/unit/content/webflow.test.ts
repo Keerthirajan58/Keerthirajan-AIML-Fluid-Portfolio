@@ -184,7 +184,6 @@ describe("Webflow mapping", () => {
         name: "Fabrikam",
         role: "Engineer",
         dates: "2028",
-        location: "Remote",
         bullets: "Built things.",
       }),
     );
@@ -235,6 +234,8 @@ describe("Webflow mapping", () => {
       src: "/images/brands/tcs.svg",
     });
     expect(result.experience.at(-1)).not.toHaveProperty("logo");
+    // A role without a location keeps none, rather than an empty one.
+    expect(result.experience.at(-1)).not.toHaveProperty("location");
     const [emblem, lettered, plain] = result.education.slice(-3);
     expect(emblem.logo).toEqual({
       src: "/images/brands/svce.jpg",

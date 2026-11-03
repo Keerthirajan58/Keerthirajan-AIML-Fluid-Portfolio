@@ -27,7 +27,7 @@ export const profile: Profile = {
   },
   aboutHeadline: "AIML / Software Engineer",
   bio: [
-    "I am a recent Master's in Computer Science graduate from The George Washington University, specializing in AIML and software engineering. My work sits at the intersection of machine learning systems, evaluation design, and practical full-stack development, with recent industry experience as an AIML Machine Learning Engineer intern on Apple's Siri Core Modeling team.",
+    "I am a recent Master's in Computer Science graduate from The George Washington University, specializing in AIML and software engineering. My work sits at the intersection of machine learning systems, evaluation design, and practical full-stack development, with recent industry experience as an AIML Machine Learning Engineer intern on Apple's Siri Core Modeling team. I now work as an AI Engineer at EventDone, building LLM infrastructure.",
     "I build data-driven products with a focus on reliable model behavior, clean engineering, and measurable user value. My recent work includes LLM evaluation workflows, transformer-based modeling, mobile applications, applied ML projects, and responsive web experiences.",
   ],
   aboutHighlights: [

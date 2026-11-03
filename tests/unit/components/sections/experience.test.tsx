@@ -120,10 +120,12 @@ describe("experience timeline", () => {
         (y) => y.textContent,
       ),
     ).toEqual(["Now", "2025", "2021", "2021"]);
-    // EventDone has no logo yet (briefcase), then Apple's icon and the TCS
-    // and Sparks logos.
+    // EventDone's and TCS's marks are images, Apple's is an icon, then Sparks.
     const marks = document.querySelectorAll(".company-mark");
-    expect(marks[0].querySelector("svg")).not.toBeNull();
+    expect(marks[0].querySelector("img")).toHaveAttribute(
+      "src",
+      "/images/brands/eventdone.svg",
+    );
     expect(marks[1].querySelector("svg")).not.toBeNull();
     expect(marks[2].querySelector("img")).toHaveAttribute(
       "src",
@@ -133,12 +135,28 @@ describe("experience timeline", () => {
       "src",
       "/images/brands/sparks.png",
     );
-    // A role without a location shows no location line.
     expect(within(items[0]).getByText("EventDone LLC")).toBeVisible();
-    expect(items[0].querySelector(".job-org span")).toBeNull();
+    expect(items[0].querySelector(".job-org span")).toHaveTextContent(
+      "San Francisco, CA - Remote",
+    );
     expect(items[1].querySelector(".job-org span")).toHaveTextContent(
       "Seattle, WA",
     );
+  });
+
+  it("leaves out the location line when a role has none", () => {
+    render(
+      <Experience
+        content={contentWith((c) =>
+          c.experience.push(newJob({ location: undefined })),
+        )}
+      />,
+    );
+    const last = Array.from(
+      document.querySelectorAll<HTMLElement>(".timeline-item"),
+    ).at(-1)!;
+    expect(within(last).getByText("Northwind Labs")).toBeVisible();
+    expect(last.querySelector(".job-org span")).toBeNull();
   });
 
   it("adds a new role at the end with a default badge", () => {

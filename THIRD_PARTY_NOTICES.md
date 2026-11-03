@@ -17,6 +17,7 @@ No third-party UI components are bundled. The React Bits Silk shader used in the
   - GUVI and API Academy: logo images found and supplied by the owner, trimmed of empty margins and saved as PNG.
   - NPTEL: the wordmark from the official site (nptel.ac.in), converted to PNG.
 - Devpost mark on case-study buttons: [Simple Icons](https://github.com/simple-icons/simple-icons) `icons/devpost.svg`, [CC0 1.0](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md). Trademark remains with Devpost.
+- EventDone mark: the teal check-and-E icon cut from EventDone's [official logo](https://eventdone.com/images/logo/EventDoneSVG.svg), the same mark the company uses as its site icon. Trademark remains with EventDone LLC.
 - Apple symbol remains the existing inline monochrome brand icon. Employer/school marks identify factual work/education history, not sponsorship or endorsement.
 - `BrandMark.tsx`: original code-native KS ligature for this portfolio. The PNG app icons (`src/app/icon.png`, `src/app/apple-icon.png`) are rendered from the same mark; no generative project imagery or altered authentic media.
 
