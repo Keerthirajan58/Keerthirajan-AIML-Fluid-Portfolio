@@ -1,6 +1,6 @@
 # Keerthirajan Senthilkumar · Portfolio
 
-**Live site:** https://keerthirajan-aiml-fluid-portfolio.vercel.app
+**Live site:** https://keerthi58.vercel.app
 
 The personal portfolio of an AI/ML and software engineer.
 
