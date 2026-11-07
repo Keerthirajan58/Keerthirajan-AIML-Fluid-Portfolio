@@ -229,7 +229,7 @@ describe("documentation", () => {
     expect(read("LICENSE")).toMatch(/All rights reserved/);
     expect(readme).toMatch(/All rights reserved/);
     expect(readme).toContain(
-      "https://keerthirajan-aiml-fluid-portfolio.vercel.app",
+      "https://keerthi58.vercel.app",
     );
     expect(JSON.parse(read("package.json")).license).toBe("UNLICENSED");
   });

@@ -3,7 +3,7 @@
  * sitemap, and robots.txt. Falls back through:
  *   1. An explicit override (set this once a custom domain exists)
  *   2. VERCEL_PROJECT_PRODUCTION_URL — Vercel's *stable* production alias
- *      (e.g. portfolio-portfolio58.vercel.app). Deliberately NOT VERCEL_URL:
+ *      (e.g. keerthi58.vercel.app). Deliberately NOT VERCEL_URL:
  *      that one is unique per deployment and changes on every single build,
  *      which would make the sitemap/OG/robots URLs go stale immediately
  *      after each redeploy. Verified against Vercel's own docs — this is
