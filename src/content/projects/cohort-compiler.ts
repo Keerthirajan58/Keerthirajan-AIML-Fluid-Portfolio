@@ -22,12 +22,6 @@ export const cohortCompiler: Project = {
     label: "3rd place · AI × Biology Hackathon",
     detail: "Berkeley",
   },
-  // The comparison screenshot, padded with its own background to the card's
-  // frame so neither count is cropped.
-  coverDisplay: {
-    src: "/images/projects/cohort-compiler/card.png",
-    alt: "Screenshot: one question read two ways, 423 reports against 426, with 3 reports that differ",
-  },
   caseStudy: {
     focus: "Cohort selection · Local LLMs",
     timeline: "Nov 14, 2026 · one-day hackathon",
@@ -39,16 +33,22 @@ export const cohortCompiler: Project = {
       "pytest",
       "GitHub Actions",
     ],
+    // The photos are the owner's: the venue's Wi-Fi password on the
+    // whiteboard is blurred, and the desk photo is cropped to the team.
     gallery: {
-      cover: "/images/projects/cohort-compiler/cover.png",
+      cover: "/images/projects/cohort-compiler/cover.jpg",
       slides: [
-        "/images/projects/cohort-compiler/slide-1.png",
+        "/images/projects/cohort-compiler/slide-1.jpg",
         "/images/projects/cohort-compiler/slide-2.png",
         "/images/projects/cohort-compiler/slide-3.png",
         "/images/projects/cohort-compiler/slide-4.png",
         "/images/projects/cohort-compiler/slide-5.png",
+        "/images/projects/cohort-compiler/slide-6.png",
+        "/images/projects/cohort-compiler/slide-7.png",
       ],
       alt: [
+        "Our four-person team at the AI × Biology Hackathon in Berkeley",
+        "Working through the app together at our desk during the hackathon",
         "Your question can be read two ways: an explicit positive-node count matches 423 reports, the recorded pN category 426, and 3 reports differ",
         "The question screen: example questions, the question box and a note that the reports stay on this computer",
         "See exactly what the model was sent: the instructions, the field list and the question, with no report, report ID or quote",
