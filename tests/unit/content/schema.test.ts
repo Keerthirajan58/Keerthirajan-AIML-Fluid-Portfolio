@@ -136,7 +136,7 @@ describe("content schema", () => {
     rejects((c) => {
       const p = c.projects.find((q) => q.privateRepo)!;
       p.links = { github: "https://github.com/x/y" };
-    }, "Private project links its repository: job-event-search");
+    }, "Private project links its repository: cohort-compiler");
   });
 
   it("only lists maintained projects that exist, and checks every contribution", () => {

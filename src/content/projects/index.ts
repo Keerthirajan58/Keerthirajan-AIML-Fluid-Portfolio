@@ -1,5 +1,6 @@
 import type { Project } from "../types";
 import { siriCoreModeling } from "./siri-core-modeling";
+import { cohortCompiler } from "./cohort-compiler";
 import { barterbrain } from "./barterbrain";
 import { barterbrainNvc } from "./barterbrain-nvc";
 import { pitchpulse } from "./pitchpulse";
@@ -22,6 +23,7 @@ import { charityDonationWebsite } from "./charity-donation-website";
  */
 export const projects: Project[] = [
   siriCoreModeling,
+  cohortCompiler,
   bugbout,
   nightshift,
   jobEventSearch,

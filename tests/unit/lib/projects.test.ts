@@ -20,6 +20,7 @@ describe("project selectors", () => {
   it("lists work cards in content order, without chapters", () => {
     expect(workProjects(projects).map((p) => p.slug)).toEqual([
       "siri-core-modeling",
+      "cohort-compiler",
       "bugbout",
       "nightshift",
       "job-event-search",
@@ -37,7 +38,7 @@ describe("project selectors", () => {
   });
 
   it("finds case studies and their routes", () => {
-    expect(caseStudies(projects)).toHaveLength(10);
+    expect(caseStudies(projects)).toHaveLength(11);
     expect(projectRoute(bySlug("pitchpulse"))).toBe("/projects/pitchpulse");
     expect(projectRoute(bySlug("moodbites"))).toBeUndefined();
     expect(getProjectBySlug("unknown", projects)).toBeUndefined();
