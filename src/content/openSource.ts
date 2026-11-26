@@ -2,12 +2,23 @@ import type { OpenSourceWork } from "./types";
 
 /**
  * Open-source work: projects I maintain (by slug) and pull requests to other
- * people's projects. Status and dates were checked on GitHub on 2026-11-02;
+ * people's projects. Status and dates were checked on GitHub on 2026-11-25;
  * update a contribution's `status` and `date` when it is merged.
  */
 export const openSource: OpenSourceWork = {
   maintained: ["bugbout"],
   contributions: [
+    {
+      project: "Nebari",
+      repo: "nebari-dev/llm-serving-pack",
+      url: "https://github.com/nebari-dev/llm-serving-pack/pull/186",
+      title: "Restore the default Endpoint Picker image",
+      summary:
+        "Fresh installs failed because an upstream image was renamed. The defaults now point at the new image, and a CI job checks that every default image is still published.",
+      status: "merged",
+      date: "Nov 2026",
+      tech: ["Go", "Helm", "GitHub Actions"],
+    },
     {
       project: "Nebari",
       repo: "nebari-dev/llm-serving-pack",
@@ -31,6 +42,18 @@ export const openSource: OpenSourceWork = {
       tech: ["Python", "PostgreSQL", "pytest"],
     },
     {
+      project: "DNAForge",
+      repo: "humic-labs/dnaforge-app",
+      url: "https://github.com/humic-labs/dnaforge-app/pull/52",
+      title: "Keep FASTA identifiers intact with tab-separated headers",
+      summary:
+        "A header with a tab after the identifier imported a corrupted identifier into plasmid and multi-FASTA imports. The parser now splits at the first whitespace character, with 40 tests covering tabs, line endings, a byte-order mark and Unicode descriptions.",
+      status: "open",
+      date: "Nov 2026",
+      tech: ["TypeScript", "Vitest", "FASTA"],
+      award: "$100 prize · AI × Biology Hackathon",
+    },
+    {
       project: "Gorilla (Berkeley Function Calling Leaderboard)",
       repo: "ShishirPatil/gorilla",
       url: "https://github.com/ShishirPatil/gorilla/pull/1365",
@@ -51,17 +74,6 @@ export const openSource: OpenSourceWork = {
       status: "open",
       date: "Sep 2026",
       tech: ["Go", "OCI registries"],
-    },
-    {
-      project: "Nebari",
-      repo: "nebari-dev/llm-serving-pack",
-      url: "https://github.com/nebari-dev/llm-serving-pack/pull/186",
-      title: "Restore the default Endpoint Picker image",
-      summary:
-        "Fresh installs failed because an upstream image was renamed. The defaults now point at the new image, and a CI job checks that every default image is still published.",
-      status: "open",
-      date: "Sep 2026",
-      tech: ["Go", "Helm", "GitHub Actions"],
     },
     {
       project: "Nebari",

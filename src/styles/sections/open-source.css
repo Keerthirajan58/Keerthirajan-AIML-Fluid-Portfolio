@@ -139,6 +139,26 @@
   box-shadow: inset 0 0 0 1px var(--line);
   color: var(--muted);
 }
+/* A prize the pull request won: the same gold as the work cards' awards. */
+.oss-award {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--gold-fill);
+  color: #3d2a00;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    0 8px 20px -8px rgb(217 154 30 / 0.8);
+}
+.oss-award svg {
+  width: 14px;
+  height: 14px;
+}
 .oss-title {
   font: 600 17px / 1.3 var(--font-display);
   letter-spacing: -0.03em;

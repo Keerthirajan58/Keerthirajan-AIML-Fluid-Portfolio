@@ -56,6 +56,23 @@ describe("open source section", () => {
     ).toBeVisible();
   });
 
+  it("shows a prize as a gold pill only on the contribution that won it", () => {
+    const content = contentWith((c) => {
+      c.openSource.contributions = [
+        newContribution({ award: "$100 prize" }),
+        newContribution({
+          url: "https://github.com/example-org/example-lib/pull/43",
+        }),
+      ];
+    });
+    render(<OpenSource content={content} />);
+    const [won, plain] = Array.from(
+      document.querySelectorAll<HTMLElement>(".oss-card"),
+    );
+    expect(won.querySelector(".oss-award")).toHaveTextContent("$100 prize");
+    expect(plain.querySelector(".oss-award")).toBeNull();
+  });
+
   it("counts a single repository in the singular", () => {
     const content = contentWith((c) => {
       c.openSource.contributions = [

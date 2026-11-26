@@ -5,6 +5,7 @@ import type { Contribution, PortfolioContent, Project } from "@/content/types";
 import { Section } from "@/components/ui/Section";
 import {
   ArrowUpRightIcon,
+  AwardIcon,
   GitHubIcon,
   MergeIcon,
   PackageIcon,
@@ -87,6 +88,12 @@ function ContributionCard({ c }: { c: Contribution }) {
           {merged ? `Merged · ${c.date}` : `In review · ${c.date}`}
         </span>
       </span>
+      {c.award && (
+        <span className="oss-award">
+          <AwardIcon aria-hidden="true" />
+          {c.award}
+        </span>
+      )}
       <span className="oss-title">{c.title}</span>
       <span className="oss-summary">{c.summary}</span>
       <span className="oss-card-foot">

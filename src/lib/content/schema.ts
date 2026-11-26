@@ -184,6 +184,7 @@ export const contentSchema = z.object({
         status: z.enum(["merged", "open"]),
         date: text,
         tech: z.array(text),
+        award: text.optional(),
       }),
     ),
   }),

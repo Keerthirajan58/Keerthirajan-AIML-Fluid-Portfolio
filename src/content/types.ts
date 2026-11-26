@@ -246,6 +246,8 @@ export interface Contribution {
   /** When it was merged (or opened, if still in review), e.g. "Oct 2026". */
   date: string;
   tech: string[];
+  /** A prize the contribution won, shown as a gold pill, e.g. "$100 prize". */
+  award?: string;
 }
 
 export interface OpenSourceWork {
